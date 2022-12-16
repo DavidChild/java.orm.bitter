@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="fa6d3df9-9d6a-4226-8731-c7a2abe6a925" name="Changes" comment="Changes" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JUnit3 Test Class" />
+        <option value="AnnotationType" />
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="HTML File" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/pom.xml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/BaseModel.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/db/DoResult.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/db/TargetAction.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/db/db.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/op/find/FindQuery.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/op/page/PageQuery.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/op/read/ExecuteQuery.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/op/read/QueryPrimaryKey.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/op/scope/DbScope.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/tools/JsonUtil.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/tools/SpringUtils.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/tools/TypeUtils.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/test/java/io/github/davidchild/bitter/op/TestBitter.java" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="0tat5i38" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="D:\maven-repo" />
+        <option name="mavenHome" value="D:/apache-maven-3.8.5" />
+        <option name="useMavenConfig" value="true" />
+        <option name="userSettingsFile" value="D:\apache-maven-3.8.5\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="MavenRunner">
+    <option name="skipTests" value="true" />
+    <option name="vmOptions" value="-Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true" />
+  </component>
+  <component name="ProjectId" id="2C7F29ZXzxCtn4BEi86q1aUOv4K" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "jdk.selected.JAVA_MODULE": "1.8",
+    "last_opened_file_path": "F:/giteeproject/dipin/dipin-common",
+    "settings.editor.selected.configurable": "settings.saveactions"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\giteeproject\dipin\bitter\sql.bak" />
+      <recent name="F:\giteeproject\dipin\bitter\src\main\java\com\bitter\connection" />
+      <recent name="F:\giteeproject\dipin\bitter\src\main\resources" />
+      <recent name="F:\giteeproject\dipin\bitter\src\test\resources" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="junit.framework.TestCase" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="io.github.davidchild.bitter.connection" />
+      <recent name="com.bitter.op" />
+      <recent name="com.bitter" />
+      <recent name="com.bitter.connection" />
+      <recent name="com.bitter.parse" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.bitter.tools" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.bitter.parbag" />
+      <recent name="com.bitter.exception" />
+      <recent name="com.bitter.basequery" />
+      <recent name="com.bitter.annotation" />
+      <recent name="com.bitter" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.TestBitter.testPageQueryInManyThread">
+    <configuration name="TestBitter.TestDelete" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+      <module name="bitter" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.bitter.op.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.bitter.op" />
+      <option name="MAIN_CLASS_NAME" value="com.bitter.op.TestBitter" />
+      <option name="METHOD_NAME" value="TestDelete" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestBitter.TestQueryById" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+      <module name="bitter" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.bitter.op.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.bitter.op" />
+      <option name="MAIN_CLASS_NAME" value="com.bitter.op.TestBitter" />
+      <option name="METHOD_NAME" value="TestQueryById" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestBitter.bachInsert" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="bitter" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.bitter.op.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.bitter.op" />
+      <option name="MAIN_CLASS_NAME" value="com.bitter.op.TestBitter" />
+      <option name="METHOD_NAME" value="bachInsert" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestBitter.testExcuteQuery" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="bitter" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.bitter.op.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.bitter.op" />
+      <option name="MAIN_CLASS_NAME" value="com.bitter.op.TestBitter" />
+      <option name="METHOD_NAME" value="testExcuteQuery" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestBitter.testPageQuery (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="bitter" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.bitter.op.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.bitter.op" />
+      <option name="MAIN_CLASS_NAME" value="com.bitter.op.TestBitter" />
+      <option name="METHOD_NAME" value="testPageQuery" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestBitter.testPageQueryInManyThread" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="bitter" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.bitter.op.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.bitter.op" />
+      <option name="MAIN_CLASS_NAME" value="com.bitter.op.TestBitter" />
+      <option name="METHOD_NAME" value="testPageQueryInManyThread" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestBitter.testQueryByGern (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="bitter" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.bitter.op.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.bitter.op" />
+      <option name="MAIN_CLASS_NAME" value="com.bitter.op.TestBitter" />
+      <option name="METHOD_NAME" value="testQueryByGern" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.TestBitter.testQueryByGern (1)" />
+        <item itemvalue="JUnit.TestBitter.testPageQueryInManyThread" />
+        <item itemvalue="JUnit.TestBitter.testPageQuery (1)" />
+        <item itemvalue="JUnit.TestBitter.testExcuteQuery" />
+        <item itemvalue="JUnit.TestBitter.bachInsert" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fa6d3df9-9d6a-4226-8731-c7a2abe6a925" name="Changes" comment="" />
+      <created>1658145507580</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1658145507580</updated>
+      <workItem from="1661827225248" duration="17000" />
+      <workItem from="1661827363801" duration="646000" />
+      <workItem from="1661828112205" duration="3037000" />
+      <workItem from="1661837089922" duration="1726000" />
+      <workItem from="1661838898882" duration="12098000" />
+      <workItem from="1661907080652" duration="30106000" />
+      <workItem from="1661992164466" duration="33416000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/io/github/davidchild/bitter/tools/CoreUtilsTest.java</url>
+          <line>17</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/tools/CoreUtils.java</url>
+          <line>45</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/tools/CoreUtils.java</url>
+          <line>92</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/parse/BitterVisitor.java</url>
+          <line>105</line>
+          <option name="timeStamp" value="30" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/connection/StatementFactory.java</url>
+          <line>10</line>
+          <option name="timeStamp" value="151" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/excutequery/MyPageManage.java</url>
+          <line>45</line>
+          <option name="timeStamp" value="196" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/excutequery/MySqlQuery.java</url>
+          <line>176</line>
+          <option name="timeStamp" value="206" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/parse/BitterVisitor.java</url>
+          <line>190</line>
+          <option name="timeStamp" value="213" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/connection/MysqlDbStatementCached.java</url>
+          <line>20</line>
+          <option name="timeStamp" value="244" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/bitterlist/BMap.java</url>
+          <line>51</line>
+          <option name="timeStamp" value="254" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/bitterlist/BMap.java</url>
+          <line>52</line>
+          <option name="timeStamp" value="255" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/excutequery/MySqlQuery.java</url>
+          <line>37</line>
+          <option name="timeStamp" value="281" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/excutequery/MySqlQuery.java</url>
+          <line>43</line>
+          <option name="timeStamp" value="289" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/excutequery/MySqlQuery.java</url>
+          <line>56</line>
+          <option name="timeStamp" value="290" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/excutequery/MySqlQuery.java</url>
+          <line>79</line>
+          <option name="timeStamp" value="292" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/connection/MysqlDbStatementCached.java</url>
+          <line>112</line>
+          <option name="timeStamp" value="295" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/op/scope/DbScope.java</url>
+          <line>22</line>
+          <option name="timeStamp" value="303" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/connection/DataAccess.java</url>
+          <line>64</line>
+          <option name="timeStamp" value="312" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/connection/Impl/IIETyeConvert.java</url>
+          <line>49</line>
+          <option name="timeStamp" value="313" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/connection/Impl/IIETyeConvert.java</url>
+          <line>40</line>
+          <option name="timeStamp" value="314" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/connection/Impl/MySqlTypeConvert.java</url>
+          <line>21</line>
+          <option name="timeStamp" value="315" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/connection/Impl/MySqlTypeConvert.java</url>
+          <line>17</line>
+          <option name="timeStamp" value="316" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/connection/Impl/MySqlTypeConvert.java</url>
+          <line>25</line>
+          <option name="timeStamp" value="319" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/parbag/ExecuteParBagUpdate.java</url>
+          <line>25</line>
+          <option name="timeStamp" value="321" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/excutequery/MySqlQuery.java</url>
+          <line>215</line>
+          <option name="timeStamp" value="326" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/connection/MysqlDbStatementCached.java</url>
+          <line>104</line>
+          <option name="timeStamp" value="337" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/inspcet/TargetSourceAspect.java</url>
+          <line>46</line>
+          <option name="timeStamp" value="356" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/excutequery/MyPageManage.java</url>
+          <line>15</line>
+          <option name="timeStamp" value="367" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/excutequery/MySqlQuery.java</url>
+          <line>254</line>
+          <option name="timeStamp" value="368" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/io/github/davidchild/bitter/op/TestBitter.java</url>
+          <line>204</line>
+          <option name="timeStamp" value="377" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/inspcet/TargetSourceAspect.java</url>
+          <line>29</line>
+          <option name="timeStamp" value="379" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/io/github/davidchild/bitter/op/service/impl/DataService.java</url>
+          <line>16</line>
+          <option name="timeStamp" value="380" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/io/github/davidchild/bitter/op/TestBitter.java</url>
+          <line>185</line>
+          <option name="timeStamp" value="389" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/connection/DataAccess.java</url>
+          <line>42</line>
+          <option name="timeStamp" value="391" />
+        </line-breakpoint>
+        <line-breakpoint type="java-method">
+          <url>file://$PROJECT_DIR$/src/test/java/io/github/davidchild/bitter/parse/BitterPredicateTest.java</url>
+          <line>9</line>
+          <properties class="io.github.davidchild.bitter.parse.BitterPredicateTest">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint type="java-method">
+          <url>file://$PROJECT_DIR$/src/test/java/io/github/davidchild/bitter/connection/DataAccessTest.java</url>
+          <line>35</line>
+          <properties class="io.github.davidchild.bitter.connection.DataAccessTest" method="testExcuteQuery">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="95" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/main/java/io/github/davidchild/bitter/inspcet/TargetSourceAspect.java</url>
+          <line>28</line>
+          <properties class="io.github.davidchild.bitter.inspcet.TargetSourceAspect">
+            <option name="EMULATED" value="true" />
+          </properties>
+          <option name="timeStamp" value="378" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo />
+        <PinnedItemInfo parentTag="com.trigersoft.jaque.expression.BinaryExpression" memberName="first" />
+        <PinnedItemInfo parentTag="com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceWrapper" memberName="initedLatch" />
+      </pinned-members>
+    </pin-to-top-manager>
+    <watches-manager>
+      <configuration name="JUnit">
+        <watch expression="baseQuery.getParameters().size()" language="JAVA" />
+        <watch expression="((Class)((TypeVariableImpl)((java.lang.reflect.Type[])((ParameterizedTypeImpl)type).actualTypeArguments)[0]).genericDeclaration).classRedefinedCount" custom="java.lang.reflect.Type[],sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl,java.lang.Class,sun.reflect.generics.reflectiveObjects.TypeVariableImpl" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/bitter$DataAccessTest_testExcuteQuery.ic" NAME="DataAccessTest.testExcuteQuery Coverage Results" MODIFIED="1660724699336" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>com.bitter.tools.*</FILTER>
+    </SUITE>
+  </component>
+</project>

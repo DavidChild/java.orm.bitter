@@ -1,0 +1,31 @@
+server:
+  port: 8097
+  servlet:
+    context-path: /
+  tomcat:
+    uri-encoding: UTF-8
+    accept-count: 1000
+    threads:
+      max: 800
+      min-spare: 100
+spring:
+  messages:
+    basename: i18n/messages
+  profiles:
+    active: local
+  devtools:
+    restart:
+      enabled: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+bitter:
+  sql-log-write: true
+
+mybatis-plus:
+  typeAliasesPackage: io.github.davidchild.bitter.**.domain
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  configLocation: classpath:mybatis/mybatis-config.xml
+
+
