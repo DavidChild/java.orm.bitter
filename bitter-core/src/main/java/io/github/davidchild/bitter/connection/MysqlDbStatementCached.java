@@ -1,5 +1,12 @@
 package io.github.davidchild.bitter.connection;
 
+import io.github.davidchild.bitter.connection.Impl.IDbStatement;
+import io.github.davidchild.bitter.connection.Impl.IIETyeConvert;
+import io.github.davidchild.bitter.exception.DbException;
+import io.github.davidchild.bitter.tools.BitterLogUtil;
+import io.github.davidchild.bitter.tools.CoreStringUtils;
+import io.github.davidchild.bitter.tools.JsonUtil;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,18 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import io.github.davidchild.bitter.connection.Impl.IDbStatement;
-import io.github.davidchild.bitter.connection.Impl.IIETyeConvert;
-import io.github.davidchild.bitter.exception.DbException;
-import io.github.davidchild.bitter.tools.BitterLogUtil;
-import io.github.davidchild.bitter.tools.CoreStringUtils;
-import io.github.davidchild.bitter.tools.JsonUtil;
-
 public class MysqlDbStatementCached implements IDbStatement {
 
     @Override
     public List<Map<String, Object>> queryMapFromDbData(String commandTest, List<Object> params,
-        IIETyeConvert convert) {
+                                                        IIETyeConvert convert) {
         BitterLogUtil.logWriteSql(commandTest, params);
         List<Map<String, Object>> result = new ArrayList<>();
         try (DbConnection db = new DbConnection()) {
@@ -54,7 +54,7 @@ public class MysqlDbStatementCached implements IDbStatement {
         try (DbConnection db = new DbConnection()) {
             if (isIdentity) {
                 try (PreparedStatement stmt =
-                    db.connection.prepareStatement(commandTest, Statement.RETURN_GENERATED_KEYS)) {
+                             db.connection.prepareStatement(commandTest, Statement.RETURN_GENERATED_KEYS)) {
                     if (CoreStringUtils.isNotEmpty(params)) {
                         for (int i = 0; i < params.size(); i++) {
                             stmt.setObject(i + 1, params.get(i));

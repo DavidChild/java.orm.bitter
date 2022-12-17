@@ -1,10 +1,10 @@
-package io.github.davidchild.bitter.db;
+package io.github.davidchild.bitter.op.datasource;
+
+import io.github.davidchild.bitter.db.DoResult;
+import io.github.davidchild.bitter.op.annotation.DataSourceType;
+import io.github.davidchild.bitter.tools.CoreStringUtils;
 
 import java.util.function.Function;
-
-import io.github.davidchild.bitter.annotation.DataSourceType;
-import io.github.davidchild.bitter.connection.ThreadLocalForDataSource;
-import io.github.davidchild.bitter.tools.CoreStringUtils;
 
 public class TargetAction {
 

@@ -1,12 +1,11 @@
-package io.github.davidchild.bitter.op;
+package io.github.davidchild.bitter.op.datasource;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
-import com.alibaba.druid.pool.DruidDataSource;
-
 @Configuration
-public class BitterDruidProperties {
+public class DruidProperties {
     @Value("${spring.datasource.druid.initialSize}")
     private int initialSize;
 

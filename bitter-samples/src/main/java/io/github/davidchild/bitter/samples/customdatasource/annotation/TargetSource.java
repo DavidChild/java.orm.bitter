@@ -1,4 +1,4 @@
-package io.github.davidchild.bitter.annotation;
+package io.github.davidchild.bitter.samples.customdatasource.annotation;
 
 import java.lang.annotation.*;
 

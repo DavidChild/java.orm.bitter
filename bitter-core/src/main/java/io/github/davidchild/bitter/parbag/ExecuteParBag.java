@@ -1,10 +1,6 @@
 package io.github.davidchild.bitter.parbag;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.baomidou.mybatisplus.annotation.IdType;
-
 import io.github.davidchild.bitter.BaseModel;
 import io.github.davidchild.bitter.basequery.ExecuteEnum;
 import io.github.davidchild.bitter.basequery.ExecuteMode;
@@ -12,9 +8,13 @@ import io.github.davidchild.bitter.dbtype.FieldProperty;
 import io.github.davidchild.bitter.dbtype.KeyInfo;
 import io.github.davidchild.bitter.exception.DbException;
 import io.github.davidchild.bitter.op.FieldFunction;
+import io.github.davidchild.bitter.tools.BitterLogUtil;
 import io.github.davidchild.bitter.tools.CoreStringUtils;
 import io.github.davidchild.bitter.tools.CoreUtils;
 import io.github.davidchild.bitter.tools.FieldLamdUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExecuteParBag {
 
@@ -31,7 +31,7 @@ public class ExecuteParBag {
     public static String getDbNameByInnerName(List<FieldProperty> list, KeyInfo keyInfo, String innerFieldName) {
 
         if (keyInfo != null && CoreStringUtils.isNotEmpty(keyInfo.getFieldName())
-            && keyInfo.getFieldName().toLowerCase().equals(innerFieldName)) {
+                && keyInfo.getFieldName().toLowerCase().equals(innerFieldName)) {
             return keyInfo.getDbFieldName();
         }
         String dBFieldName = "";
@@ -70,7 +70,7 @@ public class ExecuteParBag {
 
     public void setType(Class<?> type) {
 
-        this.modelType = (Class<? extends BaseModel>)type;
+        this.modelType = (Class<? extends BaseModel>) type;
     }
 
     public Class<?> getModelType() {
@@ -101,8 +101,15 @@ public class ExecuteParBag {
     }
 
     public <T extends BaseModel> String getDbFieldByInnerClassFiled(FieldFunction<T> innerNameFn) {
-        String innerName = FieldLamdUtils.convertToFieldName(innerNameFn);
-        return getDbNameByInnerName(this.getProperties(), this.getKeyInfo(), innerName);
+        try {
+            String innerName = FieldLamdUtils.convertToFieldName(innerNameFn);
+            return getDbNameByInnerName(this.getProperties(), this.getKeyInfo(), innerName);
+
+        } catch (Exception ex) {
+            BitterLogUtil.getInstance().error("FieldFunction<T> enter error,pls enter filed  same as : TStudent::getName; pls  check your enter the parm.", ex);
+            return null;
+        }
+
     }
 
     public boolean getIsIdentity() {

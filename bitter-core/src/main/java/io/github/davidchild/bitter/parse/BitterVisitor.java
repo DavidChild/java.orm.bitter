@@ -1,5 +1,12 @@
 package io.github.davidchild.bitter.parse;
 
+import com.trigersoft.jaque.expression.*;
+import io.github.davidchild.bitter.dbtype.FieldProperty;
+import io.github.davidchild.bitter.dbtype.KeyInfo;
+import io.github.davidchild.bitter.parbag.ExecuteParBag;
+import io.github.davidchild.bitter.tools.DateTimeUtils;
+import lombok.NonNull;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -11,14 +18,6 @@ import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.trigersoft.jaque.expression.*;
-
-import io.github.davidchild.bitter.dbtype.FieldProperty;
-import io.github.davidchild.bitter.dbtype.KeyInfo;
-import io.github.davidchild.bitter.parbag.ExecuteParBag;
-import io.github.davidchild.bitter.tools.DateTimeUtils;
-import lombok.NonNull;
 
 public class BitterVisitor implements ExpressionVisitor<BitterWrapper> {
 
@@ -102,15 +101,18 @@ public class BitterVisitor implements ExpressionVisitor<BitterWrapper> {
 
         if (quote) {
             SQL.getKey().append('(');
-        } ; // fix the LogicalOr Bug for sql
+        }
+        ; // fix the LogicalOr Bug for sql
         e.getFirst().accept(this);
         if (quote) {
             SQL.getKey().append(')');
-        } ; // fix the LogicalOr Bug for sql
+        }
+        ; // fix the LogicalOr Bug for sql
         SQL.getKey().append(' ').append(toSqlOp(e.getExpressionType())).append(' ');
         if (quote) {
             SQL.getKey().append('(');
-        } ; // fix the LogicalOr Bug for sql
+        }
+        ; // fix the LogicalOr Bug for sql
         e.getSecond().accept(this);
         if (quote) {
             SQL.getKey().append(')');
@@ -123,26 +125,26 @@ public class BitterVisitor implements ExpressionVisitor<BitterWrapper> {
     public BitterWrapper visit(ConstantExpression e) {
         final Object value = e.getValue();
         if (value instanceof LambdaExpression) {
-            return ((LambdaExpression<?>)value).getBody().accept(this);
+            return ((LambdaExpression<?>) value).getBody().accept(this);
         }
         SQL.getKey().append('?');
         if (value instanceof Date) {
-            Object ret = DateTimeUtils.DATE_TIME.formatDate((Date)value);
+            Object ret = DateTimeUtils.DATE_TIME.formatDate((Date) value);
             SQL.getValue().add(ret);
             return SQL;
         }
         if (value instanceof LocalTime) {
-            Object ret = DateTimeUtils.TIME.format((TemporalAccessor)value);
+            Object ret = DateTimeUtils.TIME.format((TemporalAccessor) value);
             SQL.getValue().add(ret);
             return SQL;
         }
         if (value instanceof LocalDate) {
-            Object ret = DateTimeUtils.DATE.format((TemporalAccessor)value);
+            Object ret = DateTimeUtils.DATE.format((TemporalAccessor) value);
             SQL.getValue().add(ret);
             return SQL;
         }
         if (value instanceof LocalDateTime) {
-            Object ret = DateTimeUtils.DATE_TIME.format((TemporalAccessor)value);
+            Object ret = DateTimeUtils.DATE_TIME.format((TemporalAccessor) value);
             SQL.getValue().add(ret);
             return SQL;
         }
@@ -156,7 +158,7 @@ public class BitterVisitor implements ExpressionVisitor<BitterWrapper> {
         final Expression target = e.getTarget();
         if (target instanceof LambdaExpression<?>) {
             e.getArguments().stream().filter(x -> x instanceof ConstantExpression)
-                .forEach(x -> PARAMS.add((ConstantExpression)x));
+                    .forEach(x -> PARAMS.add((ConstantExpression) x));
         }
         if (target.getExpressionType() == ExpressionType.MethodAccess) {
             e.getArguments().stream().findFirst().ifPresent(x -> {
@@ -198,7 +200,7 @@ public class BitterVisitor implements ExpressionVisitor<BitterWrapper> {
             return invoke(member, instance);
         }
         if (instance instanceof InvocationExpression) {
-            ((InvocationExpression)instance).getTarget().accept(this);
+            ((InvocationExpression) instance).getTarget().accept(this);
             return invoke(member, param);
         }
         return SQL;
@@ -237,7 +239,7 @@ public class BitterVisitor implements ExpressionVisitor<BitterWrapper> {
                 return doMethodOp(member, expression);
             }
         } else {
-            throw new RuntimeException("The parameter '" + expression + "' not supported.");
+            throw new RuntimeException("The parameter '" + expression.toString() + "' not supported.");
         }
     }
 
@@ -311,7 +313,7 @@ public class BitterVisitor implements ExpressionVisitor<BitterWrapper> {
                 throw new RuntimeException(ex.getMessage(), ex.getCause());
             }
         }
-        throw new RuntimeException("The parameter '" + expression + "' not supported.");
+        throw new RuntimeException("The parameter '" + expression.toString() + "' not supported.");
     }
 
 }

@@ -1,29 +1,23 @@
-package io.github.davidchild.bitter.op;
+package io.github.davidchild.bitter.samples.customdatasource;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
+import io.github.davidchild.bitter.samples.customdatasource.annotation.DataSourceType;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
-
-import io.github.davidchild.bitter.annotation.DataSourceType;
-import io.github.davidchild.bitter.connection.DynamicDataSource;
-import io.github.davidchild.bitter.db.Bitter;
-import io.github.davidchild.bitter.tools.SpringUtils;
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 public class DruidConfig {
     @Bean
     @ConfigurationProperties("spring.datasource.druid.master")
-    public DataSource masterDataSource(BitterDruidProperties druidProperties) {
+    public DataSource masterDataSource(DruidProperties druidProperties) {
         DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
         return druidProperties.dataSource(dataSource);
     }
@@ -31,7 +25,7 @@ public class DruidConfig {
     @Bean
     @ConfigurationProperties("spring.datasource.druid.slave")
     @ConditionalOnProperty(prefix = "spring.datasource.druid.slave", name = "enabled", havingValue = "true")
-    public DataSource slaveDataSource(BitterDruidProperties druidProperties) {
+    public DataSource slaveDataSource(DruidProperties druidProperties) {
         DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
         return druidProperties.dataSource(dataSource);
     }
@@ -50,9 +44,6 @@ public class DruidConfig {
          * 将 dynamicDataSource 注入 到 Bitter 框架,这里的 DynamicDataSource 继承实现了Spring 框架中的 JDBC 管理的
          * AbstractRoutingDataSource,可以将此类直接注入到对象中
          */
-        Bitter.setDbSources(dynamicDataSource, (config) -> {
-            config.setEnableSqlLog(true);
-        }); // 注入到bitter 中
 
         return dynamicDataSource;
     }
@@ -61,14 +52,15 @@ public class DruidConfig {
      * set up data sources
      *
      * @param targetDataSources Alternate Data Source Collection
-     * @param sourceName Data source name
-     * @param beanName Bean name
+     * @param sourceName        Data source name
+     * @param beanName          Bean name
      */
     public void setDataSource(Map<Object, Object> targetDataSources, String sourceName, String beanName) {
         try {
             DataSource dataSource = SpringUtils.getBean(beanName);
             targetDataSources.put(sourceName, dataSource);
         } catch (Exception e) {
+
         }
     }
 }
