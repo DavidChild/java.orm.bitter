@@ -1,7 +1,5 @@
 package io.github.davidchild.bitter;
 
-import java.io.Serializable;
-
 import io.github.davidchild.bitter.dbtype.KeyInfo;
 import io.github.davidchild.bitter.impl.IBaseModelOp;
 import io.github.davidchild.bitter.op.delete.DeleteIns;
@@ -10,7 +8,10 @@ import io.github.davidchild.bitter.op.update.UpdateIns;
 import io.github.davidchild.bitter.tools.CoreStringUtils;
 import io.github.davidchild.bitter.tools.CoreUtils;
 
+import java.io.Serializable;
+
 public class BaseModel implements Serializable, IBaseModelOp {
+
 
     @Override
     public Insert insert() {
@@ -25,6 +26,15 @@ public class BaseModel implements Serializable, IBaseModelOp {
     @Override
     public DeleteIns delete() {
         return new DeleteIns(this);
+    }
+
+    @Override
+    public boolean save() {
+        if (!this.haveKeyValue()) {
+            return insert().submit() >= 0;
+        } else {
+            return this.update().submit() > 0;
+        }
     }
 
     @Override

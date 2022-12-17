@@ -5,6 +5,9 @@ import io.github.davidchild.bitter.op.insert.Insert;
 import io.github.davidchild.bitter.op.update.UpdateIns;
 
 public interface IBaseModelOp {
+
+    boolean save();
+
     Insert insert();
 
     UpdateIns update();

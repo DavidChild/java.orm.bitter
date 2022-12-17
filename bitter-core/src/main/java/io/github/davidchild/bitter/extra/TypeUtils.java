@@ -1,4 +1,4 @@
-package io.github.davidchild.bitter.tools;
+package io.github.davidchild.bitter.extra;
 
 import java.lang.reflect.*;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ public class TypeUtils {
             if (superGeneric instanceof ParameterizedType) {
 
                 TypeVariable<?>[] typeParams = superClass.getTypeParameters();
-                Type[] actualTypeArgs = ((ParameterizedType)superGeneric).getActualTypeArguments();
+                Type[] actualTypeArgs = ((ParameterizedType) superGeneric).getActualTypeArguments();
 
                 for (int i = 0; i < typeParams.length; i++) {
                     Type actualType = actualTypeArgs[i];
@@ -24,7 +24,7 @@ public class TypeUtils {
                         actualType = subMap.get(actualType);
                     }
                     if (typeVariable == typeParams[i])
-                        return (Class<?>)actualType;
+                        return (Class<?>) actualType;
                     superMap.put(typeParams[i], actualType);
                 }
             }
@@ -43,15 +43,15 @@ public class TypeUtils {
         Type genericType = null;
 
         if (element instanceof Field) {
-            type = ((Field)element).getType();
-            genericType = ((Field)element).getGenericType();
+            type = ((Field) element).getType();
+            genericType = ((Field) element).getGenericType();
         } else if (element instanceof Method) {
-            type = ((Method)element).getReturnType();
-            genericType = ((Method)element).getGenericReturnType();
+            type = ((Method) element).getReturnType();
+            genericType = ((Method) element).getGenericReturnType();
         }
 
         if (genericType instanceof TypeVariable) {
-            Class<?> typeVariableType = TypeUtils.getTypeVariableType(clazz, (TypeVariable)genericType);
+            Class<?> typeVariableType = TypeUtils.getTypeVariableType(clazz, (TypeVariable) genericType);
             if (typeVariableType != null) {
                 type = typeVariableType;
             }

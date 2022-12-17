@@ -1,5 +1,6 @@
-package io.github.davidchild.bitter.tools;
+package io.github.davidchild.bitter.samples.customdatasource;
 
+import io.github.davidchild.bitter.tools.CoreStringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class SpringUtils implements BeanFactoryPostProcessor, ApplicationContextAware {
-    /** Spring应用上下文环境 */
+    /**
+     * Spring应用上下文环境
+     */
     private static ConfigurableListableBeanFactory beanFactory;
 
     private static ApplicationContext applicationContext;
@@ -21,12 +24,11 @@ public final class SpringUtils implements BeanFactoryPostProcessor, ApplicationC
      *
      * @param name
      * @return Object 一个以所给名字注册的bean的实例
-     * @throws org.springframework.beans.BeansException
-     *
+     * @throws BeansException
      */
     @SuppressWarnings("unchecked")
     public static <T> T getBean(String name) throws BeansException {
-        return (T)beanFactory.getBean(name);
+        return (T) beanFactory.getBean(name);
     }
 
     /**
@@ -34,11 +36,10 @@ public final class SpringUtils implements BeanFactoryPostProcessor, ApplicationC
      *
      * @param clz
      * @return
-     * @throws org.springframework.beans.BeansException
-     *
+     * @throws BeansException
      */
     public static <T> T getBean(Class<T> clz) throws BeansException {
-        T result = (T)beanFactory.getBean(clz);
+        T result = (T) beanFactory.getBean(clz);
         return result;
     }
 
@@ -57,8 +58,7 @@ public final class SpringUtils implements BeanFactoryPostProcessor, ApplicationC
      *
      * @param name
      * @return boolean
-     * @throws org.springframework.beans.factory.NoSuchBeanDefinitionException
-     *
+     * @throws NoSuchBeanDefinitionException
      */
     public static boolean isSingleton(String name) throws NoSuchBeanDefinitionException {
         return beanFactory.isSingleton(name);
@@ -67,8 +67,7 @@ public final class SpringUtils implements BeanFactoryPostProcessor, ApplicationC
     /**
      * @param name
      * @return Class 注册对象的类型
-     * @throws org.springframework.beans.factory.NoSuchBeanDefinitionException
-     *
+     * @throws NoSuchBeanDefinitionException
      */
     public static Class<?> getType(String name) throws NoSuchBeanDefinitionException {
         return beanFactory.getType(name);
@@ -79,8 +78,7 @@ public final class SpringUtils implements BeanFactoryPostProcessor, ApplicationC
      *
      * @param name
      * @return
-     * @throws org.springframework.beans.factory.NoSuchBeanDefinitionException
-     *
+     * @throws NoSuchBeanDefinitionException
      */
     public static String[] getAliases(String name) throws NoSuchBeanDefinitionException {
         return beanFactory.getAliases(name);
@@ -94,7 +92,7 @@ public final class SpringUtils implements BeanFactoryPostProcessor, ApplicationC
      */
     @SuppressWarnings("unchecked")
     public static <T> T getAopProxy(T invoker) {
-        return (T)AopContext.currentProxy();
+        return (T) AopContext.currentProxy();
     }
 
     /**
@@ -121,7 +119,6 @@ public final class SpringUtils implements BeanFactoryPostProcessor, ApplicationC
      *
      * @param key 配置文件的key
      * @return 当前的配置文件的值
-     *
      */
     public static String getRequiredProperty(String key) {
         return applicationContext.getEnvironment().getRequiredProperty(key);

@@ -1,4 +1,4 @@
-package io.github.davidchild.bitter.annotation;
+package io.github.davidchild.bitter.samples.customdatasource.annotation;
 
 public enum DataSourceType {
     /**

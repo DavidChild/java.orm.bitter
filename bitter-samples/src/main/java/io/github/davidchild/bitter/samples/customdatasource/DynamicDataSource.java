@@ -1,10 +1,9 @@
-package io.github.davidchild.bitter.connection;
-
-import java.util.Map;
-
-import javax.sql.DataSource;
+package io.github.davidchild.bitter.samples.customdatasource;
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
+
+import javax.sql.DataSource;
+import java.util.Map;
 
 public class DynamicDataSource extends AbstractRoutingDataSource {
     public DynamicDataSource(DataSource defaultTargetDataSource, Map<Object, Object> targetDataSources) {
