@@ -11,16 +11,25 @@
 
 ```java
 <dependency>
-  <groupId>io.github.davidchild</groupId>
-  <artifactId>bitter</artifactId>
-  <version>1.2.3-RELEASE</version>
+<groupId>io.github.davidchild</groupId>
+<artifactId>bitter</artifactId>
+<version>1.3.2-RELEASE</version>
 </dependency>
 ```
 
-2:  将 项目中实现的 `AbstractRoutingDataSource`  的对象的实例注入到 bitter
+2: 配置启动函数MAIN 函数, 确保能扫描到 `io.github.davidchild.bitter` 包.例如如下启动`@ComponentScan` 注解代码
 
 ```java
-Bitter.setDbSources(AbstractRoutingDataSource dataSources);
+
+@EnableScheduling
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@ComponentScan(basePackages = {"com.ruoyi", "io.github.davidchild.bitter"})
+public class RuoYiApplication {
+    public static void main(String[] args) {
+        ConfigurableApplicationContext application = SpringApplication.run(RuoYiApplication.class, args);
+    }
+}
+
 ```
 
 **0 成本 集成 bitter**
