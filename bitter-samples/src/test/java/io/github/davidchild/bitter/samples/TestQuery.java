@@ -31,18 +31,7 @@ class TestQuery extends TsRequest {
         System.out.println("init mock module");
     }
 
-
-    @Test
-    void hello() throws Exception {
-
-        String responseString = mvc.perform(MockMvcRequestBuilders.get("/business/t-dept/hello").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())    //返回的状态是200
-                .andDo(print())         //打印出请求和相应的内容
-                .andReturn().getResponse().getContentAsString();   //将相应的数据转换为字符串;
-        System.out.println("获取结果为：" + responseString);
-
-    }
-
-
+    
     @Test
     void testSingleQuery() throws Exception {
         String responseString = mvc.perform(MockMvcRequestBuilders.get("/business/t-student/single-query?name=david-child").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
