@@ -2,6 +2,7 @@ package io.github.davidchild.bitter.connection;
 
 import io.github.davidchild.bitter.connection.Impl.IDbStatement;
 import io.github.davidchild.bitter.connection.Impl.IIETyeConvert;
+import io.github.davidchild.bitter.exception.DataSourceException;
 import io.github.davidchild.bitter.exception.DbException;
 import io.github.davidchild.bitter.tools.BitterLogUtil;
 import io.github.davidchild.bitter.tools.CoreStringUtils;
@@ -41,9 +42,9 @@ public class MysqlDbStatementCached implements IDbStatement {
             } catch (DbException | SQLException e) {
                 BitterLogUtil.logWriteError(e, params);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            BitterLogUtil.logWriteError(e, params);
+        } catch (DataSourceException e) {
+//            e.printStackTrace();
+//            BitterLogUtil.logWriteError(e, params);
         }
         return result;
     }
@@ -90,7 +91,7 @@ public class MysqlDbStatementCached implements IDbStatement {
                     BitterLogUtil.logWriteError(e, params);
                 }
             }
-        } catch (SQLException e) {
+        } catch (DataSourceException e) {
             BitterLogUtil.logWriteError(e, params);
         }
         return id;
@@ -110,7 +111,7 @@ public class MysqlDbStatementCached implements IDbStatement {
                     }
                     stmt.addBatch();
                     db.connection.commit();
-                } catch (Exception e) {
+                } catch (DataSourceException e) {
                     db.connection.rollback();
                     BitterLogUtil.logWriteError(e, params);
                     aff = -1L;
@@ -155,7 +156,7 @@ public class MysqlDbStatementCached implements IDbStatement {
                 aff = -1L;
                 BitterLogUtil.logWriteError(e, JsonUtil.object2String(params));
             }
-        } catch (SQLException e) {
+        } catch (DataSourceException e) {
             aff = -1L;
             BitterLogUtil.logWriteError(e, JsonUtil.object2String(params));
         }
@@ -178,7 +179,7 @@ public class MysqlDbStatementCached implements IDbStatement {
             } catch (DbException | SQLException e) {
                 BitterLogUtil.logWriteError(e, params);
             }
-        } catch (SQLException e) {
+        } catch (DataSourceException e) {
             BitterLogUtil.logWriteError(e, params);
         }
         return aff;
@@ -199,7 +200,7 @@ public class MysqlDbStatementCached implements IDbStatement {
             } catch (DbException | SQLException e) {
                 BitterLogUtil.logWriteError(e, params);
             }
-        } catch (SQLException e) {
+        } catch (DataSourceException e) {
             BitterLogUtil.logWriteError(e, params);
         }
         return aff;

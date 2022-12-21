@@ -1,18 +1,17 @@
 package io.github.davidchild.bitter.connection;
 
+import io.github.davidchild.bitter.exception.DataSourceException;
+
 import java.sql.Connection;
-import java.sql.SQLException;
 
 public class DbConnection implements AutoCloseable {
 
     protected Connection connection;
     protected String connectionString;
 
-    public DbConnection() throws SQLException {
+    public DbConnection() throws DataSourceException {
+        connection = DataSourceFactory.getDataSourceConnection();
 
-        connection = DataSourceFactory.getDynamicSource().getConnection();
-        if (connection != null)
-            connectionString = this.connection.toString();
     }
 
     @Override
