@@ -18,14 +18,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-class SamplesApplicationTests extends TsRequest {
+class TestUpdata extends TsRequest {
 
     private TsRequest request;
     private MockMvc mvc;
     @Autowired
     private WebApplicationContext wac;
 
-    public SamplesApplicationTests() {
+    public TestUpdata() {
         InitTsRequest("http://localhost:8097/", "", "");
     }
 
@@ -61,7 +61,6 @@ class SamplesApplicationTests extends TsRequest {
                 .andDo(print())
                 .andReturn().getResponse().getContentAsString();
         writeResult(responseString);
-
 
     }
 

@@ -5,6 +5,7 @@ import io.github.davidchild.bitter.extra.BitterSpringUtils;
 import io.github.davidchild.bitter.tools.BitterLogUtil;
 import io.github.davidchild.bitter.tools.CoreStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
@@ -12,6 +13,7 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import javax.annotation.PostConstruct;
 
 @Configuration
+@AutoConfigureOrder(-1)
 public class InitBitter {
 
     @PostConstruct

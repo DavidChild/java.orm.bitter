@@ -1,12 +1,8 @@
 package io.github.davidchild.bitter.basequery;
 
-import java.lang.reflect.Type;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-
 import io.github.davidchild.bitter.BaseModel;
 import io.github.davidchild.bitter.connection.DataAccess;
+import io.github.davidchild.bitter.exception.VisitorException;
 import io.github.davidchild.bitter.excutequery.MySqlQuery;
 import io.github.davidchild.bitter.parbag.ExecuteParBagInsert;
 import io.github.davidchild.bitter.parse.BitterPredicate;
@@ -14,6 +10,11 @@ import io.github.davidchild.bitter.parse.BitterVisitor;
 import io.github.davidchild.bitter.parse.BitterWrapper;
 import io.github.davidchild.bitter.tools.BitterLogUtil;
 import io.github.davidchild.bitter.tools.CoreStringUtils;
+
+import java.lang.reflect.Type;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 public class BaseQuery extends BaseExecute implements Type {
 
@@ -80,7 +81,7 @@ public class BaseQuery extends BaseExecute implements Type {
         if (lambdas != null && lambdas.size() > 0) {
             lambdas.forEach(lambda -> {
                 BitterVisitor visitor = new BitterVisitor(this.getExecuteParBag().getProperties(),
-                    this.getExecuteParBag().getKeyInfo(), "`", "`");
+                        this.getExecuteParBag().getKeyInfo(), "`", "`");
                 try {
 
                     BitterWrapper wrapper = lambda.sql(visitor);
@@ -93,7 +94,8 @@ public class BaseQuery extends BaseExecute implements Type {
                         wrapper.getValue().forEach(it -> this.parameters.add(it));
                     }
                 } catch (Exception e) {
-                    BitterLogUtil.getInstance().error("convert where error:" + e.getMessage(), e);
+                    // BitterLogUtil.getInstance().error("convert where error:" + e.getMessage(), e);
+                    throw new VisitorException("can't support this where expression, please use the expression syntax already supported in bitter");//todo that can  Navigate to Instance Reference
 
                 } finally {
                     visitor.clear();
@@ -126,9 +128,10 @@ public class BaseQuery extends BaseExecute implements Type {
                 long aff = DataAccess.executeScalarToWriterOnlyForInsertReturnIdentity(this);
                 if (aff == -1L)
                     return aff;
-                if (!((ExecuteParBagInsert)this.executeParBag).isOutIdentity()) {
+                if (!((ExecuteParBagInsert) this.executeParBag).isOutIdentity()) {
                     return 1L;
                 }
+                affectedCount = aff;
             } else if (this.executeParBag.getExecuteEnum() == ExecuteEnum.BachInsert) {
                 affectedCount = DataAccess.executeInsertBach(this);
             } else if (this.executeParBag.getExecuteEnum() == ExecuteEnum.Scope) {
@@ -136,7 +139,7 @@ public class BaseQuery extends BaseExecute implements Type {
                     return -1L;
                 affectedCount = DataAccess.executeScope(this);
             } else if (this.executeParBag.getExecuteEnum() == ExecuteEnum.Delete
-                || this.executeParBag.getExecuteEnum() == ExecuteEnum.Update) {
+                    || this.executeParBag.getExecuteEnum() == ExecuteEnum.Update) {
                 affectedCount = DataAccess.executeScalarToUpdateOrDeleteOnlyReturnAff(this);
             } else {
                 affectedCount = DataAccess.executeNonQuery(this);

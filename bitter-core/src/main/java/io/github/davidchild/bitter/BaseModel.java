@@ -7,11 +7,12 @@ import io.github.davidchild.bitter.op.insert.Insert;
 import io.github.davidchild.bitter.op.update.UpdateIns;
 import io.github.davidchild.bitter.tools.CoreStringUtils;
 import io.github.davidchild.bitter.tools.CoreUtils;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+@NoArgsConstructor
 public class BaseModel implements Serializable, IBaseModelOp {
-
 
     @Override
     public Insert insert() {
