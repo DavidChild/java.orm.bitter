@@ -9,6 +9,7 @@ import io.github.davidchild.bitter.op.page.PageQuery;
 import io.github.davidchild.bitter.op.read.ExecuteQuery;
 import io.github.davidchild.bitter.op.read.QueryPrimaryKey;
 import io.github.davidchild.bitter.op.scope.DbScope;
+import io.github.davidchild.bitter.op.update.Update;
 
 public class db {
 //    public static DoResult doSet(DataSourceType targetDb, Function<?, ?> fn) {
@@ -28,6 +29,10 @@ public class db {
 
     public static <T extends BaseModel> Delete<T> delete(Class<T> clazz) {
         return new Delete<>(clazz);
+    }
+
+    public static <T extends BaseModel> Update<T> update(Class<T> clazz) {
+        return new Update<>(clazz);
     }
 
     public static ExecuteQuery findQuery(String commandText, Object... params) {
