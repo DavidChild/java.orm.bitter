@@ -1,9 +1,9 @@
 package io.github.davidchild.bitter.parbag;
 
+import io.github.davidchild.bitter.parse.BitterPredicate;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import io.github.davidchild.bitter.parse.BitterPredicate;
 
 public class ExecuteParBagUpdate<T> extends ExecuteParBag {
 
@@ -14,6 +14,7 @@ public class ExecuteParBagUpdate<T> extends ExecuteParBag {
     public ExecuteParBagUpdate() {
         updatePairs = new ArrayList<>();
     }
+
 
     public void SetUpdatePair(UpdatePair updatePair) {
         this.updatePairs.add(updatePair);

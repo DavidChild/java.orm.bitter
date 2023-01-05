@@ -1,14 +1,13 @@
 package io.github.davidchild.bitter.bitterlist;
 
+import com.alibaba.fastjson2.JSONObject;
+import io.github.davidchild.bitter.tools.CoreStringUtils;
+import io.github.davidchild.bitter.tools.JsonUtil;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.alibaba.fastjson2.JSONObject;
-
-import io.github.davidchild.bitter.tools.CoreStringUtils;
-import io.github.davidchild.bitter.tools.JsonUtil;
 
 public class BMap extends ArrayList<Map<String, Object>> {
 
@@ -56,8 +55,7 @@ public class BMap extends ArrayList<Map<String, Object>> {
                 myValue = java.lang.Boolean.getBoolean(myv.toString());
             }
         }
-
-        return (R)myValue;
+        return (R) myValue;
     }
 
     // if List size<=0 return null
@@ -111,7 +109,6 @@ public class BMap extends ArrayList<Map<String, Object>> {
             OT ob = JsonUtil.string2Object(str, clazz);
             list.add(ob);
         });
-
         return list;
     }
 

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-// bitter or mybatis the auto create code utilTools
+// auto create code utilTools for bitter or mybatis
 // MYBATIS 生的实体, 只要继承 Bitter 框架中的 BaseModel,数据库的实体就可以使用bitter 框架了.
 // 下面的 GeneratorCode 生成器完全支持BITTER 框架以及 MYBATIS
 // 使用bitter 完全可以 忽略 MAPPER 以及 SERVICE 以及 DAO  分层, 但是,为了规范,还是生成下 .
