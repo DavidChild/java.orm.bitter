@@ -200,15 +200,17 @@ bitter:
 
 - 性能 bitter 的性能 要比   mybatis  强： 例如查询 100个字段的表，
   
-  ##### 批量插入 每次执行 100 条事务性插入，持续执行100次的结果，构建100个实体，批量插入 bitter 每次 执行的时间消耗 平均 70ms.
+  1. ###### 批量插入 每次执行 100 条事务性插入，持续执行100次的结果，构建100个实体，批量插入 bitter 每次 执行的时间消耗 平均 70ms.
+  
+     
 
-![image-20230106130949736](https://user-images.githubusercontent.com/18735238/210936047-b2ac036b-5d8a-4e45-90a1-d5eef304566c.png)
+<img src="https://user-images.githubusercontent.com/18735238/210936047-b2ac036b-5d8a-4e45-90a1-d5eef304566c.png" alt="image-20230106130949736" style="zoom:50%;" />
 
 
 
 ​      而 mybatis  执行的性能消耗 为 平均为 100ms;
 
-####  查询到VO映射性能： 同样的查询 10 条，连续执行 100 次查询：  bitter 总共消耗的时间为：1500ms
+ 查询到VO映射性能： 同样的查询 10 条，连续执行 100 次查询：  bitter 总共消耗的时间为：1500ms
 
 ![image-20230106131856877](https://user-images.githubusercontent.com/18735238/210936189-7b01c4fc-ee69-4fa9-8843-4bb9dce38ac0.png)
 
