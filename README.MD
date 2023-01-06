@@ -13,22 +13,15 @@
 <dependency>
 <groupId>io.github.davidchild</groupId>
 <artifactId>bitter</artifactId>
-<version>1.3.2-RELEASE</version>
+<version>2.3.3-RELEASE</version>
 </dependency>
 ```
 
-2: 配置启动函数MAIN 函数, 确保能扫描到 `io.github.davidchild.bitter` 包.例如如下启动`@ComponentScan` 注解代码
+2: yml 配置：
 
-```java
-
-@EnableScheduling
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-@ComponentScan(basePackages = {"com.ruoyi", "io.github.davidchild.bitter"})
-public class RuoYiApplication {
-    public static void main(String[] args) {
-        ConfigurableApplicationContext application = SpringApplication.run(RuoYiApplication.class, args);
-    }
-}
+```yaml
+bitter:
+  sql-log-write: true # 是否配置输出最终执行的SQL语句，默认 为 false
 
 ```
 
@@ -64,7 +57,7 @@ public class RuoYiApplication {
 
 **Case Code**
 
-   ------
+------
 
 - 根据实体查询
 
@@ -205,8 +198,40 @@ public class RuoYiApplication {
            String kkk = "";
   ```
 
-- 多数据源 可查看 [**changing-over-
-  demo**](https://github.com/DavidChild/java.orm.bitter/blob/main/src/test/java/com/bitter/op/TestBitter.java#L209)
+- 性能 bitter 的性能 要比   mybatis  强： 例如查询 100个字段的表，
+  
+  ##### 批量插入 每次执行 100 条事务性插入，持续执行100次的结果，构建100个实体，批量插入 bitter 每次 执行的时间消耗 平均 70ms.
+  
+  ![image-20230106130949736](C:\Users\david\AppData\Roaming\Typora\typora-user-images\image-20230106130949736.png)
+
+
+
+​      而 mybatis  执行的性能消耗 为 平均为 100ms;
+
+####  查询到VO映射性能： 同样的查询 10 条，连续执行 100 次查询：  bitter 总共消耗的时间为：1500ms
+
+![image-20230106131856877](C:\Users\david\AppData\Roaming\Typora\typora-user-images\image-20230106131856877.png)
+
+
+
+####  而 mybatis 消耗的时间 总共为 1669 ms：
+
+![image-20230106131945288](C:\Users\david\AppData\Roaming\Typora\typora-user-images\image-20230106131945288.png)
+
+
+
+#### 查询到VO映射性能： 同样的查询 1000 条，连续执行 100 次查询：  bitter 总共消耗的时间为：38954ms
+
+![image-20230106132118317](C:\Users\david\AppData\Roaming\Typora\typora-user-images\image-20230106132118317.png)
+
+#### 而 mybatis 消耗的时间 总共为 39236 ms：
+
+![image-20230106132152933](C:\Users\david\AppData\Roaming\Typora\typora-user-images\image-20230106132152933.png)
+
+
+
+!多数据源 可查看 [**changing-over-
+demo**](https://github.com/DavidChild/java.orm.bitter/blob/main/src/test/java/com/bitter/op/TestBitter.java#L209)
 
 **bitter <--> mysql 字段类型映射：**
 
