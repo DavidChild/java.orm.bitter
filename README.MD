@@ -11,24 +11,17 @@
 
 ```java
 <dependency>
-<groupId>io.github.davidchild</groupId>
-<artifactId>bitter</artifactId>
-<version>1.3.2-RELEASE</version>
+  <groupId>io.github.davidchild</groupId>
+  <artifactId>bitter</artifactId>
+  <version>1.3.3-RELEASE</version>
 </dependency>
 ```
 
-2: 配置启动函数MAIN 函数, 确保能扫描到 `io.github.davidchild.bitter` 包.例如如下启动`@ComponentScan` 注解代码
+2: yml 配置：
 
-```java
-
-@EnableScheduling
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-@ComponentScan(basePackages = {"com.ruoyi", "io.github.davidchild.bitter"})
-public class RuoYiApplication {
-    public static void main(String[] args) {
-        ConfigurableApplicationContext application = SpringApplication.run(RuoYiApplication.class, args);
-    }
-}
+```yaml
+bitter:
+  sql-log-write: true # 是否配置输出最终执行的SQL语句，默认 为 false
 
 ```
 
@@ -64,7 +57,7 @@ public class RuoYiApplication {
 
 **Case Code**
 
-   ------
+------
 
 - 根据实体查询
 
@@ -205,8 +198,35 @@ public class RuoYiApplication {
            String kkk = "";
   ```
 
-- 多数据源 可查看 [**changing-over-
-  demo**](https://github.com/DavidChild/java.orm.bitter/blob/main/src/test/java/com/bitter/op/TestBitter.java#L209)
+!多数据源 可查看 [**
+changing-over-demo**](https://github.com/DavidChild/java.orm.bitter/blob/main/src/test/java/com/bitter/op/TestBitter.java#L209)
+
+**性能**
+
+------ 
+
+##### bitter 的性能 要比   mybatis  强： 例如查询 100个字段的表
+
+1. ###### 批量插入 每次执行 100 条事务性插入，持续执行100次的结果，构建100个实体，批量插入 bitter 每次 执行的时间消耗 平均 70ms.
+
+<img src="https://user-images.githubusercontent.com/18735238/210936047-b2ac036b-5d8a-4e45-90a1-d5eef304566c.png" alt="image-20230106130949736" style="zoom:50%;" />
+      而 mybatis  执行的性能消耗 为 平均为 100ms;
+
+2. ###### 查询到VO映射性能： 同样的查询 10 条，连续执行 100 次查询： bitter 总共消耗的时间为：1500ms
+
+![image-20230106131856877](https://user-images.githubusercontent.com/18735238/210936189-7b01c4fc-ee69-4fa9-8843-4bb9dce38ac0.png)
+
+而 mybatis 消耗的时间 总共为 1669 ms：
+
+![image-20230106131945288](https://user-images.githubusercontent.com/18735238/210936209-da388b2d-0bcf-49bf-9a7c-a5c474a8038a.png)
+
+3. ###### 查询到VO映射性能： 同样的查询 1000 条，连续执行 100 次查询： bitter 总共消耗的时间为：38954ms
+
+![image-20230106132118317](https://user-images.githubusercontent.com/18735238/210936249-39b498c2-e96d-406b-91bf-60bee01eaa50.png)
+
+###### 而 mybatis 消耗的时间 总共为 39236 ms：
+
+![image-20230106132152933](https://user-images.githubusercontent.com/18735238/210936273-b777ac6e-ca03-4c69-baa9-ddb6632d030a.png)
 
 **bitter <--> mysql 字段类型映射：**
 
