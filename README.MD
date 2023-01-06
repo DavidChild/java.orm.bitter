@@ -201,8 +201,8 @@ bitter:
 - 性能 bitter 的性能 要比   mybatis  强： 例如查询 100个字段的表，
   
   ##### 批量插入 每次执行 100 条事务性插入，持续执行100次的结果，构建100个实体，批量插入 bitter 每次 执行的时间消耗 平均 70ms.
-  
-  ![image-20230106130949736](C:\Users\david\AppData\Roaming\Typora\typora-user-images\image-20230106130949736.png)
+
+![image-20230106130949736](https://user-images.githubusercontent.com/18735238/210936047-b2ac036b-5d8a-4e45-90a1-d5eef304566c.png)
 
 
 
@@ -210,23 +210,27 @@ bitter:
 
 ####  查询到VO映射性能： 同样的查询 10 条，连续执行 100 次查询：  bitter 总共消耗的时间为：1500ms
 
-![image-20230106131856877](C:\Users\david\AppData\Roaming\Typora\typora-user-images\image-20230106131856877.png)
+![image-20230106131856877](https://user-images.githubusercontent.com/18735238/210936189-7b01c4fc-ee69-4fa9-8843-4bb9dce38ac0.png)
+
 
 
 
 ####  而 mybatis 消耗的时间 总共为 1669 ms：
 
-![image-20230106131945288](C:\Users\david\AppData\Roaming\Typora\typora-user-images\image-20230106131945288.png)
+![image-20230106131945288](https://user-images.githubusercontent.com/18735238/210936209-da388b2d-0bcf-49bf-9a7c-a5c474a8038a.png)
+
 
 
 
 #### 查询到VO映射性能： 同样的查询 1000 条，连续执行 100 次查询：  bitter 总共消耗的时间为：38954ms
 
-![image-20230106132118317](C:\Users\david\AppData\Roaming\Typora\typora-user-images\image-20230106132118317.png)
+![image-20230106132118317](https://user-images.githubusercontent.com/18735238/210936249-39b498c2-e96d-406b-91bf-60bee01eaa50.png)
+
 
 #### 而 mybatis 消耗的时间 总共为 39236 ms：
+![image-20230106132152933](https://user-images.githubusercontent.com/18735238/210936273-b777ac6e-ca03-4c69-baa9-ddb6632d030a.png)
 
-![image-20230106132152933](C:\Users\david\AppData\Roaming\Typora\typora-user-images\image-20230106132152933.png)
+
 
 
 
