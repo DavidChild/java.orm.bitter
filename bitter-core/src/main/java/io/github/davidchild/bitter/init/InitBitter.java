@@ -18,10 +18,22 @@ import javax.sql.DataSource;
 @AutoConfigureOrder(-1)
 public class InitBitter {
 
+    private final String moduleName = "bitter 灵活,性能优越的 mysql java  orm 增强型框架.\n";
+
     @PostConstruct
     public void helloUserBitter() {
-        BitterLogUtil.getInstance().info("Hello,use bitter.");
-        BitterLogUtil.getInstance().info("Git-address:DavidChild/java.orm.bitter.git");
+        BitterLogUtil.getInstance().info(moduleName);
+        BitterLogUtil.getInstance().info("Bulbhead by David child, 23december2022\n");
+        BitterLogUtil.getInstance().info("Figlet release 1.3.4 -- december 23, 2022 \n");
+        BitterLogUtil.getInstance().info("\n" +
+                " _   _  ____  __    __    _____    ____  ____  ____  ____  ____  ____ \n" +
+                "( )_( )( ___)(  )  (  )  (  _  )  (  _ \\(_  _)(_  _)(_  _)( ___)(  _ \\\n" +
+                " ) _ (  )__)  )(__  )(__  )(_)(    ) _ < _)(_   )(    )(   )__)  )   /\n" +
+                "(_) (_)(____)(____)(____)(_____)  (____/(____) (__)  (__) (____)(_)\\_)\n");
+        BitterLogUtil.getInstance().info("version：{}", "1.3.4-RELEASE\n");
+        BitterLogUtil.getInstance().info("github：{}", "https://github.com/davidchild/java.orm.bitter.git");
+
+
     }
 
     @Autowired

@@ -24,7 +24,7 @@ public class TDeptServiceImpl extends ServiceImpl<TDeptMapper, TDept> implements
     public boolean save(TDept entity) {
         return entity.save();
     }
-    
+
     public boolean update(Long id) {
         return db.update(TDept.class).setColum(TDept::getDeptName, 2).setColum(TDept::getOrderNum, 4).where(f -> f.getDeptId() == id).submit() > -1;
     }

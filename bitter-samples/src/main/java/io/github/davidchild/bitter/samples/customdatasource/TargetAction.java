@@ -1,7 +1,7 @@
 package io.github.davidchild.bitter.samples.customdatasource;
 
+import io.github.davidchild.bitter.connection.DataSourceType;
 import io.github.davidchild.bitter.db.DoResult;
-import io.github.davidchild.bitter.samples.customdatasource.annotation.DataSourceType;
 import io.github.davidchild.bitter.tools.CoreStringUtils;
 
 import java.util.function.Function;
@@ -18,7 +18,6 @@ public class TargetAction {
             ret.nonException = true;
 
         } catch (Exception e) {
-
             ret.nonException = false;
             ret.error = e;
             ret.msg = e.getMessage();

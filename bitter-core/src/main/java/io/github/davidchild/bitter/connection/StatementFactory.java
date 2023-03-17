@@ -27,6 +27,5 @@ public class StatementFactory {
             // todo: other impl convert; case:
         }
         return convert;
-
     }
 }

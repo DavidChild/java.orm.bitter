@@ -90,7 +90,6 @@ public class CodeGenerator {
         cfg.setFileOutConfigList(focList);
         mpg.setCfg(cfg);
 
-
         TemplateConfig templateConfig = new TemplateConfig();
         templateConfig.setXml(null);
         mpg.setTemplate(templateConfig);

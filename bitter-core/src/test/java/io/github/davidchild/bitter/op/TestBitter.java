@@ -1,20 +1,5 @@
 package io.github.davidchild.bitter.op;
 
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import io.github.davidchild.bitter.db.db;
 import io.github.davidchild.bitter.entity.TStudentInfo;
 import io.github.davidchild.bitter.entity.TUserInfo;
@@ -25,6 +10,20 @@ import io.github.davidchild.bitter.op.read.ExecuteQuery;
 import io.github.davidchild.bitter.op.scope.DbScope;
 import io.github.davidchild.bitter.op.service.IDataServe;
 import io.github.davidchild.bitter.tools.DateUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -53,7 +52,7 @@ public class TestBitter {
     @Test
     public void testPageQuery() throws Exception {
         String sql = "select \n" + "us.username,\n" + "us.id as user_id,\n" + "dept.dept_name as dept_name\n"
-            + " from \n" + "t_user us \n" + "left join t_dept dept on dept.dept_id= us.dept_id";
+                + " from \n" + "t_user us \n" + "left join t_dept dept on dept.dept_id= us.dept_id";
 
         PageQuery page = new PageQuery(sql);
         page.where("IFNULL(us.username,'') = ?", "123");
@@ -71,7 +70,7 @@ public class TestBitter {
 
         while (true) {
             db.findQuery(TUserInfo.class).where(t -> t.getUsername() == "hjb").thenDesc(TUserInfo::getUsername)
-                .thenAsc(TUserInfo::getUsername).find();
+                    .thenAsc(TUserInfo::getUsername).find();
             MyPage p = page.getPage();
             String str = "";
             System.out.println(String.format("recode  is  {} executed ", i));
@@ -87,14 +86,14 @@ public class TestBitter {
         List<TUserInfo> list = db.findQuery(TUserInfo.class).thenAsc(TUserInfo::getId).find();
 
         List<TUserInfo> list_2 =
-            db.findQuery(TUserInfo.class).select(TUserInfo::getId, TUserInfo::getUsername, TUserInfo::getAvatar)
-                .setSize(10).thenAsc(TUserInfo::getId).find();
+                db.findQuery(TUserInfo.class).select(TUserInfo::getId, TUserInfo::getUsername, TUserInfo::getAvatar)
+                        .setSize(10).thenAsc(TUserInfo::getId).find();
         // where sample
         List<TUserInfo> list_4 =
-            db.findQuery(TUserInfo.class).where(t -> t.getCreateTime().after(s)).thenAsc(TUserInfo::getId).find();
+                db.findQuery(TUserInfo.class).where(t -> t.getCreateTime().after(s)).thenAsc(TUserInfo::getId).find();
         // more where sample
         List<TUserInfo> list_5 = db.findQuery(TUserInfo.class).where(t -> t.getCreateTime().after(s))
-            .where(t -> t.getUsername().contains("123")).thenAsc(TUserInfo::getId).find();
+                .where(t -> t.getUsername().contains("123")).thenAsc(TUserInfo::getId).find();
 
         // test db entity model
         TUserInfo user1 = new TUserInfo();
@@ -180,7 +179,7 @@ public class TestBitter {
             for (int i = 0; i < 10; i++) {
                 TStudentInfo studentInfo = new TStudentInfo();
                 studentInfo.setName("hjb" + i);
-                studentInfo.insert().addInBachInsertPool((List<Insert>)list);
+                studentInfo.insert().addInBachInsertPool((List<Insert>) list);
             }
         }).submit();
     }
@@ -191,14 +190,15 @@ public class TestBitter {
         boolean isSuccess = dbScope.create((list) -> {
 
             TStudentInfo sys =
-                db.findQuery(TStudentInfo.class).where(t -> t.getName().equals("hjb5")).find().fistOrDefault();
+                    db.findQuery(TStudentInfo.class).where(t -> t.getName().equals("hjb5")).find().fistOrDefault();
             sys.setName("jb");
             sys.update().addInScope(list);
+
             TStudentInfo studentInfo = new TStudentInfo();
             studentInfo.setName("hello hjb");
             studentInfo.insert().addInScope(list);
             TStudentInfo sys_2 =
-                db.findQuery(TStudentInfo.class).where(t -> t.getName().equals("hjb4")).find().fistOrDefault();
+                    db.findQuery(TStudentInfo.class).where(t -> t.getName().equals("hjb4")).find().fistOrDefault();
             sys_2.delete().addInScope(list);
 
         }).submit() > -1l;

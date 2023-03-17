@@ -39,13 +39,12 @@ class TestMoreDb extends TsRequest {
                 .andDo(print())         //打印出请求和相应的内容
                 .andReturn().getResponse().getContentAsString();   //将相应的数据转换为字符串;
         System.out.println("获取结果为：" + responseString);
-
     }
 
 
     @Test
     void testMoreDb() throws Exception {
-        //todo;
+        // todo;
     }
 
 }
