@@ -12,6 +12,7 @@ import io.github.davidchild.bitter.op.scope.DbScope;
 import io.github.davidchild.bitter.op.update.Update;
 
 public class db {
+
 //    public static DoResult doSet(DataSourceType targetDb, Function<?, ?> fn) {
 //        TargetAction action = new TargetAction();
 //        return action.DoSet(targetDb, fn);

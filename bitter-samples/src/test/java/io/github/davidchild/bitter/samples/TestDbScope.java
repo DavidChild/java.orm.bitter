@@ -41,8 +41,7 @@ class TestDbScope extends TsRequest {
         System.out.println("获取结果为：" + responseString);
 
     }
-
-
+    
     @Test
     void testDbScope() throws Exception {
         //todo;

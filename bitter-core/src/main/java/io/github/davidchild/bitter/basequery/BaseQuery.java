@@ -32,6 +32,7 @@ public class BaseQuery extends BaseExecute implements Type {
         return DataAccess.executeQueryReturnDataList(this);
     }
 
+
     public void addInScope(List<BaseQuery> list) {
         list.add(this);
     }
@@ -103,6 +104,11 @@ public class BaseQuery extends BaseExecute implements Type {
             });
         }
         return where.toString();
+    }
+
+    // create sub statement for in or other sql
+    public SubStatement createSubStatement() {
+        return new SubStatement(this);
     }
 
     /**

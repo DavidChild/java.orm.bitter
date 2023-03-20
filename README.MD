@@ -11,9 +11,9 @@
 
 ```java
 <dependency>
-  <groupId>io.github.davidchild</groupId>
-  <artifactId>bitter</artifactId>
-  <version>1.3.3-RELEASE</version>
+<groupId>io.github.davidchild</groupId>
+<artifactId>bitter</artifactId>
+<version>1.3.5-RELEASE</version>
 </dependency>
 ```
 

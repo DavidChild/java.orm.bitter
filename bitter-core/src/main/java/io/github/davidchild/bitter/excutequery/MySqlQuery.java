@@ -49,7 +49,6 @@ public class MySqlQuery extends BaseQuery {
         String fields = "";
         for (FieldProperty filed : bagPar.getProperties()) {
             if (!filed.isIdentity) {
-
                 fields += filed.getDbFieldName() + ',';
             }
 

@@ -31,15 +31,12 @@ class TestDelete extends TsRequest {
         System.out.println("init mock module");
     }
 
-
     @Test
     void testDelete() throws Exception {
         String responseString = mvc.perform(MockMvcRequestBuilders.get("/business/t-student/delete?id=7").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())    //返回的状态是200
                 .andDo(print())
                 .andReturn().getResponse().getContentAsString();
         System.out.println("获取结果为：" + responseString);
-
     }
-
 
 }

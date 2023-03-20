@@ -48,13 +48,11 @@ public class InitBitter {
     public void AutoInitBitterDataSource() {
 
         if (config != null) {
-            //
             BitterConfig.getInstance().setSqlLog(config.isSqlLog());
             if (config.getDataSourceClass() != null && CoreStringUtils.isNotEmpty(config.getDataSourceClass())) {
                 BitterConfig.getInstance().setDataSourceClass(config.getDataSourceClass());
                 AbstractRoutingDataSource dataSource = springUtils.getBean(BitterConfig.getInstance().getDataSourceClass());
                 if (dataSource != null) Bitter.setDbSources(dataSource);
-
             } else {
                 AbstractRoutingDataSource dataSource;
                 dataSource = springUtils.getBean(AbstractRoutingDataSource.class);

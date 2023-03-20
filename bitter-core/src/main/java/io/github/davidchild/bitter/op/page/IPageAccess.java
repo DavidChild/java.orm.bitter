@@ -1,9 +1,10 @@
 package io.github.davidchild.bitter.op.page;
 
+import io.github.davidchild.bitter.basequery.ExecuteMode;
+import io.github.davidchild.bitter.basequery.SubStatement;
+
 import java.util.List;
 import java.util.Map;
-
-import io.github.davidchild.bitter.basequery.ExecuteMode;
 
 public interface IPageAccess {
 
@@ -49,7 +50,13 @@ public interface IPageAccess {
 
     IUnionPageAccess toUnionPage();
 
+    IPageAccess where(SubStatement subStatement);
+
     IPageAccess where(String setWhere, Object... params);
+
+    IPageAccess whereNotBlank(SubStatement subStatement);
+
+    IPageAccess whereNotNull(SubStatement subStatement);
 
     IPageAccess whereNotNull(String setWhere, Object arg);
 

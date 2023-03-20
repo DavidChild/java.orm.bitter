@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="bitter" />
+        <module name="bitter-core" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -17,6 +18,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="bitter" options="-bootclasspath D:/soft/jdk8/jre\lib\rt.jar;D:/soft/jdk8/jre\lib\jce.jar -Xlint:deprecation" />
+      <module name="bitter-core" options="-bootclasspath D:/soft/jdk8/jre\lib\rt.jar;D:/soft/jdk8/jre\lib\jce.jar -Xlint:deprecation" />
     </option>
   </component>
 </project>

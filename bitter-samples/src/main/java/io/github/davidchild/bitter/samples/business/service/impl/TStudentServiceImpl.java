@@ -1,13 +1,16 @@
 package io.github.davidchild.bitter.samples.business.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.github.davidchild.bitter.basequery.SubStatementEnum;
 import io.github.davidchild.bitter.db.db;
 import io.github.davidchild.bitter.op.insert.Insert;
+import io.github.davidchild.bitter.op.page.PageQuery;
 import io.github.davidchild.bitter.samples.business.entity.TStudent;
 import io.github.davidchild.bitter.samples.business.mapper.TStudentMapper;
 import io.github.davidchild.bitter.samples.business.service.ITStudentService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,9 +48,33 @@ public class TStudentServiceImpl extends ServiceImpl<TStudentMapper, TStudent> i
         return db.findQuery(TStudent.class).where(f -> f.getName().contains(name)).find().fistOrDefault(); // fistOrDefault 数据库没有也会返回一条空对象,在接下来的使用中,避免业务性空指针
     }
 
+
     @Override
     public List<TStudent> queryList(String name) {
-        return db.findQuery(TStudent.class).where(f -> f.getName().contains(name)).setSize(3).thenDesc(TStudent::getId).thenAsc(TStudent::getName).find();
+        List<String> list = new ArrayList<>();
+        list.add("david");
+
+        List<String> list2 = new ArrayList<>();
+        list2.add("david");
+        list2.add("hjb");
+
+        List<String> list3 = new ArrayList<>();
+        // db.findQuery(TStudent.class).where(f -> f.getName().contains(name)).setSize(3).thenDesc(TStudent::getId).thenAsc(TStudent::getName).find();
+        PageQuery pq = new PageQuery("select * from t_student");
+        pq.whereNotBlank(pq.createSubStatement().toField("name").join(SubStatementEnum.ALLLIKE, "", "hjb")); //ok
+        pq.whereNotBlank(pq.createSubStatement().toField("name").join(SubStatementEnum.PRELIKE, "", "hjb2")); //ok
+        pq.whereNotBlank(pq.createSubStatement().toField("name").join(SubStatementEnum.ENDLIKE, "", "hjb3")); //ok
+        pq.whereNotBlank(pq.createSubStatement().toField("name").join(SubStatementEnum.PRELIKE, "xxh", new String())); //ok
+        pq.whereNotBlank(pq.createSubStatement().toField("name").join(SubStatementEnum.PRELIKE, null, new String()));
+        pq.whereNotBlank(pq.createSubStatement().toField("name").join(SubStatementEnum.IN, "", list)); //ok
+        pq.whereNotBlank(pq.createSubStatement().toField("name").join(SubStatementEnum.IN, "", list)); //ok
+        pq.whereNotBlank(pq.createSubStatement().toField("name").join(SubStatementEnum.IN, "", list2)); //ok
+        pq.whereNotBlank(pq.createSubStatement().toField("name").join(SubStatementEnum.IN, "", list3)); //ok
+        pq.whereNotBlank(pq.createSubStatement().toField("name").join(SubStatementEnum.IN, "", new String())); //ok
+        pq.whereNotBlank(pq.createSubStatement().toField("name").join(SubStatementEnum.IN, "david", new String())); //ok
+        pq.whereNotBlank(pq.createSubStatement().toField("name").join(SubStatementEnum.IN, null, list3)); //ok
+        pq.skip(1).take(1).getData();
+        return null;
     }
 
     @Override

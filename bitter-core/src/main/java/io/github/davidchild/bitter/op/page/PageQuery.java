@@ -3,6 +3,7 @@ package io.github.davidchild.bitter.op.page;
 import io.github.davidchild.bitter.basequery.BaseQuery;
 import io.github.davidchild.bitter.basequery.ExecuteEnum;
 import io.github.davidchild.bitter.basequery.ExecuteMode;
+import io.github.davidchild.bitter.basequery.SubStatement;
 import io.github.davidchild.bitter.bitterlist.BMap;
 import io.github.davidchild.bitter.parbag.ExecuteParBagPage;
 import io.github.davidchild.bitter.tools.CoreStringUtils;
@@ -39,10 +40,8 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
 
     public PageQuery(String pageQuery) {
         this.executeParBag = new ExecuteParBagPage();
-
         ((ExecuteParBagPage) this.executeParBag).setExecuteMode(ExecuteMode.Cached);
         ((ExecuteParBagPage) this.executeParBag).setCommandText(pageQuery);
-
     }
 
     /// <summary>
@@ -248,6 +247,39 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
     }
 
     /// <summary>
+    /// set where condition and the subStatement
+    /// </summary>
+    /// <param name="setwhere"></param>
+    public IPageAccess whereNotNull(SubStatement subStatement) {
+        if (CoreStringUtils.isNotEmpty(subStatement.getSubStatement())) {
+            ((ExecuteParBagPage) this.executeParBag).whereBuilder.append(String.format(" and (%s %s %s)", subStatement.getField(), subStatement.getOp(), subStatement.getSubStatement()));
+        }
+        return (IPageAccess) this;
+    }
+
+    /// <summary>
+    /// set where condition and the subStatement
+    /// </summary>
+    /// <param name="setwhere"></param>
+    public IPageAccess whereNotBlank(SubStatement subStatement) {
+        if (CoreStringUtils.isNotEmpty(subStatement.getSubStatement())) {
+            ((ExecuteParBagPage) this.executeParBag).whereBuilder.append(String.format(" and (%s %s %s)", subStatement.getField(), subStatement.getOp(), subStatement.getSubStatement()));
+        }
+        return (IPageAccess) this;
+    }
+
+    /// <summary>
+    /// set where condition and the subStatement
+    /// </summary>
+    /// <param name="setwhere"></param>
+    public IPageAccess where(SubStatement subStatement) {
+        if (CoreStringUtils.isNotEmpty(subStatement.getSubStatement())) {
+            ((ExecuteParBagPage) this.executeParBag).whereBuilder.append(String.format(" and (%s %s %s)", subStatement.getField(), subStatement.getOp(), subStatement.getSubStatement()));
+        }
+        return (IPageAccess) this;
+    }
+
+    /// <summary>
     /// set where condition and the params
     /// </summary>
     /// <param name="setwhere"></param>
@@ -262,6 +294,7 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
 
         return (IPageAccess) this;
     }
+
 
     /// <summary>
     /// set where condition and the params
