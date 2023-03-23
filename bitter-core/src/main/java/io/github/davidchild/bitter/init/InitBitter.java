@@ -44,10 +44,10 @@ public class InitBitter {
 
 
     @Bean
-
     public void AutoInitBitterDataSource() {
 
         if (config != null) {
+            BitterConfig.getInstance().setCache(config.getCache());
             BitterConfig.getInstance().setSqlLog(config.isSqlLog());
             if (config.getDataSourceClass() != null && CoreStringUtils.isNotEmpty(config.getDataSourceClass())) {
                 BitterConfig.getInstance().setDataSourceClass(config.getDataSourceClass());

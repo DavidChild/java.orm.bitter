@@ -54,9 +54,11 @@ public interface IPageAccess {
 
     IPageAccess where(String setWhere, Object... params);
 
+
     IPageAccess whereNotBlank(SubStatement subStatement);
 
     IPageAccess whereNotNull(SubStatement subStatement);
+
 
     IPageAccess whereNotNull(String setWhere, Object arg);
 

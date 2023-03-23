@@ -18,6 +18,7 @@ import java.util.Map;
 
 public class BaseQuery extends BaseExecute implements Type {
 
+
     protected List<Map<String, Object>> getData() throws SQLException {
         this.convert();
         List<Map<String, Object>> mapData = DataAccess.executeQuery(this);
@@ -26,6 +27,7 @@ public class BaseQuery extends BaseExecute implements Type {
         }
         return null;
     }
+
 
     protected <T extends BaseModel> List<T> getDataList() {
         this.convert();

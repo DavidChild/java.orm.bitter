@@ -1,6 +1,8 @@
 package io.github.davidchild.bitter.samples.business.controller;
 
 
+import io.github.davidchild.bitter.cache.cache.CacheEnum;
+import io.github.davidchild.bitter.db.db;
 import io.github.davidchild.bitter.samples.business.entity.TDept;
 import io.github.davidchild.bitter.samples.business.service.ITDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,10 @@ public class TDeptController {
 
     @PostMapping("/save-dept")
     public boolean daveDept(@RequestBody TDept entity) {
-        return deptService.save(entity);
+        return db.doCache().createCache(10000, CacheEnum.CacheAbsolute)
+                .setCacheKey("System:d", entity.getDeptId().toString()).dataFrom(boolean.class, (item) -> {
+                    return deptService.save(entity);
+                });
+
     }
 }

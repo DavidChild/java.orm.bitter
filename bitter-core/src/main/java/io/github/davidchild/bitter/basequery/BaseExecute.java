@@ -1,10 +1,10 @@
 package io.github.davidchild.bitter.basequery;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.github.davidchild.bitter.connection.DatabaseType;
 import io.github.davidchild.bitter.parbag.ExecuteParBag;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BaseExecute {
 
@@ -18,6 +18,7 @@ public class BaseExecute {
     protected List<Object> parameters = new ArrayList<>();
     private DatabaseType dbType = DatabaseType.MySQL;
 
+  
     public BaseExecute() {
 
     }

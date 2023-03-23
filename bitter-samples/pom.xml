@@ -28,7 +28,7 @@
         <dependency>
             <groupId>io.github.davidchild</groupId>
             <artifactId>bitter</artifactId>
-            <version>1.3.5-RELEASE</version>
+            <version>1.4.1-RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
