@@ -98,7 +98,7 @@ public class BaseQuery extends BaseExecute implements Type {
                     }
                 } catch (Exception e) {
                     // BitterLogUtil.getInstance().error("convert where error:" + e.getMessage(), e);
-                    throw new VisitorException("can't support this where expression, please use the expression syntax already supported in bitter");//todo that can  Navigate to Instance Reference
+                    throw new VisitorException("can't support this where expression, please use the expression syntax already supported in bitter,exception is:" + e.getMessage());//todo that can  Navigate to Instance Reference
 
                 } finally {
                     visitor.clear();

@@ -34,5 +34,5 @@ public class TStudent extends BaseModel {
     @TableField("sex")
     private String sex;
 
-
+    
 }

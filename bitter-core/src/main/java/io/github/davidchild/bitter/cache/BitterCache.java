@@ -63,15 +63,20 @@ public class BitterCache {
                 throw new Exception("bitter cache key error,that cache key is not setting");
             }
             if (nullCache && BitterCacheUtils.checkedExistingByKey(this.getKey())) {
-                T cacheInfo = BitterCacheUtils.getObjectByCache(targetClass, this.getKey());
-                return cacheInfo;
+                try {
+                    T cacheInfo = BitterCacheUtils.getObjectByCache(targetClass, this.getKey());
+                    return cacheInfo;
+                } catch (Exception ex) {
+                    log.error("get cache object,error msg" + ex.getMessage());
+                }
             }
             data = fn.apply(this);
             if (!nullCache && data == null) {
                 return null;  // 出来的值为null,不被缓存
             }
             BitterCacheUtils.setObjectByCache(this.cacheEnum, data, this.getKey(), this.cacheExpTime);
-        } catch (Exception ex) {
+        } catch (
+                Exception ex) {
             log.error("setObjectByCache,error msg" + ex.getMessage());
         }
         return data;

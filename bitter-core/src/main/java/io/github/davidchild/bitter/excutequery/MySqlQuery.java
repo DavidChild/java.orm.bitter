@@ -199,7 +199,7 @@ public class MySqlQuery extends BaseQuery {
         ExecuteParBagCount bagPar = (ExecuteParBagCount) this.executeParBag;
         StringBuilder whereSQL = new StringBuilder(); // 条件语句
         // 语句
-        String selectSQL = "SELECT COUNT(0) " + "FROM  " + bagPar.getTableName() + " ";
+        String selectSQL = "SELECT COUNT(1) " + "FROM  " + bagPar.getTableName() + " ";
         String where = this.setWhere(bagPar.condition);
         if (CoreStringUtils.isNotEmpty(where)) {
             whereSQL.append(" WHERE ");

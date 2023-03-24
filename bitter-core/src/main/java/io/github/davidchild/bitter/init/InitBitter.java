@@ -18,21 +18,26 @@ import javax.sql.DataSource;
 @AutoConfigureOrder(-1)
 public class InitBitter {
 
-    private final String moduleName = "bitter 灵活,性能优越的 mysql java  orm 增强型框架.\n";
+    private final String moduleName = "flexible and high-performance MySQL Java orm enhanced framework and data caching framework.";
 
     @PostConstruct
     public void helloUserBitter() {
-        BitterLogUtil.getInstance().info(moduleName);
-        BitterLogUtil.getInstance().info("Bulbhead by David child, 23december2022\n");
-        BitterLogUtil.getInstance().info("Figlet release 1.3.4 -- december 23, 2022 \n");
-        BitterLogUtil.getInstance().info("\n" +
-                " _   _  ____  __    __    _____    ____  ____  ____  ____  ____  ____ \n" +
-                "( )_( )( ___)(  )  (  )  (  _  )  (  _ \\(_  _)(_  _)(_  _)( ___)(  _ \\\n" +
-                " ) _ (  )__)  )(__  )(__  )(_)(    ) _ < _)(_   )(    )(   )__)  )   /\n" +
-                "(_) (_)(____)(____)(____)(_____)  (____/(____) (__)  (__) (____)(_)\\_)\n");
-        BitterLogUtil.getInstance().info("version：{}", "1.3.4-RELEASE\n");
+        BitterLogUtil.getInstance().info(" \n" +
+                "--------------------------------------------------------------------------------------------------------\n"
+                + " _          _ _                           _     _ _   _            \n"
+                + "| |        | | |                         | |   (_) | | |           \n"
+                + "| |__   ___| | | ___     _   _ ___  ___  | |__  _| |_| |_ ___ _ __ \n"
+                + "| '_ \\ / _ \\ | |/ _ \\   | | | / __|/ _ \\ | '_ \\| | __| __/ _ \\ '__|\n"
+                + "| | | |  __/ | | (_) |  | |_| \\__ \\  __/ | |_) | | |_| ||  __/ |   \n"
+                + "|_| |_|\\___|_|_|\\___( )  \\__,_|___/\\___| |_.__/|_|\\__|\\__\\___|_|   \n"
+                + "                    |/                                             ");
+        BitterLogUtil.getInstance().info("version：{}", "1.3.8-RELEASE");
+        BitterLogUtil.getInstance().info("Bulbhead by David-Child, 23 March 2023");
+        BitterLogUtil.getInstance().info("Figlet release 1.3.8 -- March 23, 2023 ");
         BitterLogUtil.getInstance().info("github：{}", "https://github.com/davidchild/java.orm.bitter.git");
-
+        BitterLogUtil.getInstance().info(moduleName);
+        BitterLogUtil.getInstance().info(" \n"
+                + "--------------------------------------------------------------------------------------------------------\n");
 
     }
 
@@ -70,7 +75,6 @@ public class InitBitter {
                     Bitter.setDbSources(dataSource);
                     return;
                 }
-
             }
         }
 

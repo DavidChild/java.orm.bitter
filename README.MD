@@ -13,7 +13,7 @@
 <dependency>
 <groupId>io.github.davidchild</groupId>
 <artifactId>bitter</artifactId>
-<version>1.3.5-RELEASE</version>
+<version>1.3.9-RELEASE</version>
 </dependency>
 ```
 
@@ -21,18 +21,36 @@
 
 ```yaml
 bitter:
-  sql-log-write: true # 是否配置输出最终执行的SQL语句，默认 为 false
-
+  sqlLog: true # 是否配置输出最终执行的SQL语句，默认 为 false
+  cache:
+    enabledRedis: true  # 是否启用redis缓存, 如有开启缓存机制， 远程和本地选其一，默认两者都关闭 
+    enabledLocalCache: false # 是否启用 本地缓存,本地缓存组件基于caffeine实现, 如有开启缓存机制， 远程和本地选其一，默认两者都关闭 
+    redis: # 如果启用redis 缓存机制,配置redis 单机或者集群的连接信息,以及基础配置
+      hosts:
+        - ip: localhost
+          port: 6379
+        - ip: 127.0.0.1
+          port: 6379
+      database: 1
+      password:
+      timeout: 100
+      lettuce:
+        pool:
+          minIdle: 0
+          maxIdle: 10
+          maxActive: 30
+          maxTotal: 30
+          maxWait: 200
 ```
 
 **0 成本 集成 bitter**
 
 ------
 
-1. 兼容 mybatis
-2. 兼容 mybatis-plus
+1. 完全兼容 mybatis,不影响 mybatis 任何写法
+2. 完全兼容 mybatis-plus,不影响 mybatis-plus 任何写法
 3. 兼容并且使用mybatis 生成的实体直接在 bitter.orm 框架上使用
-4. 跟当前的 的spring 项目无缝集成，并且无需做任何修改
+4. 跟当前的 的 spring 项目无缝集成，并且无需做任何修改
 5. bitter 没有自己的数据源配置，bitter 的数据源： 可以将 任何 spring 的 实现 抽象对象 `AbstractRoutingDataSource`注入到bitter 中,来作为 bitter 的 datasource
 
 **bitter 的优势**
@@ -227,24 +245,3 @@ changing-over-demo**](https://github.com/DavidChild/java.orm.bitter/blob/main/sr
 ###### 而 mybatis 消耗的时间 总共为 39236 ms：
 
 ![image-20230106132152933](https://user-images.githubusercontent.com/18735238/210936273-b777ac6e-ca03-4c69-baa9-ddb6632d030a.png)
-
-**bitter <--> mysql 字段类型映射：**
-
-------
-
-| bitter（Java类型） | mysql 类型                                          | 备注                                                         |
-| ------------------ | --------------------------------------------------- | ------------------------------------------------------------ |
-| Inter,int          | tinyint、varhcar、smallint、mediumint               | varchar: 值的形态必须是 tinyint 形态 或者 null；tinyint: 如果是tinyint 的话，则必须设置 tinyint 的长度 为 >1 |
-| Boolean,boolean    | tinyint(1),bit                                      | tinyint: 如果是tinyint 的话,则值必须设置为1                  |
-| Long,long          | bigint                                              |                                                              |
-| Date               | timestamp,date,datetime,year                        |                                                              |
-| String，string     | char、varchar、tinytext、mediumtext、text、longtext |                                                              |
-| Float，float       | float                                               |                                                              |
-| BigDecimal         | decimal                                             |                                                              |
-| Decimal,decimal    | decimal                                             |                                                              |
-| Double,double      | double                                              |                                                              |
-| BigInteger         | bigint                                              |                                                              |
-| java.sql.Time      | time                                                |                                                              |
-| java.sql.Timestamp | datetime,timestamp                                  |                                                              |
-| java.sql.Date      | year                                                |                                                              |
-| java.lang.Integer  | boolean                                             |                                                              |

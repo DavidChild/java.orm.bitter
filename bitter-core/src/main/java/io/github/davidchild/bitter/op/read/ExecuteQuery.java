@@ -64,6 +64,7 @@ public class ExecuteQuery extends BaseQuery {
         return this;
     }
 
+
     public ExecuteQuery addParams(Object... params) {
         if (params != null && params.length > 0) {
             Arrays.stream(params).forEach((v) -> {

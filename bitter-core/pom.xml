@@ -43,7 +43,7 @@
     </description>
     <url>https://github.com/davidchild/java.orm.bitter</url>
     <artifactId>bitter</artifactId>
-    <version>1.4.1-RELEASE</version>
+    <version>1.3.9-RELEASE</version>
     <properties>
         <junit>4.12</junit>
         <lombok>1.18.24</lombok>
@@ -56,14 +56,16 @@
         <fastjson2>2.0.1</fastjson2>
         <jackson.version>2.9.8</jackson.version>
         <mysql.connect.version>8.0.19</mysql.connect.version>
-        <springboot.version>2.7.4</springboot.version>
+        <!--        <springboot.version>2.7.4</springboot.version>-->
+        <springboot.version>2.3.0</springboot.version>
+        <springboot.test.version>2.3.5.RELEASE</springboot.test.version>
         <com.alibaba.druid>1.2.3</com.alibaba.druid>
         <redisson.version>3.13.6</redisson.version>
         <mybatis.plus.boot.starter>3.4.2</mybatis.plus.boot.starter>
         <mybatis.plus.generator>3.4.0</mybatis.plus.generator>
         <druid.spring.boot.starter>1.2.1</druid.spring.boot.starter>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <dependencies>
         <!-- 通用工具-->
@@ -144,7 +146,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>${springboot.version}</version>
+            <version>${springboot.test.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -176,6 +178,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.5.1</version>
                 <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <compilerArgs>
                         <arg>-Xlint:deprecation</arg>
                     </compilerArgs>

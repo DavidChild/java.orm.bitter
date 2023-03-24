@@ -31,10 +31,20 @@ class TestQuery extends TsRequest {
         System.out.println("init mock module");
     }
 
-    
+
     @Test
     void testSingleQuery() throws Exception {
         String responseString = mvc.perform(MockMvcRequestBuilders.get("/business/t-student/single-query?name=david-child").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+                .andDo(print())
+                .andReturn().getResponse().getContentAsString();
+        System.out.println("获取结果为：" + responseString);
+
+    }
+
+
+    @Test
+    void testSingleQuerySingle() throws Exception {
+        String responseString = mvc.perform(MockMvcRequestBuilders.get("/business/t-query-sigle-table/query-condition-order-select-necessary-column-siginle").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
                 .andDo(print())
                 .andReturn().getResponse().getContentAsString();
         System.out.println("获取结果为：" + responseString);

@@ -2,7 +2,7 @@ package io.github.davidchild.bitter.samples.customdatasource;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
-import io.github.davidchild.bitter.samples.customdatasource.annotation.DataSourceType;
+import io.github.davidchild.bitter.samples.customdatasource.annotation.DataTargetType;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -34,16 +34,10 @@ public class DruidConfig {
     @Primary
     public DynamicDataSource dataSource(DataSource masterDataSource) {
         Map<Object, Object> targetDataSources = new HashMap<>();
-        targetDataSources.put(DataSourceType.MASTER.name(), masterDataSource);
-        setDataSource(targetDataSources, DataSourceType.SLAVE.name(), "slaveDataSource");
-        setDataSource(targetDataSources, DataSourceType.SHARDING.name(), "shardingDataSource");
-
+        targetDataSources.put(DataTargetType.MASTER.name(), masterDataSource);
+        setDataSource(targetDataSources, DataTargetType.SLAVE.name(), "slaveDataSource");
+        setDataSource(targetDataSources, DataTargetType.SHARDING.name(), "shardingDataSource");
         DynamicDataSource dynamicDataSource = new DynamicDataSource(masterDataSource, targetDataSources);
-
-        /**
-         * 将 dynamicDataSource 注入 到 Bitter 框架,这里的 DynamicDataSource 继承实现了Spring 框架中的 JDBC 管理的
-         * AbstractRoutingDataSource,可以将此类直接注入到对象中
-         */
 
         return dynamicDataSource;
     }
