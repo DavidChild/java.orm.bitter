@@ -1,11 +1,3 @@
-/ *
-Navicat Premium Data Transfer
-Source Server Type : MySQL
-Source Server Version : 50737
-Source Schema : davidchild
-Target Server Type : MySQL
-Target Server Version : 50737 File Encoding         : 65001 Date : 28 / 11 / 2022 14:25:20
-* /
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
@@ -17,7 +9,7 @@ DROP TABLE IF EXISTS `t_user`;
 CREATE TABLE `t_user`
 (
 `id` varchar(32) CHARACTER
-SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '主键id',
+ SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '主键id',
 `username` varchar(100)CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '登录账号',
 `email` varchar(45)CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '电子邮件',
 `phone` varchar(45)CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '电话',
@@ -34,5 +26,4 @@ SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '主键id',
 PRIMARY KEY(`id`)
 USING BTREE
 )ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
-
 SET FOREIGN_KEY_CHECKS = 1;

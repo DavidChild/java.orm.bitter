@@ -1,9 +1,7 @@
 package io.github.davidchild.bitter.excutequery;
 
 import io.github.davidchild.bitter.basequery.BaseQuery;
-import io.github.davidchild.bitter.connection.Impl.IIETyeConvert;
-import io.github.davidchild.bitter.connection.Impl.MySqlTypeConvert;
-import io.github.davidchild.bitter.dbtype.FieldProperty;
+import io.github.davidchild.bitter.dbtype.DataValue;
 import io.github.davidchild.bitter.op.insert.Insert;
 import io.github.davidchild.bitter.parbag.*;
 import io.github.davidchild.bitter.tools.CoreStringUtils;
@@ -13,7 +11,7 @@ import java.util.List;
 
 public class MySqlQuery extends BaseQuery {
 
-    private final IIETyeConvert convert = new MySqlTypeConvert();
+
 
     @Override
     protected void insertCommandText(boolean isOutIdentity) {
@@ -22,14 +20,14 @@ public class MySqlQuery extends BaseQuery {
         String fields = "";
         String values = "";
 
-        for (FieldProperty filed : bagPar.getProperties()) {
-            if (!filed.isIdentity) {
+        for (DataValue filed : bagPar.getProperties()) {
+            if (!filed.getIsIdentity()) {
                 if (filed.getValue() != null) {
-                    fields += filed.getDbFieldName() + ',';
+                    fields += filed.getDbName() + ',';
                     values += "?,";
-                    this.parameters.add(convert.convertJavaToDbTypeValue(filed.getField(), filed.getValue()));
+                    this.parameters.add(filed.getValue());
                 } else {
-                    fields += filed.getDbFieldName() + ',';
+                    fields += filed.getDbName() + ',';
                     values += "null,";
                 }
             }
@@ -47,9 +45,9 @@ public class MySqlQuery extends BaseQuery {
             return;
         ExecuteParBagInsert bagPar = (ExecuteParBagInsert) list.get(0).getExecuteParBag();
         String fields = "";
-        for (FieldProperty filed : bagPar.getProperties()) {
-            if (!filed.isIdentity) {
-                fields += filed.getDbFieldName() + ',';
+        for (DataValue filed : bagPar.getProperties()) {
+            if (!filed.getIsIdentity()) {
+                fields += filed.getDbName() + ',';
             }
 
         }
@@ -57,13 +55,13 @@ public class MySqlQuery extends BaseQuery {
         for (BaseQuery q : list) {
             String value = "(";
             ExecuteParBagInsert bag = (ExecuteParBagInsert) q.getExecuteParBag();
-            for (FieldProperty f : bag.getProperties())
-                if (!f.isIdentity) {
+            for (DataValue f : bag.getProperties())
+                if (!f.getIsIdentity()) {
                     if (f.getValue() == null) {
                         value += "null,";
                     } else {
                         value += "?,";
-                        this.parameters.add(convert.convertJavaToDbTypeValue(f.getField(), f.getValue()));
+                        this.parameters.add(f.getValue());
                     }
 
                 }
@@ -91,9 +89,9 @@ public class MySqlQuery extends BaseQuery {
         } else if (bagPar.getData() != null) {
             whereSQL.append(" WHERE ");
             Object keyValue = bagPar.getKeyInfo().getValue();
-            String keyFiled = bagPar.getKeyInfo().getDbFieldName();
+            String keyFiled = bagPar.getKeyInfo().getDbName();
 
-            this.parameters.add(convert.convertJavaToDbTypeValue(bagPar.getKeyInfo().getField(), keyValue));
+            this.parameters.add(keyValue);
             whereSQL.append(String.format("%s=%s", keyFiled, "?"));
         }
         bagPar.RemoveProperties();
@@ -115,8 +113,7 @@ public class MySqlQuery extends BaseQuery {
             bagPar.getUpdatePairs().forEach(up -> {
                 if (((UpdatePair) up).getColumnValue() != null) {
                     updateSQL.append(String.format("%s=?,", ((UpdatePair) up).getDbFieldName()));
-                    this.parameters.add(convert.convertJavaToDbTypeValue(bagPar.getKeyInfo().getField(),
-                            ((UpdatePair) up).getColumnValue()));
+                    this.parameters.add(((UpdatePair) up).getColumnValue());
                 } else {
                     updateSQL.append(String.format("%s=null,", ((UpdatePair) up).getDbFieldName()));
                 }
@@ -124,13 +121,13 @@ public class MySqlQuery extends BaseQuery {
             });
         } else {
             if (bagPar.getData() != null) {
-                for (FieldProperty p : bagPar.getProperties()) {
-                    if ((!p.isKey || !p.isIdentity))
+                for (DataValue p : bagPar.getProperties()) {
+                    if ((!p.getIsKey() || !p.getIsIdentity()))
                         if (p.getValue() != null) {
-                            updateSQL.append(String.format("%s=%s,", p.getDbFieldName(), "?"));
-                            this.parameters.add(convert.convertJavaToDbTypeValue(p.getField(), p.getValue()));
+                            updateSQL.append(String.format("%s=%s,", p.getDbName(), "?"));
+                            this.parameters.add(p.getValue());
                         } else {
-                            updateSQL.append(String.format("%s=null,", p.getDbFieldName()));
+                            updateSQL.append(String.format("%s=null,", p.getDbName()));
                         }
 
                 }
@@ -141,9 +138,9 @@ public class MySqlQuery extends BaseQuery {
         if (bagPar.getData() != null) {
             whereSQL.append(" WHERE ");
             Object keyValue = bagPar.getKeyInfo().getValue();
-            String keyName = bagPar.getKeyInfo().getDbFieldName();
+            String keyName = bagPar.getKeyInfo().getDbName();
             whereSQL.append(String.format("%s=?", keyName));
-            this.parameters.add(convert.convertJavaToDbTypeValue(bagPar.getKeyInfo().getField(), keyValue));
+            this.parameters.add(keyValue);
         } else {
             if (bagPar.condition != null) {
                 whereSQL.append(" WHERE ");

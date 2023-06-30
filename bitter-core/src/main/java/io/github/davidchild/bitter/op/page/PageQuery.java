@@ -108,7 +108,7 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
     }
 
     public IPageAccess orderBy(String order) {
-        ((ExecuteParBagPage) this.executeParBag).orderBy.append(String.format("%s ", order));
+        ((ExecuteParBagPage) this.executeParBag).getOrder().append(String.format(",%s ", order));
         return (IPageAccess) this;
     }
 
@@ -135,12 +135,12 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
     }
 
     public IPageAccess thenASC(String filedName) {
-        ((ExecuteParBagPage) this.executeParBag).orderBy.append(String.format(",%s ASC", filedName));
+        ((ExecuteParBagPage) this.executeParBag).getOrder().append(String.format(",%s ASC", filedName));
         return (IPageAccess) this;
     }
 
     public IPageAccess thenDESC(String filedName) {
-        ((ExecuteParBagPage) this.executeParBag).orderBy.append(String.format(",%s DESC", filedName));
+        ((ExecuteParBagPage) this.executeParBag).getOrder().append(String.format(",%s DESC", filedName));
         return (IPageAccess) this;
     }
 

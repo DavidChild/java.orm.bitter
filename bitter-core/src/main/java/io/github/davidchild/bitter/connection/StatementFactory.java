@@ -1,9 +1,6 @@
 package io.github.davidchild.bitter.connection;
 
 import io.github.davidchild.bitter.basequery.ExecuteMode;
-import io.github.davidchild.bitter.connection.Impl.IDbStatement;
-import io.github.davidchild.bitter.connection.Impl.IIETyeConvert;
-import io.github.davidchild.bitter.connection.Impl.MySqlTypeConvert;
 
 public class StatementFactory {
 
@@ -18,12 +15,12 @@ public class StatementFactory {
 
     }
 
-    public static IIETyeConvert getIIETyeConvert(DatabaseType dbType) {
-        IIETyeConvert convert;
+    public static IMetaTypeConvert getMetaTyeConvert(DatabaseType dbType) {
+        IMetaTypeConvert convert;
         if (dbType == DatabaseType.MySQL) {
-            convert = new MySqlTypeConvert();
+            convert = new DefaultMetaTypeConvert();
         } else {
-            convert = new MySqlTypeConvert();
+            convert = new DefaultMetaTypeConvert();
             // todo: other impl convert; case:
         }
         return convert;

@@ -1,12 +1,11 @@
 package io.github.davidchild.bitter.tools;
 
-import java.util.List;
-
-import org.junit.Test;
-
-import io.github.davidchild.bitter.dbtype.FieldProperty;
+import io.github.davidchild.bitter.dbtype.DataValue;
 import io.github.davidchild.bitter.entity.TUserInfo;
 import junit.framework.TestCase;
+import org.junit.Test;
+
+import java.util.List;
 
 public class CoreUtilsTest extends TestCase {
 
@@ -14,7 +13,7 @@ public class CoreUtilsTest extends TestCase {
     public void testGetFieldByObject() {
         TUserInfo busInfo = new TUserInfo();
         busInfo.setUsername("davidChild");
-        List<FieldProperty> files = CoreUtils.getFields(busInfo.getClass(), busInfo);
+        List<DataValue> files = CoreUtils.getTypeRelationData(busInfo.getClass(), busInfo);
         System.out.println(files);
     }
 
@@ -29,7 +28,7 @@ public class CoreUtilsTest extends TestCase {
     @Test
     public void testGetFieldsByType() {
         TUserInfo busInfo = new TUserInfo();
-        List<FieldProperty> files = CoreUtils.getFields(TUserInfo.class, null);
+        List<DataValue> files = CoreUtils.getTypeRelationData(TUserInfo.class, null);
         System.out.println(files);
     }
 

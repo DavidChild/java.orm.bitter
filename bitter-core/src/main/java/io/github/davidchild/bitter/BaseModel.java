@@ -1,6 +1,6 @@
 package io.github.davidchild.bitter;
 
-import io.github.davidchild.bitter.dbtype.KeyInfo;
+import io.github.davidchild.bitter.dbtype.DataValue;
 import io.github.davidchild.bitter.impl.IBaseModelOp;
 import io.github.davidchild.bitter.op.delete.DeleteIns;
 import io.github.davidchild.bitter.op.insert.Insert;
@@ -40,7 +40,7 @@ public class BaseModel implements Serializable, IBaseModelOp {
 
     @Override
     public boolean haveKeyValue() {
-        KeyInfo key = CoreUtils.getPrimaryField(this.getClass(), this);
+        DataValue key = CoreUtils.getTypeKey(this.getClass(), this);
         if (key != null && CoreStringUtils.isNotNull(key.getValue())) {
             return true;
         } else {

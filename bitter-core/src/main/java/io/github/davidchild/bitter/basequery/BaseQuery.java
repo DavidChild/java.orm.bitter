@@ -18,7 +18,6 @@ import java.util.Map;
 
 public class BaseQuery extends BaseExecute implements Type {
 
-
     protected List<Map<String, Object>> getData() throws SQLException {
         this.convert();
         List<Map<String, Object>> mapData = DataAccess.executeQuery(this);
@@ -122,7 +121,6 @@ public class BaseQuery extends BaseExecute implements Type {
      * execution: returns 1 if successful, and - 1 if unsuccessful; The exception record is output in the log
      */
     public Long submit() {
-
         Exception ex = null;
         try {
             convert();

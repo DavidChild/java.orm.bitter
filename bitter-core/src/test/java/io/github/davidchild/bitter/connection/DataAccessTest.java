@@ -50,8 +50,6 @@ public class DataAccessTest {
             Thread.sleep(1000);
         }
         String ls = "";
-
-
     }
 
     @Test

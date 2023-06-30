@@ -1,12 +1,9 @@
 package io.github.davidchild.bitter.dbtype;
 
-import java.lang.reflect.Field;
-
-import org.apache.ibatis.type.JdbcType;
-
 import com.baomidou.mybatisplus.annotation.IdType;
-
 import io.github.davidchild.bitter.tools.CoreStringUtils;
+
+import java.lang.reflect.Field;
 
 public class FieldProperty {
 
@@ -14,7 +11,8 @@ public class FieldProperty {
 
     public Class<?> type;
     public boolean isIdentity = false;
-    public JdbcType dbType;
+    public MetaType dbType;
+
     public Object value;
     public String classInnerFieldName;
     public boolean isKey = false;
@@ -25,6 +23,12 @@ public class FieldProperty {
     public void setFieldName(String filedName) {
         this.fieldName = filedName;
     }
+
+    public String getFieldName() {
+        return this.fieldName;
+    }
+
+
 
     public Class<?> getType() {
         return type;
@@ -58,7 +62,7 @@ public class FieldProperty {
         isNull = aNull;
     }
 
-    public void setDbType(JdbcType dbType) {
+    public void setMetaType(MetaType dbType) {
         this.dbType = dbType;
     }
 
@@ -73,6 +77,7 @@ public class FieldProperty {
     public void setIdType(IdType idType) {
         this.idType = idType;
     }
+    public IdType getIdType() {return this.idType;}
 
     public Field getField() {
         return field;
@@ -84,5 +89,12 @@ public class FieldProperty {
 
     public String getDbFieldName() {
         return CoreStringUtils.isNotEmpty(this.fieldName) ? this.fieldName : this.classInnerFieldName;
+    }
+    public  FieldProperty Clone() throws CloneNotSupportedException {
+        try {
+            return (FieldProperty)this.clone();
+        }catch (CloneNotSupportedException ex){
+            return  null;
+        }
     }
 }

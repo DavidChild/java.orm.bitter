@@ -4,7 +4,7 @@ import io.github.davidchild.bitter.BaseModel;
 import io.github.davidchild.bitter.basequery.BaseQuery;
 import io.github.davidchild.bitter.basequery.ExecuteEnum;
 import io.github.davidchild.bitter.bitterlist.BMap;
-import io.github.davidchild.bitter.dbtype.KeyInfo;
+import io.github.davidchild.bitter.dbtype.DataValue;
 import io.github.davidchild.bitter.parbag.ExecuteParBagExecute;
 import io.github.davidchild.bitter.tools.BitterLogUtil;
 
@@ -25,9 +25,7 @@ public class ExecuteQuery extends BaseQuery {
                 ((ExecuteParBagExecute) executeParBag).getParaMap().put(UUID.randomUUID().toString(), v);
             });
         }
-
     }
-
     protected <T extends BaseModel> ExecuteQuery(Class<? extends BaseModel> clazz) {
         executeParBag = new ExecuteParBagExecute();
         executeParBag.setExecuteEnum(ExecuteEnum.ExecuteQuery);
@@ -96,9 +94,9 @@ public class ExecuteQuery extends BaseQuery {
 
         T data;
         String tableName = ((ExecuteParBagExecute) executeParBag).getTableName();
-        KeyInfo keyInfo = ((ExecuteParBagExecute) executeParBag).getKeyInfo();
+        DataValue keyInfo = ((ExecuteParBagExecute) executeParBag).getKeyInfo();
         ((ExecuteParBagExecute) executeParBag).getParaMap().put(UUID.randomUUID().toString(), id);
-        String sql = String.format("select * from %s where %s = ?", tableName, keyInfo.getDbFieldName());
+        String sql = String.format("select * from %s where %s = ?", tableName, keyInfo.getDbName());
         ((ExecuteParBagExecute) executeParBag).setCommandText(sql);
         List<T> st = this.getDataList();
         if (st != null && st.size() > 0) {

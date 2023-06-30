@@ -33,7 +33,6 @@ class TestInsert extends TsRequest {
         System.out.println("init mock module");
     }
 
-
     @Test
     void hello() throws Exception {
 
@@ -41,7 +40,6 @@ class TestInsert extends TsRequest {
                 .andDo(print())         //打印出请求和相应的内容
                 .andReturn().getResponse().getContentAsString();   //将相应的数据转换为字符串;
         System.out.println("获取结果为：" + responseString);
-
     }
 
 
@@ -49,7 +47,6 @@ class TestInsert extends TsRequest {
     void testInsert() throws Exception {
         TStudent student = new TStudent();
         student.setName("david-child");
-        student.setSex("男");
         String responseString = mvc.perform(post("/business/t-student/insert/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(student))

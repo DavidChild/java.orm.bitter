@@ -8,6 +8,7 @@ import io.github.davidchild.bitter.op.page.PageQuery;
 import io.github.davidchild.bitter.samples.business.entity.TStudent;
 import io.github.davidchild.bitter.samples.business.mapper.TStudentMapper;
 import io.github.davidchild.bitter.samples.business.service.ITStudentService;
+import lombok.var;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,7 +26,8 @@ import java.util.List;
 public class TStudentServiceImpl extends ServiceImpl<TStudentMapper, TStudent> implements ITStudentService {
     @Override
     public Long insert(TStudent entity) {
-        return entity.insert().submit();
+        bachInsert(10);
+        return  1L;
     }
 
 
@@ -40,12 +42,13 @@ public class TStudentServiceImpl extends ServiceImpl<TStudentMapper, TStudent> i
             }
         }).submit() > -1; //error will print to the log by slf4
 
-
     }
 
     @Override
     public TStudent singleQuery(String name) {
-        return db.findQuery(TStudent.class).where(f -> f.getName().contains(name)).find().fistOrDefault(); // fistOrDefault 数据库没有也会返回一条空对象,在接下来的使用中,避免业务性空指针
+       // var query = db.findQuery("select * from dipin_release").find();
+        var student = db.findQuery(TStudent.class).where(f -> f.getName().contains(name)).find().fistOrDefault(); // fistOrDefault 数据库没有也会返回一条空对象,在接下来的使用中,避免业务性空指针
+       return  student;
     }
 
 

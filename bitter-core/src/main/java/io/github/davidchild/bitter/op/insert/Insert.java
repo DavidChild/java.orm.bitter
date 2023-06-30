@@ -1,15 +1,15 @@
 package io.github.davidchild.bitter.op.insert;
 
-import java.util.List;
-
 import io.github.davidchild.bitter.BaseModel;
 import io.github.davidchild.bitter.basequery.BaseQuery;
 import io.github.davidchild.bitter.basequery.ExecuteEnum;
-import io.github.davidchild.bitter.dbtype.KeyInfo;
+import io.github.davidchild.bitter.dbtype.DataValue;
 import io.github.davidchild.bitter.exception.DbException;
 import io.github.davidchild.bitter.parbag.ExecuteParBagInsert;
 import io.github.davidchild.bitter.tools.CoreStringUtils;
 import io.github.davidchild.bitter.tools.CoreUtils;
+
+import java.util.List;
 
 public class Insert<T extends BaseModel> extends BaseQuery {
 
@@ -37,13 +37,12 @@ public class Insert<T extends BaseModel> extends BaseQuery {
     }
 
     private void checkedIdentityValue() {
-        T data = (T)executeParBag.getData();
-        KeyInfo key = CoreUtils.getPrimaryField(data.getClass(), data);
-        if (((ExecuteParBagInsert)executeParBag).isOutIdentity() && CoreStringUtils.isNotNull(key.getValue())) {
+        T data = (T) executeParBag.getData();
+        DataValue key = CoreUtils.getTypeKey(data.getClass(), data);
+        if (((ExecuteParBagInsert) executeParBag).isOutIdentity() && CoreStringUtils.isNotNull(key.getValue())) {
             throw new DbException(
-                "bitter： insert error :Violation of primary key self growth constraint: the insert statement has a primary key self growth ID, and cannot have a self growth value when inserting");
+                    "bitter： insert error :Violation of primary key self growth constraint: the insert statement has a primary key self growth ID, and cannot have a self growth value when inserting");
         }
-
     }
 
 }

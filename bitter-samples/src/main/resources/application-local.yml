@@ -7,14 +7,14 @@ spring:
     druid:
       # 主库数据源
       master:
-        url: jdbc:mysql://localhost:3306/bitter?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&useOldAliasMetadataBehavior=true
+        url: jdbc:mysql://192.168.214.128:3306/bitter?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&useOldAliasMetadataBehavior=true
         username: root
         password: 123456
       # 从库数据源
       slave:
         enabled: true
         # 从数据源开关/默认关闭
-        url: jdbc:mysql://localhost:3306/bitter?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&useOldAliasMetadataBehavior=true
+        url: jdbc:mysql://192.168.214.128:3306/bitter?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&useOldAliasMetadataBehavior=true
         username: root
         password: 123456
       initialSize: 10

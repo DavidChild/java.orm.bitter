@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
 import io.github.davidchild.bitter.BaseModel;
 import lombok.Data;
 
@@ -22,3 +21,4 @@ public class TStudentInfo extends BaseModel {
     private String sex;
 
 }
+

@@ -1,10 +1,9 @@
 package io.github.davidchild.bitter.dbtype;
 
-import java.lang.reflect.Field;
-
 import com.baomidou.mybatisplus.annotation.IdType;
-
 import io.github.davidchild.bitter.tools.CoreStringUtils;
+
+import java.lang.reflect.Field;
 
 public class KeyInfo {
 

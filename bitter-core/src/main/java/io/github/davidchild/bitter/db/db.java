@@ -19,7 +19,6 @@ public class db {
         return new BitterCache();
     }
 
-
     public static <T extends BaseModel> FindQuery<T> findQuery(Class<T> clazz) {
         return new FindQuery<>(clazz);
     }
@@ -51,7 +50,6 @@ public class db {
     public static ExecuteInSql execute(String commandText, Object... params) {
         return new ExecuteInSql(commandText, params);
     }
-
     public static PageQuery pageQuery(String selectCommandText) {
         return new PageQuery(selectCommandText);
     }

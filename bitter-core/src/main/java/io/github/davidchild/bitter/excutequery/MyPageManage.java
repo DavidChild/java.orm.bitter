@@ -19,14 +19,10 @@ public class MyPageManage {
     }
 
     private static void getPageDataBySelect(BaseQuery baseQuery) {
-        // SET @a = 0;
-        // select(@a:= count(0)) as cheokCount from t_user;
-        // select *,@a as cheokCount from T_User limit 1,10;
         ExecuteParBagPage bag = (ExecuteParBagPage) (baseQuery.getExecuteParBag());
         baseQuery.setDynamicParameters((bag.dynamics));
         BaseQuery sqlTemp = new BaseQuery();
         sqlTemp.setCommandText(bag.commandText);
-        // sqlTemp.CommandType = CommandType.Text;
         if (bag.dynamics != null && bag.dynamics.size() > 0) {
             bag.dynamics.forEach((k, v) -> sqlTemp.getParameters().add(v));
         }
@@ -42,15 +38,15 @@ public class MyPageManage {
             sqlSelect.append("\n");
             sqlSelect.append(where);
         }
-        if (CoreStringUtils.isNotEmpty(bag.orderBy.toString())) {
+        if (CoreStringUtils.isNotEmpty(bag.getOrderBy().toString())) {
             String order;
-            if (bag.orderBy.toString().charAt(bag.orderBy.toString().length() - 1) == ',') {
-                order = bag.orderBy.substring(0, bag.orderBy.toString().length() - 1);
+            if (bag.getOrderBy().toString().charAt(bag.getOrderBy().toString().length() - 1) == ',') {
+                order = bag.getOrderBy().substring(0, bag.getOrderBy().toString().length() - 1);
             } else {
-                order = bag.orderBy.toString();
+                order = bag.getOrderBy().toString();
             }
             String orderBy =
-                    (CoreStringUtils.isEmpty(bag.orderBy.toString()) ? "" : String.format(" ORDER BY %s ", order));
+                    (CoreStringUtils.isEmpty(bag.getOrderBy()) ? "" : String.format(" ORDER BY %s ", order));
             sqlSelect.append("\n");
             sqlSelect.append(orderBy);
         }
@@ -75,22 +71,16 @@ public class MyPageManage {
     }
 
     private static void getPageDataCountBySelect(BaseQuery baseQuery) {
-        // SET @a = 0;
-        // select(@a:= count(0)) as cheokCount from t_user;
-        // select *,@a as cheokCount from T_User limit 1,10;
         ExecuteParBagPage bag = (ExecuteParBagPage) (baseQuery.getExecuteParBag());
         String selectTable = bag.pageTableName;
         baseQuery.setDynamicParameters((bag.dynamics));
         BaseQuery sqlTemp = new BaseQuery();
         sqlTemp.setCommandText(bag.commandText);
-        // sqlTemp.CommandType = CommandType.Text;
         if (bag.dynamics != null && bag.dynamics.size() > 0) {
             bag.dynamics.forEach((k, v) -> sqlTemp.getParameters().add(v));
         }
-        // Build the data of the total number
         StringBuilder sqlCount = new StringBuilder();
         sqlCount.append("/*******Search TotalCount*******/\n");
-        // sqlReal.AppendLine("SET @totalcountcheok=0;");
         sqlCount.append("select");
         sqlCount.append("\n");
         sqlCount.append("count(1) as totalcountcheok");

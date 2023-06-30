@@ -1,17 +1,14 @@
 package io.github.davidchild.bitter.connection;
 
-import java.util.List;
-import java.util.Map;
-
 import io.github.davidchild.bitter.BaseModel;
 import io.github.davidchild.bitter.basequery.BaseQuery;
-import io.github.davidchild.bitter.connection.Impl.IDbStatement;
-import io.github.davidchild.bitter.connection.Impl.IIETyeConvert;
+
+import java.util.List;
+import java.util.Map;
 
 public class DataAccess {
 
     DataAccess() {}
-
     public static Long executeScalarToWriterOnlyForInsertReturnIdentity(BaseQuery baseQuery) {
         long id;
         IDbStatement statement = StatementFactory.getStatement(baseQuery.getExecuteParBag().getExecuteMode());
@@ -49,19 +46,23 @@ public class DataAccess {
     }
 
     public static List<Map<String, Object>> executeQuery(BaseQuery baseQuery) {
-
-        IIETyeConvert convert = StatementFactory.getIIETyeConvert(baseQuery.getDbType());
-        return StatementFactory.getStatement(baseQuery.getExecuteParBag().getExecuteMode())
-            .queryMapFromDbData(baseQuery.getCommandText(), baseQuery.getParameters(), convert);
-
+        IMetaTypeConvert convert = StatementFactory.getMetaTyeConvert(baseQuery.getDbType());
+        return (List<Map<String, Object>>)StatementFactory.getStatement(baseQuery.getExecuteParBag().getExecuteMode())
+                .Query(baseQuery.getCommandText(), baseQuery.getParameters(),new JavaBeanMapResultHandler(convert,null));
     }
 
-    public static <T extends BaseModel> List<T> executeQueryReturnDataList(BaseQuery baseQuery) {
+    public static <T extends BaseModel> T executeQueryReturnSingleData(BaseQuery baseQuery) {
+        IMetaTypeConvert convert = StatementFactory.getMetaTyeConvert(baseQuery.getDbType());
+        T t = (T) StatementFactory.getStatement(baseQuery.getExecuteParBag().getExecuteMode())
+                .Query(baseQuery.getCommandText(), baseQuery.getParameters(), new SingleModelResultHandler(convert,baseQuery.getExecuteParBag().getModelType()));
+        return t;
 
-        IIETyeConvert convert = StatementFactory.getIIETyeConvert(baseQuery.getDbType());
-        List<Map<String, Object>> lt = StatementFactory.getStatement(baseQuery.getExecuteParBag().getExecuteMode())
-            .queryMapFromDbData(baseQuery.getCommandText(), baseQuery.getParameters(), convert);
-        return (List<T>)convert.listMap2JavaBean(lt, baseQuery.getExecuteParBag().getModelType());
+    }
+    public static <T extends BaseModel> List<T> executeQueryReturnDataList(BaseQuery baseQuery) {
+        IMetaTypeConvert convert = StatementFactory.getMetaTyeConvert(baseQuery.getDbType());
+        List<T> lt = (List<T>) StatementFactory.getStatement(baseQuery.getExecuteParBag().getExecuteMode())
+                .Query(baseQuery.getCommandText(), baseQuery.getParameters(), new ModesResultHandler(convert,baseQuery.getExecuteParBag().getModelType()));
+        return lt;
 
     }
 

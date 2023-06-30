@@ -11,5 +11,4 @@ public @interface TargetSource {
      * support more db datasource,that default MASTER db
      */
     public String value() default "MASTER";
-
 }

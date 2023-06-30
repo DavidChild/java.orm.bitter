@@ -1,5 +1,7 @@
 package io.github.davidchild.bitter.parbag;
 
+import cn.hutool.core.util.StrUtil;
+
 import java.util.LinkedHashMap;
 
 public class ExecuteParBagPage extends ExecuteParBag {
@@ -11,7 +13,7 @@ public class ExecuteParBagPage extends ExecuteParBag {
     /// <summary>
     /// 排序
     /// </summary>
-    public StringBuilder orderBy = new StringBuilder("");
+    private StringBuilder orderBy = new StringBuilder("");
     /// <summary>
     /// 分页Index
     /// </summary>
@@ -50,7 +52,7 @@ public class ExecuteParBagPage extends ExecuteParBag {
         this.preWith = preWith;
     }
 
-    public StringBuilder getOrderBy() {
+    public StringBuilder getOrder() {
         return orderBy;
     }
 
@@ -116,6 +118,14 @@ public class ExecuteParBagPage extends ExecuteParBag {
 
     public StringBuilder getWhereBuilder() {
         return whereBuilder;
+    }
+
+    public String getOrderBy() {
+        if (orderBy == null || orderBy.toString() == null || orderBy.toString() == "") {
+            return "";
+        }
+        String oderby = StrUtil.addSuffixIfNot(orderBy.toString(), ",");
+        return StrUtil.unWrap(oderby, ',');
     }
 
     public void setWhereBuilder(StringBuilder whereBuilder) {

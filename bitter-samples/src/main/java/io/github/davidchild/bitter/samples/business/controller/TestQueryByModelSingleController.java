@@ -1,7 +1,6 @@
 package io.github.davidchild.bitter.samples.business.controller;
 
 import io.github.davidchild.bitter.db.db;
-import io.github.davidchild.bitter.samples.business.entity.DipinAsyncMsg;
 import io.github.davidchild.bitter.samples.business.entity.TUser;
 import io.github.davidchild.bitter.tools.DateUtils;
 import org.springframework.web.bind.annotation.GetMapping;

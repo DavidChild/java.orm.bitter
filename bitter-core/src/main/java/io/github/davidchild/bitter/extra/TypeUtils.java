@@ -56,7 +56,6 @@ public class TypeUtils {
                 type = typeVariableType;
             }
         }
-
         return type;
     }
 }

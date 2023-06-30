@@ -31,9 +31,9 @@ public class InitBitter {
                 + "| | | |  __/ | | (_) |  | |_| \\__ \\  __/ | |_) | | |_| ||  __/ |   \n"
                 + "|_| |_|\\___|_|_|\\___( )  \\__,_|___/\\___| |_.__/|_|\\__|\\__\\___|_|   \n"
                 + "                    |/                                             ");
-        BitterLogUtil.getInstance().info("version：{}", "1.3.8-RELEASE");
-        BitterLogUtil.getInstance().info("Bulbhead by David-Child, 23 March 2023");
-        BitterLogUtil.getInstance().info("Figlet release 1.3.8 -- March 23, 2023 ");
+        BitterLogUtil.getInstance().info("version：{}", "2.0.0-RELEASE");
+        BitterLogUtil.getInstance().info("Bulbhead by David-Child, FEB 4, 2024");
+        BitterLogUtil.getInstance().info("Figlet release 2.0.0 --  FEB 4, 2023 ");
         BitterLogUtil.getInstance().info("github：{}", "https://github.com/davidchild/java.orm.bitter.git");
         BitterLogUtil.getInstance().info(moduleName);
         BitterLogUtil.getInstance().info(" \n"

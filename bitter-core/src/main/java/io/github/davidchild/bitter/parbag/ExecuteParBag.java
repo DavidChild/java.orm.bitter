@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import io.github.davidchild.bitter.BaseModel;
 import io.github.davidchild.bitter.basequery.ExecuteEnum;
 import io.github.davidchild.bitter.basequery.ExecuteMode;
-import io.github.davidchild.bitter.dbtype.FieldProperty;
-import io.github.davidchild.bitter.dbtype.KeyInfo;
+import io.github.davidchild.bitter.dbtype.DataValue;
 import io.github.davidchild.bitter.exception.DbException;
 import io.github.davidchild.bitter.op.FieldFunction;
 import io.github.davidchild.bitter.tools.BitterLogUtil;
@@ -19,26 +18,26 @@ import java.util.List;
 public class ExecuteParBag {
 
     public ExecuteMode executeMode;
-    List<FieldProperty> properties;
+    List<DataValue> properties;
     List<String> identityFields;
     private ExecuteEnum executeEnum;
     private String tableName;
     private Class<? extends BaseModel> modelType;
-    private KeyInfo keyInfo;
+    private DataValue keyInfo;
     private boolean isIdentityModel;
     private BaseModel data;
 
-    public static String getDbNameByInnerName(List<FieldProperty> list, KeyInfo keyInfo, String innerFieldName) {
+    public static String getDbNameByInnerName(List<DataValue> list, DataValue keyInfo, String innerFieldName) {
 
-        if (keyInfo != null && CoreStringUtils.isNotEmpty(keyInfo.getFieldName())
-                && keyInfo.getFieldName().toLowerCase().equals(innerFieldName)) {
-            return keyInfo.getDbFieldName();
+        if (keyInfo != null && CoreStringUtils.isNotEmpty(keyInfo.getDbName())
+                && keyInfo.getClassInnerName().toLowerCase().equals(innerFieldName)) {
+            return keyInfo.getDbName();
         }
         String dBFieldName = "";
         if (list != null && list.size() > 0) {
-            for (FieldProperty item : list) {
-                if (item.getClassInnerFieldName().toLowerCase().equals(innerFieldName.toLowerCase())) {
-                    dBFieldName = item.getDbFieldName();
+            for (DataValue item : list) {
+                if (item.getClassInnerName().toLowerCase().equals(innerFieldName.toLowerCase())) {
+                    dBFieldName = item.getDbName();
                     break;
                 }
             }
@@ -69,7 +68,6 @@ public class ExecuteParBag {
     }
 
     public void setType(Class<?> type) {
-
         this.modelType = (Class<? extends BaseModel>) type;
     }
 
@@ -119,20 +117,20 @@ public class ExecuteParBag {
             return false;
     }
 
-    public KeyInfo getKeyInfo() {
+    public DataValue getKeyInfo() {
         if (this.getModelType() != null) {
             if (keyInfo == null) {
-                keyInfo = CoreUtils.getPrimaryField(this.getModelType(), this.data);
+                keyInfo = CoreUtils.getTypeKey(this.getModelType(), this.data);
             }
         }
         return keyInfo;
     }
 
-    public List<FieldProperty> getProperties() {
+    public List<DataValue> getProperties() {
 
         if (this.getModelType() != null) {
             if (properties == null) {
-                properties = CoreUtils.getAllFields(this.modelType, this.data);
+                properties = CoreUtils.getTypeRelationData(this.modelType, this.data);
             }
             return properties;
         }

@@ -41,7 +41,6 @@ public class TargetAction {
             ret.nonException = false;
             ret.error = e;
             ret.msg = e.getMessage();
-
         } finally {
             ThreadLocalForDataSource.clearDataSourceType();
         }

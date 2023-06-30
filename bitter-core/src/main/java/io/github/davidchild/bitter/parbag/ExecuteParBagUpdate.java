@@ -27,9 +27,9 @@ public class ExecuteParBagUpdate<T> extends ExecuteParBag {
             return updatePairs;
         if (this.getData() != null && (!isReSetValueInUpdatePair)) {
             this.getProperties().forEach(field -> {
-                if ((!field.isIdentity || !field.isKey)) {
-                    UpdatePair k = new UpdatePair(field.getClassInnerFieldName(), field.getValue());
-                    k.setDbFieldName(field.getDbFieldName());
+                if ((!field.getIsIdentity() || !field.getIsKey())) {
+                    UpdatePair k = new UpdatePair(field.getClassInnerName(), field.getValue());
+                    k.setDbFieldName(field.getDbName());
                     this.updatePairs.add(k);
                 }
             });

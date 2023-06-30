@@ -1,7 +1,6 @@
 package io.github.davidchild.bitter.connection;
 
-import io.github.davidchild.bitter.connection.Impl.IDbStatement;
-import io.github.davidchild.bitter.connection.Impl.IIETyeConvert;
+import io.github.davidchild.bitter.dbtype.MetaTypeCt;
 import io.github.davidchild.bitter.exception.DataSourceException;
 import io.github.davidchild.bitter.exception.DbException;
 import io.github.davidchild.bitter.tools.BitterLogUtil;
@@ -12,39 +11,41 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class MysqlDbStatementCached implements IDbStatement {
 
+
     @Override
-    public List<Map<String, Object>> queryMapFromDbData(String commandTest, List<Object> params,
-                                                        IIETyeConvert convert) {
+    public Object Query(String commandTest, List<Object> params,DataResultHandlerBase resultHandler) {
         BitterLogUtil.logWriteSql(commandTest, params);
-        List<Map<String, Object>> result = new ArrayList<>();
+         Object result = null;
         try (DbConnection db = new DbConnection()) {
             try (PreparedStatement stmt = db.connection.prepareStatement(commandTest)) {
                 if (CoreStringUtils.isNotEmpty(params)) {
                     for (int i = 0; i < params.size(); i++) {
-                        stmt.setObject(i + 1, params.get(i));
+                        MetaTypeCt.getTypeHandler(params.get(i).getClass()).setObjectParameter(stmt,i+1,params.get(i),null);
+                       //stmt.setObject(i + 1, params.get(i),null);
                     }
                 }
                 if (!stmt.execute())
                     return result;
-                try (ResultSet rs = stmt.getResultSet()) {
-                    if (rs != null) {
-                        result = convert.convertToMap(rs);
+                try{
+                    try (ResultSet rs = stmt.getResultSet()) {
+                        if (rs != null) {
+                             result = resultHandler.GetResult(rs);
+                            }
+                        }
+                    } catch (SQLException e) {
+                        BitterLogUtil.logWriteError(e, params);
                     }
-                } catch (SQLException e) {
-                    BitterLogUtil.logWriteError(e, params);
+                catch (Exception ex){
+                    BitterLogUtil.logWriteError(ex,params);
                 }
             } catch (DbException | SQLException e) {
                 BitterLogUtil.logWriteError(e, params);
             }
-        } catch (DataSourceException e) {
-//            e.printStackTrace();
-//            BitterLogUtil.logWriteError(e, params);
+          } catch (DataSourceException e) {
         }
         return result;
     }
@@ -58,7 +59,8 @@ public class MysqlDbStatementCached implements IDbStatement {
                              db.connection.prepareStatement(commandTest, Statement.RETURN_GENERATED_KEYS)) {
                     if (CoreStringUtils.isNotEmpty(params)) {
                         for (int i = 0; i < params.size(); i++) {
-                            stmt.setObject(i + 1, params.get(i));
+                            MetaTypeCt.getTypeHandler(params.get(i).getClass()).setObjectParameter(stmt,i+1,params.get(i),null);
+                            //stmt.setObject(i + 1, params.get(i));
                         }
                     }
                     if (stmt.executeUpdate() > 0) {
@@ -107,7 +109,8 @@ public class MysqlDbStatementCached implements IDbStatement {
                 try (PreparedStatement stmt = db.connection.prepareStatement(commandTest)) {
                     db.connection.setAutoCommit(false);
                     for (int i = 0; i < params.size(); i++) {
-                        stmt.setObject(i + 1, params.get(i));
+                        MetaTypeCt.getTypeHandler(params.get(i).getClass()).setObjectParameter(stmt,i+1,params.get(i),null);
+//                        stmt.setObject(i + 1, params.get(i));
                     }
                     stmt.addBatch();
                     db.connection.commit();
@@ -138,7 +141,8 @@ public class MysqlDbStatementCached implements IDbStatement {
                     try (PreparedStatement stmt = db.connection.prepareStatement(command)) {
                         List<Object> list = params.get(k);
                         for (int i = 0; i < list.size(); i++) {
-                            stmt.setObject(i + 1, list.get(i));
+                            MetaTypeCt.getTypeHandler(params.get(i).getClass()).setObjectParameter(stmt,i+1,params.get(i),null);
+                           // stmt.setObject(i + 1, list.get(i));
                         }
                         stmt.executeUpdate();
                     }
@@ -170,7 +174,8 @@ public class MysqlDbStatementCached implements IDbStatement {
             try (PreparedStatement stmt = db.connection.prepareStatement(commandTest)) {
                 if (CoreStringUtils.isNotEmpty(params)) {
                     for (int i = 0; i < params.size(); i++) {
-                        stmt.setObject(i + 1, params.get(i));
+                        MetaTypeCt.getTypeHandler(params.get(i).getClass()).setObjectParameter(stmt,i+1,params.get(i),null);
+                        //stmt.setObject(i + 1, params.get(i));
                     }
                 }
                 int affTemp = stmt.executeUpdate();
@@ -192,7 +197,8 @@ public class MysqlDbStatementCached implements IDbStatement {
             try (PreparedStatement stmt = db.connection.prepareStatement(commandTest)) {
                 if (CoreStringUtils.isNotEmpty(params)) {
                     for (int i = 0; i < params.size(); i++) {
-                        stmt.setObject(i + 1, params.get(i));
+                        MetaTypeCt.getTypeHandler(params.get(i).getClass()).setObjectParameter(stmt,i+1,params.get(i),null);
+                      //  stmt.setObject(i + 1, params.get(i));
                     }
                 }
                 stmt.executeUpdate();

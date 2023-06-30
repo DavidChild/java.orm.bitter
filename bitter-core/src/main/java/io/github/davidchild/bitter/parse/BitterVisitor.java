@@ -1,8 +1,7 @@
 package io.github.davidchild.bitter.parse;
 
-import com.trigersoft.jaque.expression.*;
-import io.github.davidchild.bitter.dbtype.FieldProperty;
-import io.github.davidchild.bitter.dbtype.KeyInfo;
+import co.streamx.fluent.extree.expression.*;
+import io.github.davidchild.bitter.dbtype.DataValue;
 import io.github.davidchild.bitter.parbag.ExecuteParBag;
 import io.github.davidchild.bitter.tools.DateTimeUtils;
 import lombok.NonNull;
@@ -27,15 +26,15 @@ public class BitterVisitor implements ExpressionVisitor<BitterWrapper> {
     private final String tail;
     private Expression body;
     private Expression param;
-    private List<FieldProperty> bitterFields;
+    private List<DataValue> bitterFields;
 
-    private KeyInfo keyInfo;
+    private DataValue keyInfo;
 
     public BitterVisitor() {
         this("`", "`");
     }
 
-    public BitterVisitor(List<FieldProperty> fields) {
+    public BitterVisitor(List<DataValue> fields) {
         this.bitterFields = fields;
         this.head = "`";
         this.tail = "`";
@@ -47,7 +46,7 @@ public class BitterVisitor implements ExpressionVisitor<BitterWrapper> {
         this.tail = tail;
     }
 
-    public BitterVisitor(List<FieldProperty> fields, KeyInfo keyInfo, @NonNull String head, @NonNull String tail) {
+    public BitterVisitor(List<DataValue> fields, DataValue keyInfo, @NonNull String head, @NonNull String tail) {
         this.head = head;
         this.tail = tail;
         this.bitterFields = fields;
@@ -216,6 +215,16 @@ public class BitterVisitor implements ExpressionVisitor<BitterWrapper> {
     public BitterWrapper visit(UnaryExpression e) {
         SQL.getKey().append(toSqlOp(e.getExpressionType())).append(' ');
         return e.getFirst().accept(this);
+    }
+
+    @Override
+    public BitterWrapper visit(BlockExpression blockExpression) {
+        return null;
+    }
+
+    @Override
+    public BitterWrapper visit(NewArrayInitExpression newArrayInitExpression) {
+        return null;
     }
 
     public void clear() {

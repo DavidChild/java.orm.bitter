@@ -24,7 +24,7 @@ public class TestUpdateController {
     public boolean updateDataSomeRecodeColumn(Long id) {
         return db.update(TStudent.class)
                 .setColum(TStudent::getName, "wangLaoWu")
-                .setColum(TStudent::getSex, "男")
+                .setColum(TStudent::getSexName, "男")
                 .where(f -> f.getId() == id).submit() > -1;
     }
 
