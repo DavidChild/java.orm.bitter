@@ -5,6 +5,7 @@ import io.github.davidchild.bitter.basequery.ExecuteEnum;
 import io.github.davidchild.bitter.basequery.ExecuteMode;
 import io.github.davidchild.bitter.basequery.SubStatement;
 import io.github.davidchild.bitter.bitterlist.BMap;
+import io.github.davidchild.bitter.functional.IfInnerLambda;
 import io.github.davidchild.bitter.parbag.ExecuteParBagPage;
 import io.github.davidchild.bitter.tools.CoreStringUtils;
 
@@ -230,6 +231,13 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
         return (IPageAccess) this;
     }
 
+    public IPageAccess where(IfInnerLambda ifInnerLambda,String setWhere, Object... args){
+        if(ifInnerLambda.IfOrNot()){
+            where(setWhere,args);
+        }
+        return (IPageAccess) this;
+    }
+
     /// <summary>
     /// set where condition and the params
     /// </summary>
@@ -245,6 +253,20 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
 
         return (IPageAccess) this;
     }
+    public IPageAccess whereNotBlank(String setWhere, String arg, IfInnerLambda ifInnerLambda){
+        if(ifInnerLambda.IfOrNot()){
+            whereNotBlank(setWhere,arg);
+        }
+        return (IPageAccess) this;
+    }
+
+    @Override
+    public IPageAccess where(String setWhere, IfInnerLambda ifInnerLambda) {
+        if(ifInnerLambda.IfOrNot()){
+            where(setWhere);
+        }
+        return (IPageAccess) this;
+    }
 
     /// <summary>
     /// set where condition and the subStatement
@@ -253,6 +275,13 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
     public IPageAccess whereNotNull(SubStatement subStatement) {
         if (CoreStringUtils.isNotEmpty(subStatement.getSubStatement())) {
             ((ExecuteParBagPage) this.executeParBag).whereBuilder.append(String.format(" and (%s %s %s)", subStatement.getField(), subStatement.getOp(), subStatement.getSubStatement()));
+        }
+        return (IPageAccess) this;
+    }
+
+    public IPageAccess whereNotNull(SubStatement subStatement, IfInnerLambda ifInnerLambda) {
+        if(ifInnerLambda.IfOrNot()){
+            whereNotNull(subStatement);
         }
         return (IPageAccess) this;
     }
@@ -268,6 +297,13 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
         return (IPageAccess) this;
     }
 
+    public IPageAccess whereNotBlank(SubStatement subStatement,IfInnerLambda ifInnerLambda) {
+        if(ifInnerLambda.IfOrNot()){
+            whereNotBlank(subStatement);
+        }
+        return (IPageAccess) this;
+    }
+
     /// <summary>
     /// set where condition and the subStatement
     /// </summary>
@@ -275,6 +311,13 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
     public IPageAccess where(SubStatement subStatement) {
         if (CoreStringUtils.isNotEmpty(subStatement.getSubStatement())) {
             ((ExecuteParBagPage) this.executeParBag).whereBuilder.append(String.format(" and (%s %s %s)", subStatement.getField(), subStatement.getOp(), subStatement.getSubStatement()));
+        }
+        return (IPageAccess) this;
+    }
+
+    public IPageAccess where(SubStatement subStatement, IfInnerLambda ifInnerLambda){
+        if(ifInnerLambda.IfOrNot()){
+            where(subStatement);
         }
         return (IPageAccess) this;
     }
@@ -292,6 +335,13 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
             }
         }
 
+        return (IPageAccess) this;
+    }
+
+    public IPageAccess whereNotNull(String setWhere, Object arg,IfInnerLambda ifInnerLambda) {
+        if(ifInnerLambda.IfOrNot()){
+            whereNotNull(setWhere,arg);
+        }
         return (IPageAccess) this;
     }
 

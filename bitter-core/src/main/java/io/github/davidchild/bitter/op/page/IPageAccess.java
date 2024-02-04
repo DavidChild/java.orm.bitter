@@ -2,6 +2,7 @@ package io.github.davidchild.bitter.op.page;
 
 import io.github.davidchild.bitter.basequery.ExecuteMode;
 import io.github.davidchild.bitter.basequery.SubStatement;
+import io.github.davidchild.bitter.functional.IfInnerLambda;
 
 import java.util.List;
 import java.util.Map;
@@ -65,6 +66,27 @@ public interface IPageAccess {
     IPageAccess whereNotBlank(String setWhere, String arg);
 
     IPageAccess where(String setWhere);
+
+
+
+
+
+    IPageAccess where(SubStatement subStatement, IfInnerLambda ifInnerLambda);
+
+    IPageAccess where(IfInnerLambda ifInnerLambda,String setWhere, Object... params);
+
+
+    IPageAccess whereNotBlank(SubStatement subStatement, IfInnerLambda ifInnerLambda);
+
+    IPageAccess whereNotNull(SubStatement subStatement, IfInnerLambda ifInnerLambda);
+
+
+    IPageAccess whereNotNull(String setWhere, Object arg, IfInnerLambda ifInnerLambda);
+
+    IPageAccess whereNotBlank(String setWhere, String arg, IfInnerLambda ifInnerLambda);
+
+    IPageAccess where(String setWhere, IfInnerLambda ifInnerLambda);
+
 
     /// <summary>
     /// Or; Note: At this time, Or is always in parallel with the precondition
