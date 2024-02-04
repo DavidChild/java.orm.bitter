@@ -59,16 +59,6 @@ public class TestQueryByModelSingleController {
     }
 
 
-    @GetMapping("/query-condition-order-select-necessary-column-siginle")
-    public DipinAsyncMsg queryConditionAndOrderAndColumnSingle() {
-//        Date s = DateUtils.parseDate("2022-8-10");
-//        List<TUser> list = db.findQuery(TUser.class).where(t -> t.getId().equals("1001"))
-//                .thenAsc(TUser::getId).thenDesc(TUser::getCreateTime).find();
-//        return list;
-
-        DipinAsyncMsg msg = db.findQuery(DipinAsyncMsg.class).where(f -> f.getId().equals("jobId")).find().fistOrDefault();
-        return msg;
-    }
 
 
 }

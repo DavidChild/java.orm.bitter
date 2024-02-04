@@ -19,17 +19,16 @@ public class DataValue {
     }
 
     public <T> DataValue  setDataValue(FieldProperty property, T data) {
-        DataValue dv = new DataValue();
-        dv.setDbIdType(property.getIdType());
-        dv.setClassType(property.getField().getType());
-        dv.setDbName(property.getDbFieldName());
-        dv.setClassInnerName(property.getClassInnerFieldName());
-        dv.setIsKey(property.isKey);
-        dv.setIsIdentity(property.isIdentity);
+        this.setDbIdType(property.getIdType());
+        this.setClassType(property.getField().getType());
+        this.setDbName(property.getDbFieldName());
+        this.setClassInnerName(property.getClassInnerFieldName());
+        this.setIsKey(property.isKey);
+        this.setIsIdentity(property.isIdentity);
         if (data != null) {
             Object v = CoreUtils.getFieldValueByName(property.getClassInnerFieldName(), data);
-            dv.setValue(v);
+            this.setValue(v);
         }
-        return dv;
+        return  this;
     }
 }

@@ -16,6 +16,6 @@ public interface IBaseModelOp {
 
     // Judge whether the primary key value exists. If the data is instantiated from the database, the primary key value
     // must exist
-    boolean haveKeyValue();
+    boolean hasKeyValue();
 
 }

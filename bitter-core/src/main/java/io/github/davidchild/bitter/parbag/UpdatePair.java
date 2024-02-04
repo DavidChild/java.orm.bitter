@@ -10,6 +10,11 @@ public class UpdatePair {
         this.columnName = columnName;
         this.columnValue = columnValue;
     }
+    public UpdatePair(String columnName, Object columnValue,String dbFieldName) {
+        this.columnName = columnName;
+        this.columnValue = columnValue;
+        this.dbFieldName = dbFieldName;
+    }
 
     public String getColumnName() {
         return columnName;

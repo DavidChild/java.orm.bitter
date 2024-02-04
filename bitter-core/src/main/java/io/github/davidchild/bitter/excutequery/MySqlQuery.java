@@ -133,8 +133,9 @@ public class MySqlQuery extends BaseQuery {
                 }
             }
         }
-        if (bagPar.condition != null)
-            whereSQL.append(this.setWhere(bagPar.condition));
+//        if (bagPar.condition != null)
+//            whereSQL.append(this.setWhere(bagPar.condition));
+
         if (bagPar.getData() != null) {
             whereSQL.append(" WHERE ");
             Object keyValue = bagPar.getKeyInfo().getValue();

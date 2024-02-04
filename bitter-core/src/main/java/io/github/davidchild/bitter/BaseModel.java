@@ -31,7 +31,7 @@ public class BaseModel implements Serializable, IBaseModelOp {
 
     @Override
     public boolean save() {
-        if (!this.haveKeyValue()) {
+        if (!this.hasKeyValue()) {
             return insert().submit() >= 0;
         } else {
             return this.update().submit() > 0;
@@ -39,7 +39,7 @@ public class BaseModel implements Serializable, IBaseModelOp {
     }
 
     @Override
-    public boolean haveKeyValue() {
+    public boolean hasKeyValue() {
         DataValue key = CoreUtils.getTypeKey(this.getClass(), this);
         if (key != null && CoreStringUtils.isNotNull(key.getValue())) {
             return true;

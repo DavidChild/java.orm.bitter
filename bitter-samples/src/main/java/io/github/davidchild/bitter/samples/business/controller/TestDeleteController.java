@@ -13,7 +13,7 @@ public class TestDeleteController {
     @GetMapping("/test-delete-by-id-model")
     public boolean deleteByModel(String id) {
         TStudent student = db.findQuery(TStudent.class).where(f -> f.getId().equals(id)).find().fistOrDefault();
-        if (student.haveKeyValue()) {
+        if (student.hasKeyValue()) {
             return student.delete().submit() > -1; //note: error will be return -1,if error,pls see the error log msg.
         }
         return true;

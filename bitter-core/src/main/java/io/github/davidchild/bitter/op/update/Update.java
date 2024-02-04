@@ -24,7 +24,7 @@ public class Update<T extends BaseModel> extends WhereQuery<T> {
 
     public Update<T> setColum(FieldFunction<T> filed, Object object) {
         String filedName = executeParBag.getDbFieldByInnerClassFiled(filed);
-        ((ExecuteParBagUpdate) executeParBag).SetUpdatePair(new UpdatePair(filedName, object));
+        ((ExecuteParBagUpdate) executeParBag).SetUpdatePair(new UpdatePair(filedName, object,filedName));
         return this;
     }
 

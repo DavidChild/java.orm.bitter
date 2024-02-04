@@ -31,13 +31,10 @@ public class TDeptServiceImpl extends ServiceImpl<TDeptMapper, TDept> implements
 
     public boolean updateModel(Long id) {
         TDept dept = db.findQuery(TDept.class).where(f -> f.getDeptId() == id).find().fistOrDefault(); // fistOrDefault 数据库没有也会返回一条空对象,在接下来的使用中,避免业务性空指针
-        if (dept.haveKeyValue()) // haveKeyValue 用来判断此数据库对象的主键字段是否存在有值
-        {
+        if (dept.hasKeyValue()) // haveKeyValue 用来判断此数据库对象的主键字段是否存在有值{
             dept.setDeptName("change the dept name");
-            dept.setCreateTime(new Date());
-            return dept.update().submit() > -1;
-        }
-        return true;
+        dept.setCreateTime(new Date());
+        return dept.update().submit() > -1;
     }
-
 }
+

@@ -92,7 +92,7 @@ public class TStudentServiceImpl extends ServiceImpl<TStudentMapper, TStudent> i
 
     public boolean deleteByModel(Long id) {
         TStudent student = db.findQuery(TStudent.class).where(f -> f.getId() == id).find().fistOrDefault(); // fistOrDefault 数据库没有也会返回一条空对象,在接下来的使用中,避免业务性空指针
-        if (student.haveKeyValue()) // haveKeyValue 用来判断此数据库对象的主键字段是否存在有值
+        if (student.hasKeyValue()) // haveKeyValue 用来判断此数据库对象的主键字段是否存在有值
         {
             return student.delete().submit() > -1;
         }

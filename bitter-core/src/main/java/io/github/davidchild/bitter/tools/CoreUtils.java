@@ -47,27 +47,21 @@ public class CoreUtils {
 
     public static <T>  DataValue getTypeKey(Class<?> type, T data){
         List<FieldProperty> list = getAllFields(type);
-        List<DataValue>  datakeyValue = list.stream().filter(property -> property.isKey).map(item
-                ->CoreUtils.getKeyDataValue(item,data)).collect(Collectors.toCollection(ArrayList::new));
-        if(datakeyValue == null || datakeyValue.size()<1){
-            return  null;
-        }
-        return  datakeyValue.get(0);
+        return list.stream().filter(property -> property.isKey).map(item
+                ->CoreUtils.getKeyDataValue(item,data)).findFirst().get();
+
     }
 
     public static <T> List<DataValue> getIdentity(Class<?> type, T data){
         List<FieldProperty> list = getAllFields(type);
-        List<DataValue>  dataIdentityValue = list.stream().filter(property -> property.isIdentity).map(item
-                ->CoreUtils.getKeyDataValue(item,data)).collect(Collectors.toCollection(ArrayList::new));
-        if(dataIdentityValue == null || dataIdentityValue.size()<1){
-            return  null;
-        }
-        return  dataIdentityValue;
+        return  list.stream().filter(property -> property.isIdentity).map(item
+                ->CoreUtils.getKeyDataValue(item,data)).collect(Collectors.toList());
+
     }
 
     private static <T> DataValue   getKeyDataValue(FieldProperty p, T data){
         DataValue dv = new DataValue();
-        dv.setDataValue(p,data);
+        dv = dv.setDataValue(p,data);
         return  dv;
     }
 

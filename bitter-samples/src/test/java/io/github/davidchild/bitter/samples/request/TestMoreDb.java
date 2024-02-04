@@ -1,4 +1,4 @@
-package io.github.davidchild.bitter.samples;
+package io.github.davidchild.bitter.samples.request;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,14 +14,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-class TestDelete extends TsRequest {
+class TestMoreDb extends TsRequest {
 
     private TsRequest request;
     private MockMvc mvc;
     @Autowired
     private WebApplicationContext wac;
 
-    public TestDelete() {
+    public TestMoreDb() {
         InitTsRequest("http://localhost:8097/", "", "");
     }
 
@@ -31,12 +31,20 @@ class TestDelete extends TsRequest {
         System.out.println("init mock module");
     }
 
+
     @Test
-    void testDelete() throws Exception {
-        String responseString = mvc.perform(MockMvcRequestBuilders.get("/business/t-student/delete?id=7").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())    //返回的状态是200
-                .andDo(print())
-                .andReturn().getResponse().getContentAsString();
+    void hello() throws Exception {
+
+        String responseString = mvc.perform(MockMvcRequestBuilders.get("/business/t-dept/hello").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())    //返回的状态是200
+                .andDo(print())         //打印出请求和相应的内容
+                .andReturn().getResponse().getContentAsString();   //将相应的数据转换为字符串;
         System.out.println("获取结果为：" + responseString);
+    }
+
+
+    @Test
+    void testMoreDb() throws Exception {
+        // todo;
     }
 
 }

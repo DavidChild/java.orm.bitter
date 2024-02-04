@@ -1,30 +1,29 @@
-package io.github.davidchild.bitter.samples;
+package io.github.davidchild.bitter.samples.request;
 
-import io.github.davidchild.bitter.samples.business.entity.TDept;
+import io.github.davidchild.bitter.samples.business.entity.TStudent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.util.Date;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-class TestBatchInsert extends TsRequest {
+class TestInsert extends TsRequest {
 
     private TsRequest request;
     private MockMvc mvc;
     @Autowired
     private WebApplicationContext wac;
 
-    public TestBatchInsert() {
+    public TestInsert() {
         InitTsRequest("http://localhost:8097/", "", "");
     }
 
@@ -33,16 +32,24 @@ class TestBatchInsert extends TsRequest {
         mvc = MockMvcBuilders.webAppContextSetup(wac).build();
         System.out.println("init mock module");
     }
-    
+
+    @Test
+    void hello() throws Exception {
+
+        String responseString = mvc.perform(MockMvcRequestBuilders.get("/business/t-dept/hello").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())    //返回的状态是200
+                .andDo(print())         //打印出请求和相应的内容
+                .andReturn().getResponse().getContentAsString();   //将相应的数据转换为字符串;
+        System.out.println("获取结果为：" + responseString);
+    }
+
+
     @Test
     void testInsert() throws Exception {
-        TDept dept = new TDept();
-        dept.setDeptName("测试部分");
-        dept.setCreateBy("davidChild");
-        dept.setCreateTime(new Date());
-        String responseString = mvc.perform(post("/business/t-dept/save-dept/")
+        TStudent student = new TStudent();
+        student.setName("david-child");
+        String responseString = mvc.perform(post("/business/t-student/insert/")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(dept))
+                        .content(asJsonString(student))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())

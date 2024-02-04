@@ -1,29 +1,30 @@
-package io.github.davidchild.bitter.samples;
+package io.github.davidchild.bitter.samples.request;
 
-import io.github.davidchild.bitter.samples.business.entity.TStudent;
+import io.github.davidchild.bitter.samples.business.entity.TDept;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.Date;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-class TestInsert extends TsRequest {
+class TestUpdata extends TsRequest {
 
     private TsRequest request;
     private MockMvc mvc;
     @Autowired
     private WebApplicationContext wac;
 
-    public TestInsert() {
+    public TestUpdata() {
         InitTsRequest("http://localhost:8097/", "", "");
     }
 
@@ -34,28 +35,34 @@ class TestInsert extends TsRequest {
     }
 
     @Test
-    void hello() throws Exception {
-
-        String responseString = mvc.perform(MockMvcRequestBuilders.get("/business/t-dept/hello").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())    //返回的状态是200
-                .andDo(print())         //打印出请求和相应的内容
-                .andReturn().getResponse().getContentAsString();   //将相应的数据转换为字符串;
-        System.out.println("获取结果为：" + responseString);
-    }
-
-
-    @Test
     void testInsert() throws Exception {
-        TStudent student = new TStudent();
-        student.setName("david-child");
-        String responseString = mvc.perform(post("/business/t-student/insert/")
+        TDept dept = new TDept();
+        dept.setDeptName("测试部分");
+        dept.setCreateBy("davidChild");
+        dept.setCreateTime(new Date());
+        String responseString = mvc.perform(post("/business/t-dept/save-dept/")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(student))
+                        .content(asJsonString(dept))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andReturn().getResponse().getContentAsString();
         writeResult(responseString);
-
+    }
+    @Test
+    void testUpdata() throws Exception {
+        TDept dept = new TDept();
+        dept.setDeptName("测试部分");
+        dept.setCreateBy("davidChild");
+        dept.setCreateTime(new Date());
+        String responseString = mvc.perform(post("/business/t-dept/save-dept/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(dept))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andReturn().getResponse().getContentAsString();
+        writeResult(responseString);
     }
 
 }

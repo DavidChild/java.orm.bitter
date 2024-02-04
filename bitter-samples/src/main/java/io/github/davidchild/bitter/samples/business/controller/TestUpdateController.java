@@ -12,7 +12,7 @@ public class TestUpdateController {
     @GetMapping("/test-update-by-model")
     public boolean updateData(Long id) {
         TStudent student = db.findQuery(TStudent.class).where(f -> f.getId() == id).find().fistOrDefault();
-        if (student.haveKeyValue()) {
+        if (student.hasKeyValue()) {
             student.setName("hbj-david-child");
             // note: error will be return -1,if error,pls see the error log msg.
             return student.update().submit() > -1; // that will update all fields value to this db recode instance data  by the student object

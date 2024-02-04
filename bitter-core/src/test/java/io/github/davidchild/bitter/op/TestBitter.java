@@ -124,7 +124,7 @@ public class TestBitter {
     @Test
     public void testQueryById() throws Exception {
         TUserInfo sysUser = db.findQuery(TUserInfo.class, "1552178014981849090").find();
-        if (sysUser.haveKeyValue()) {
+        if (sysUser.hasKeyValue()) {
             String t = "";
         } else {
 

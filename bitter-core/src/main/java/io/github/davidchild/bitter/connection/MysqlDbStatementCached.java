@@ -46,6 +46,7 @@ public class MysqlDbStatementCached implements IDbStatement {
                 BitterLogUtil.logWriteError(e, params);
             }
           } catch (DataSourceException e) {
+            BitterLogUtil.logWriteError(e, params);
         }
         return result;
     }
