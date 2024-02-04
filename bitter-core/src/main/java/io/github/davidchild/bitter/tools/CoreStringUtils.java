@@ -1,8 +1,8 @@
 package io.github.davidchild.bitter.tools;
 
-import java.util.*;
-
 import org.springframework.util.AntPathMatcher;
+
+import java.util.*;
 
 public class CoreStringUtils extends org.apache.commons.lang3.StringUtils {
     /** Empty string */
@@ -82,11 +82,11 @@ public class CoreStringUtils extends org.apache.commons.lang3.StringUtils {
      * @param str String @ return true: null false: non null
      */
     public static boolean isEmpty(String str) {
-        return isNull(str) || NULLSTR.equals(str.trim());
+        return isNull(str) || NULLSTR.equals(str.trim())|| "".equals(str);
     }
 
     /**
-     ** Judge whether a string is non empty
+     **  whether a string is non empty
      *
      * @param str String @ return true: non empty string false: empty string
      */
