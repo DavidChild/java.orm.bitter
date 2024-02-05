@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: local
+  h2:
+    console:
+      path: /h2-console  #h2嵌入式数据库控制台，可以通过浏览器访问
+      enabled: true
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: org.h2.Driver
+    druid:
+      master:
+        url: jdbc:h2:file:~/bitter;AUTO_SERVER=TRUE;MODE=MySQL;DATABASE_TO_LOWER=TRUE;
+        username: sa
+        password: 123456
+      initialSize: 1
+      minIdle: 1
+      maxActive: 1
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      maxEvictableIdleTimeMillis: 900000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      webStatFilter:
+        enabled: true
+      statViewServlet:
+        enabled: true
+        allow:
+        url-pattern: /druid/*
+        login-username: test
+        login-password: test123
+      filter:
+        stat:
+          enabled: true
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: true
+        wall:
+          config:
+            multi-statement-allow: true
+
+bitter:
+  sqlLog: true
+  cache:
+    enabledRedis: true
+    enabledLocalCache: false
+    redis:
+      hosts:
+        - ip: localhost
+          port: 6379
+        - ip: 127.0.0.1
+          port: 6379
+      database: 1
+      password:
+      timeout: 100
+      lettuce:
+        pool:
+          minIdle: 0
+          maxIdle: 10
+          maxActive: 30
+          maxTotal: 30
+          maxWait: 200
+

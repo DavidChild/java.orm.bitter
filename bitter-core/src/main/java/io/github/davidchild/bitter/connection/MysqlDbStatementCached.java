@@ -84,7 +84,8 @@ public class MysqlDbStatementCached implements IDbStatement {
                 try (PreparedStatement stmt = db.connection.prepareStatement(commandTest)) {
                     if (CoreStringUtils.isNotEmpty(params)) {
                         for (int i = 0; i < params.size(); i++) {
-                            stmt.setObject(i + 1, params.get(i));
+                            MetaTypeCt.getTypeHandler(params.get(i).getClass()).setObjectParameter(stmt,i+1,params.get(i),null);
+//                            stmt.setObject(i + 1, params.get(i));
                         }
                     }
                     int aff = stmt.executeUpdate();
