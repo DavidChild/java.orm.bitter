@@ -9,7 +9,7 @@ public class JavaBeanMapResultHandler extends  DataResultHandlerBase {
         super(convert,null,ResultHandlerEnum.JavaBeanMap);
     }
     @Override
-    public Object GetResult(ResultSet resultSet) throws SQLException {
+    public Object GetResult(ResultSet resultSet) throws SQLException, ClassNotFoundException {
         return convert.JavaBeanMapResult(resultSet);
     }
 }

@@ -1,4 +1,4 @@
-package io.github.davidchild.bitter.test.Init;
+package io.github.davidchild.bitter.test.init;
 
 public class TableStruct {
         final  static  String  student = SchemaH2.getSchemaH2("classpath:db/h2__students.sql");

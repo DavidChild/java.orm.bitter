@@ -1,4 +1,4 @@
-package io.github.davidchild.bitter.test.Init;
+package io.github.davidchild.bitter.test.init;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -11,5 +11,6 @@ public class CreateBaseMockSchema {
     @Before
     public void beforeInit(){
         H2MockDataInit.InitTable();
+        MockData.MockUserData1();
     }
 }

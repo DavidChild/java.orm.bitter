@@ -1,7 +1,7 @@
-package io.github.davidchild.bitter.test.test;
+package io.github.davidchild.bitter.test.core;
 
 import io.github.davidchild.bitter.db.db;
-import io.github.davidchild.bitter.test.Init.CreateBaseMockSchema;
+import io.github.davidchild.bitter.test.init.CreateBaseMockSchema;
 import io.github.davidchild.bitter.test.business.entity.TStudent;
 import lombok.var;
 import org.junit.Test;
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class TestUpdata  extends CreateBaseMockSchema {
+public class UpdataTest extends CreateBaseMockSchema {
 
     @Test
     public void TestUpdateDataSomeRecodeColumn() {
@@ -30,6 +30,8 @@ public class TestUpdata  extends CreateBaseMockSchema {
         var student = db.findQuery(TStudent.class).where(p->p.getId()==1).find().fistOrDefault();
         boolean bl = student.hasKeyValue();
         assertEquals(true, bl);
+
+
 
     }
 

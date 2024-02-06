@@ -1,4 +1,4 @@
-package io.github.davidchild.bitter.test.coreToolsTest;
+package io.github.davidchild.bitter.test.tools;
 
 import io.github.davidchild.bitter.dbtype.DataValue;
 import io.github.davidchild.bitter.test.business.entity.TUser;
@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.util.List;
+
 
 public class CoreUtilsTest extends TestCase {
 

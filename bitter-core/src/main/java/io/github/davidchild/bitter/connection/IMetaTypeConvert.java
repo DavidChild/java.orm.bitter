@@ -21,7 +21,7 @@ public interface IMetaTypeConvert {
 
     Object convertJavaTypeToMetaTypeValue(Field field, Object javaTypeValue);
 
-    default List<Map<String, Object>> JavaBeanMapResult(ResultSet rs) throws SQLException {
+    default List<Map<String, Object>> JavaBeanMapResult(ResultSet rs) throws SQLException, ClassNotFoundException {
         List<Map<String, Object>> list = new ArrayList<>();
         ResultSetMetaData md = rs.getMetaData();
         int columnCount = md.getColumnCount();
@@ -30,7 +30,8 @@ public interface IMetaTypeConvert {
             Map<String, Object> rowData = new HashMap<>();
             for (int i = 1; i <= columnCount; i++) {
                 String columnName = md.getColumnName(i);
-                TypeHandlerBase<?> handler = typeHandlerBases.get(i);
+                Class<?> type = MetaTypeCt.getClassForMetaName(md.getColumnClassName(i));
+                TypeHandlerBase<?> handler = MetaTypeCt.getTypeHandler(type);
                 rowData.put(columnName.toLowerCase(), handler.getResult(rs, columnName));
             }
             list.add(rowData);

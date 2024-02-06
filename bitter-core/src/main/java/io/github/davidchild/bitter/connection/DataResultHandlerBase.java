@@ -17,5 +17,5 @@ public abstract class DataResultHandlerBase {
 
       protected ResultHandlerEnum handlerEnum;
 
-     public abstract  Object GetResult(ResultSet resultSet) throws SQLException, InstantiationException, IllegalAccessException;
+     public abstract  Object GetResult(ResultSet resultSet) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException;
 }

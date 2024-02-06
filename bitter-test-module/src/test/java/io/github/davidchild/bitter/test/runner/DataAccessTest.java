@@ -1,4 +1,4 @@
-package io.github.davidchild.bitter.test.runnerTest;
+package io.github.davidchild.bitter.test.runner;
 
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import io.github.davidchild.bitter.connection.DataAccess;

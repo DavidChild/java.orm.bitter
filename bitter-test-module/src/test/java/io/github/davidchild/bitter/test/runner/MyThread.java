@@ -1,4 +1,4 @@
-package io.github.davidchild.bitter.test.runnerTest;
+package io.github.davidchild.bitter.test.runner;
 
 public class MyThread extends Thread {
     public void run() {

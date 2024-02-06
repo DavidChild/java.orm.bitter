@@ -1,4 +1,4 @@
-package io.github.davidchild.bitter.test.pareseTest;
+package io.github.davidchild.bitter.test.parese;
 
 import io.github.davidchild.bitter.parse.BitterPredicate;
 import io.github.davidchild.bitter.parse.BitterVisitor;

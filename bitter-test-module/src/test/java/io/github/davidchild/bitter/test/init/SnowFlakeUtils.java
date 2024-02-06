@@ -1,4 +1,4 @@
-package io.github.davidchild.bitter.test.test;
+package io.github.davidchild.bitter.test.init;
 
 import com.baomidou.mybatisplus.core.toolkit.SystemClock;
 import lombok.extern.slf4j.Slf4j;

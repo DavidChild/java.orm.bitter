@@ -1,4 +1,4 @@
-package io.github.davidchild.bitter.test.Init;
+package io.github.davidchild.bitter.test.init;
 
 import cn.hutool.core.io.FileUtil;
 import org.springframework.util.ResourceUtils;

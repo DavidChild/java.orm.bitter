@@ -1,4 +1,4 @@
-package io.github.davidchild.bitter.test.Init;
+package io.github.davidchild.bitter.test.init;
 
 import io.github.davidchild.bitter.db.db;
 

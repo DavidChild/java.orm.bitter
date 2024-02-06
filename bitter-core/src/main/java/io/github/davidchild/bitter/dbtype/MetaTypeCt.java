@@ -12,12 +12,16 @@ public class MetaTypeCt {
 
     }
 
-    public  static  Class<?> getClassForMetaName(String name) throws ClassNotFoundException {
+    public static  Class<?> getClassForMetaName(String name) throws ClassNotFoundException {
         return metaTypeLoaderWrapper.classForName(name);
     }
 
 
     public static   <T> TypeHandlerBase<T> getTypeHandler(Class<T> type) {
+        return metaTypeConvertRegistry.getTypeHandler((Type) type, null);
+    }
+
+    public static   <T> TypeHandlerBase<T> getTypeHandler(Type type) {
         return metaTypeConvertRegistry.getTypeHandler((Type) type, null);
     }
 
