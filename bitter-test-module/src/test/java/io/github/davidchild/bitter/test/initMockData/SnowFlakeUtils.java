@@ -1,4 +1,4 @@
-package io.github.davidchild.bitter.test.init;
+package io.github.davidchild.bitter.test.initMockData;
 
 import com.baomidou.mybatisplus.core.toolkit.SystemClock;
 import lombok.extern.slf4j.Slf4j;

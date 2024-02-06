@@ -2,7 +2,7 @@ package io.github.davidchild.bitter.test.core;
 
 import io.github.davidchild.bitter.db.db;
 import io.github.davidchild.bitter.op.scope.DbScope;
-import io.github.davidchild.bitter.test.init.CreateBaseMockSchema;
+import io.github.davidchild.bitter.test.initMockData.CreateBaseMockSchema;
 import io.github.davidchild.bitter.test.business.entity.Sex;
 import io.github.davidchild.bitter.test.business.entity.TStudent;
 import org.junit.Ignore;

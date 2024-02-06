@@ -1,4 +1,4 @@
-package io.github.davidchild.bitter.test.init;
+package io.github.davidchild.bitter.test.initMockData;
 
 import io.github.davidchild.bitter.test.business.entity.Sex;
 import io.github.davidchild.bitter.test.business.entity.TStudent;

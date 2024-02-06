@@ -1,4 +1,4 @@
-package io.github.davidchild.bitter.test.init;
+package io.github.davidchild.bitter.test.initMockData;
 
 import java.math.BigDecimal;
 import java.text.ParseException;

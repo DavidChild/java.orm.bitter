@@ -2,7 +2,7 @@ package io.github.davidchild.bitter.test.core;
 
 import io.github.davidchild.bitter.db.db;
 import io.github.davidchild.bitter.op.page.PageQuery;
-import io.github.davidchild.bitter.test.init.CreateBaseMockSchema;
+import io.github.davidchild.bitter.test.initMockData.CreateBaseMockSchema;
 import io.github.davidchild.bitter.test.business.entity.TUser;
 import io.github.davidchild.bitter.test.runner.ThreadTest;
 import io.github.davidchild.bitter.tools.DateUtils;

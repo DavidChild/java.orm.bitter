@@ -1,7 +1,7 @@
 package io.github.davidchild.bitter.test.core;
 
 import io.github.davidchild.bitter.functional.IfInnerLambda;
-import io.github.davidchild.bitter.test.init.CreateBaseMockSchema;
+import io.github.davidchild.bitter.test.initMockData.CreateBaseMockSchema;
 import io.github.davidchild.bitter.test.business.entity.TStudent;
 import org.junit.Test;
 import org.junit.runner.RunWith;
