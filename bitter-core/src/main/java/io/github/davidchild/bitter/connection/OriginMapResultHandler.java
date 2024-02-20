@@ -9,7 +9,7 @@ public class OriginMapResultHandler extends  DataResultHandlerBase {
         super(convert,targetclassType,ResultHandlerEnum.OriginMap);
     }
     @Override
-    public Object GetResult(ResultSet resultSet) throws SQLException {
+    public Object GetResult(ResultSet resultSet) throws SQLException, ClassNotFoundException {
         return  convert.OriginResult(resultSet);
     }
 }

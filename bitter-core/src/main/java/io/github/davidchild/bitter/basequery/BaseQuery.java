@@ -2,7 +2,9 @@ package io.github.davidchild.bitter.basequery;
 
 import io.github.davidchild.bitter.BaseModel;
 import io.github.davidchild.bitter.connection.DataAccess;
+import io.github.davidchild.bitter.datatable.DataTable;
 import io.github.davidchild.bitter.exception.VisitorException;
+import io.github.davidchild.bitter.excutequery.ClickHouseQuery;
 import io.github.davidchild.bitter.excutequery.MySqlQuery;
 import io.github.davidchild.bitter.parbag.ExecuteParBagInsert;
 import io.github.davidchild.bitter.parse.BitterPredicate;
@@ -18,9 +20,9 @@ import java.util.Map;
 
 public class BaseQuery extends BaseExecute implements Type {
 
-    protected List<Map<String, Object>> getData() throws SQLException {
+    protected DataTable getData() throws SQLException {
         this.convert();
-        List<Map<String, Object>> mapData = DataAccess.executeQuery(this);
+        DataTable mapData = DataAccess.executeQuery(this);
         if (mapData != null && mapData.size() > 0) {
             return mapData;
         }
@@ -199,6 +201,9 @@ public class BaseQuery extends BaseExecute implements Type {
     private BaseQuery mapToExecuteQuery() {
         BaseQuery vdb;
         switch (this.getDbType()) {
+            case ClickHouse:
+                vdb = new ClickHouseQuery();
+                break;
             default:
                 vdb = new MySqlQuery();
                 break;

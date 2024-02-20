@@ -3,7 +3,8 @@ package io.github.davidchild.bitter.op.find;
 import io.github.davidchild.bitter.BaseModel;
 import io.github.davidchild.bitter.basequery.ExecuteEnum;
 import io.github.davidchild.bitter.basequery.WhereQuery;
-import io.github.davidchild.bitter.bitterlist.BList;
+import io.github.davidchild.bitter.datatable.BList;
+import io.github.davidchild.bitter.datatable.DataTable;
 import io.github.davidchild.bitter.exception.DbOrConvertException;
 import io.github.davidchild.bitter.op.FieldFunction;
 import io.github.davidchild.bitter.parbag.ExecuteParBagCount;
@@ -16,7 +17,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class FindQuery<T extends BaseModel> extends WhereQuery<T> {
 
@@ -70,7 +70,7 @@ public class FindQuery<T extends BaseModel> extends WhereQuery<T> {
         countBag.setType(executeParBag.getType());
         this.executeParBag = countBag;
 
-        List<Map<String, Object>> objectMap = this.getData();
+        DataTable objectMap = this.getData();
         if (objectMap != null && objectMap.size() > 0) {
             Object count = objectMap.get(0).values().stream().findFirst().orElse(null);
             if (count == null)

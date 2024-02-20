@@ -44,6 +44,7 @@ public class DataSourceFactory {
     }
 
     public static Connection getDataSourceConnection() {
+
         try {
             if (dynamicSource != null)
                 return dynamicSource.getConnection();

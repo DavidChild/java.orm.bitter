@@ -1,4 +1,4 @@
-package io.github.davidchild.bitter.bitterlist;
+package io.github.davidchild.bitter.datatable;
 
 import io.github.davidchild.bitter.exception.CreateDefaultInstanceException;
 
@@ -35,4 +35,6 @@ public class BList<OT> extends ArrayList<OT> {
             throw new CreateDefaultInstanceException("the type:" + myType.getTypeName() + " is not exist   @NoArgsConstructor annotation; You can add  the annotations: @NoArgsConstructor," + " to this class");
         }
     }
+
+
 }

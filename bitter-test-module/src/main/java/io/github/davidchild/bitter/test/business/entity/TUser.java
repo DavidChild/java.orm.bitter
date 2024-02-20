@@ -25,6 +25,7 @@ import java.util.Date;
 public class TUser extends BaseModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @TableId("id")
     public String id;
 

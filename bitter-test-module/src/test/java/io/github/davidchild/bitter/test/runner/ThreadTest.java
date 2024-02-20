@@ -1,13 +1,11 @@
 package io.github.davidchild.bitter.test.runner;
 
+import io.github.davidchild.bitter.datatable.DataTable;
 import io.github.davidchild.bitter.db.db;
 import io.github.davidchild.bitter.op.page.MyPage;
 import io.github.davidchild.bitter.op.page.PageQuery;
 import io.github.davidchild.bitter.test.business.entity.TUser;
 import lombok.SneakyThrows;
-
-import java.util.List;
-import java.util.Map;
 
 public class ThreadTest extends Thread {
     @SneakyThrows
@@ -24,7 +22,7 @@ public class ThreadTest extends Thread {
         page.thenDESC("us.create_time");
 
         page.skip(1).take(10);
-        List<Map<String, Object>> mapList = page.getData();
+        DataTable mapList = page.getData();
         Integer count = page.getCount();
         Integer count2 = page.getCount();
         int i = 0;

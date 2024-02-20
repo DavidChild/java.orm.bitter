@@ -1,9 +1,9 @@
 package io.github.davidchild.bitter.op.page;
 
-import java.util.List;
-import java.util.Map;
-
 import io.github.davidchild.bitter.basequery.ExecuteMode;
+import io.github.davidchild.bitter.datatable.DataTable;
+
+import java.util.List;
 
 /********************************************************************************
  ** auth： davidChild date： 2017/2/20 10:35:38 desc： Ver.: V1.0.0 Copyright (C) 2016 Bitter copyright。
@@ -35,7 +35,7 @@ public interface IUnionPageAccess {
 
     IUnionPageAccess thenDESC(String filedName);
 
-    List<Map<String, Object>> getData();
+    DataTable getData();
 
     IUnionPageAccess union(IPageAccess page);
 

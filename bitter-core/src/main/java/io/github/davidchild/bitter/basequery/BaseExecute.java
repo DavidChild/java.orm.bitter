@@ -1,6 +1,7 @@
 package io.github.davidchild.bitter.basequery;
 
 import io.github.davidchild.bitter.connection.DatabaseType;
+import io.github.davidchild.bitter.connection.SessionDbType;
 import io.github.davidchild.bitter.parbag.ExecuteParBag;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class BaseExecute {
     protected List<List<Object>> scopeParams;
     // sql parameters
     protected List<Object> parameters = new ArrayList<>();
-    private DatabaseType dbType = DatabaseType.MySQL;
+    private DatabaseType dbType;
 
   
     public BaseExecute() {
@@ -25,7 +26,7 @@ public class BaseExecute {
 
     public DatabaseType getDbType() {
         if (dbType == null)
-            return DatabaseType.MySQL;
+            return SessionDbType.getSessionDbType();
         return dbType;
     }
 

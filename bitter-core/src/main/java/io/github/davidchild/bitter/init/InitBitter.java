@@ -1,6 +1,8 @@
 package io.github.davidchild.bitter.init;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import io.github.davidchild.bitter.connection.DatabaseType;
+import io.github.davidchild.bitter.connection.SessionDbType;
 import io.github.davidchild.bitter.db.Bitter;
 import io.github.davidchild.bitter.extra.BitterSpringUtils;
 import io.github.davidchild.bitter.tools.BitterLogUtil;
@@ -13,6 +15,8 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 @Configuration
 @AutoConfigureOrder(-1)
@@ -31,9 +35,9 @@ public class InitBitter {
                 + "| | | |  __/ | | (_) |  | |_| \\__ \\  __/ | |_) | | |_| ||  __/ |   \n"
                 + "|_| |_|\\___|_|_|\\___( )  \\__,_|___/\\___| |_.__/|_|\\__|\\__\\___|_|   \n"
                 + "                    |/                                             ");
-        BitterLogUtil.getInstance().info("version：{}", "2.0.0-RELEASE");
-        BitterLogUtil.getInstance().info("Bulbhead by David-Child, FEB 4, 2024");
-        BitterLogUtil.getInstance().info("Figlet release 2.0.0 --  FEB 4, 2023 ");
+        BitterLogUtil.getInstance().info("version：{}", "2.0.1-RELEASE");
+        BitterLogUtil.getInstance().info("Bulbhead by David-Child, FEB 20, 2024");
+        BitterLogUtil.getInstance().info("Figlet release 2.0.1 --  FEB 20, 2023 ");
         BitterLogUtil.getInstance().info("github：{}", "https://github.com/davidchild/java.orm.bitter.git");
         BitterLogUtil.getInstance().info(moduleName);
         BitterLogUtil.getInstance().info(" \n"
@@ -49,7 +53,7 @@ public class InitBitter {
 
 
     @Bean
-    public void AutoInitBitterDataSource() {
+    public void AutoInitBitterDataSource() throws SQLException {
 
         if (config != null) {
             BitterConfig.getInstance().setCache(config.getCache());
@@ -63,22 +67,33 @@ public class InitBitter {
                 dataSource = springUtils.getBean(AbstractRoutingDataSource.class);
                 if (dataSource != null) {
                     Bitter.setDbSources(dataSource);
+                    SessionDbType.setSessionDbType(getDataBaseId((DataSource)dataSource));
                     return;
                 }
                 DruidDataSource druidDataSource = springUtils.getBean(DruidDataSource.class);
                 if (druidDataSource != null) {
                     Bitter.setDbSources(druidDataSource);
+                    SessionDbType.setSessionDbType(getDataBaseId((DataSource)druidDataSource));
                     return;
                 }
                 DataSource c = springUtils.getBean(DataSource.class);
                 if (druidDataSource != null) {
                     Bitter.setDbSources(dataSource);
+                    SessionDbType.setSessionDbType(getDataBaseId((DataSource)c));
                     return;
                 }
             }
         }
-
-
     }
-
+    private DatabaseType getDataBaseId(DataSource dataSource) throws SQLException {
+        Connection conn = dataSource.getConnection();
+        String dbTypeName = conn.getMetaData().getDatabaseProductName();
+        if(conn != null && !conn.isClosed()){
+            conn.close();
+        }
+        if(dbTypeName !=null &&  dbTypeName != "" ){
+            return  DatabaseType.valueOf(dbTypeName);
+        }
+        return  DatabaseType.MySQL;
+    }
 }

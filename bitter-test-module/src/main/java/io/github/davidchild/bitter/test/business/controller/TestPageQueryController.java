@@ -1,7 +1,7 @@
 package io.github.davidchild.bitter.test.business.controller;
 
 import io.github.davidchild.bitter.basequery.SubStatementEnum;
-import io.github.davidchild.bitter.bitterlist.BMap;
+import io.github.davidchild.bitter.datatable.DataTable;
 import io.github.davidchild.bitter.op.page.PageQuery;
 import io.github.davidchild.bitter.test.business.entity.TStudent;
 import io.github.davidchild.bitter.test.business.vo.VoInUser;
@@ -44,7 +44,7 @@ public class TestPageQueryController {
 
         // set the page number and page size
         page.skip(1).take(10);
-        BMap data = page.getData();  // get the data
+        DataTable data = page.getData();  // get the data
         Integer count = page.getCount(); // get the data recode
         return data.toBList(VoOutUser.class); // convert to the target class collection
 

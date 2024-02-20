@@ -2,9 +2,9 @@ package io.github.davidchild.bitter.connection;
 
 import io.github.davidchild.bitter.BaseModel;
 import io.github.davidchild.bitter.basequery.BaseQuery;
+import io.github.davidchild.bitter.datatable.DataTable;
 
 import java.util.List;
-import java.util.Map;
 
 public class DataAccess {
 
@@ -45,9 +45,9 @@ public class DataAccess {
         return isSuccess;
     }
 
-    public static List<Map<String, Object>> executeQuery(BaseQuery baseQuery) {
+    public static DataTable executeQuery(BaseQuery baseQuery) {
         IMetaTypeConvert convert = StatementFactory.getMetaTyeConvert(baseQuery.getDbType());
-        return (List<Map<String, Object>>)StatementFactory.getStatement(baseQuery.getExecuteParBag().getExecuteMode())
+        return (DataTable) StatementFactory.getStatement(baseQuery.getExecuteParBag().getExecuteMode())
                 .Query(baseQuery.getCommandText(), baseQuery.getParameters(),new JavaBeanMapResultHandler(convert,null));
     }
 

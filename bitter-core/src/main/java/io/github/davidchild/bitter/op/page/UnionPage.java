@@ -1,11 +1,11 @@
 package io.github.davidchild.bitter.op.page;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import io.github.davidchild.bitter.basequery.BaseQuery;
 import io.github.davidchild.bitter.basequery.ExecuteMode;
+import io.github.davidchild.bitter.datatable.DataTable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UnionPage extends BaseQuery implements IUnionPageAccess {
 
@@ -65,8 +65,8 @@ public class UnionPage extends BaseQuery implements IUnionPageAccess {
     /// Find set data
     /// </summary>
     /// <returns></returns>
-    public List<Map<String, Object>> getData() {
-        List<Map<String, Object>> DRS = new ArrayList<>();;
+    public DataTable getData() {
+        DataTable DRS = new DataTable();;
         for (IPageAccess page : unionQueryList) {
             DRS.addAll(page.getData());
         }

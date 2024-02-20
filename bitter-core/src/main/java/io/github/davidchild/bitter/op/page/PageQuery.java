@@ -4,7 +4,7 @@ import io.github.davidchild.bitter.basequery.BaseQuery;
 import io.github.davidchild.bitter.basequery.ExecuteEnum;
 import io.github.davidchild.bitter.basequery.ExecuteMode;
 import io.github.davidchild.bitter.basequery.SubStatement;
-import io.github.davidchild.bitter.bitterlist.BMap;
+import io.github.davidchild.bitter.datatable.DataTable;
 import io.github.davidchild.bitter.functional.IfInnerLambda;
 import io.github.davidchild.bitter.parbag.ExecuteParBagPage;
 import io.github.davidchild.bitter.tools.CoreStringUtils;
@@ -33,7 +33,7 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
     /// <summary>
     /// paging data
     /// </summary>
-    private BMap pageDt;
+    private DataTable pageDt;
 
     private String lowerCommandText;
 
@@ -48,9 +48,8 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
     /// <summary>
     /// Get the number of pages
     /// </summary>
-    public Integer Count() {
+    private Integer Count() {
         if (totalCount == -1) {
-
             return totalCount = getCount();
         } else {
             return totalCount;
@@ -157,7 +156,7 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
     /// Return Data Set
     /// </summary>
     /// <returns></returns>
-    public BMap getData() {
+    public DataTable getData() {
         try {
             if (this.pageDt == null) {
                 setData(true);
@@ -184,7 +183,7 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
         } else {
             ((ExecuteParBagPage) this.executeParBag).setExecuteEnum(ExecuteEnum.PageCount);
         }
-        List<Map<String, Object>> dt;
+        DataTable dt;
         dt = super.getData();
         if (!dataOrCount) {
             if (dt != null && dt.size() > 0) {
@@ -196,7 +195,7 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
             if (dt != null && dt.size() > 0) {
 
                 if (dt != null) {
-                    BMap bList = new BMap();
+                    DataTable bList = new DataTable();
                     dt.forEach(item -> {
                         bList.add(item);
                     });
@@ -205,7 +204,7 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
             } else {
                 this.totalCount = 0;
                 if (((ExecuteParBagPage) this.executeParBag).isPage) {
-                    BMap bList = new BMap();
+                    DataTable bList = new DataTable();
                     this.pageDt = bList;
                 }
             }

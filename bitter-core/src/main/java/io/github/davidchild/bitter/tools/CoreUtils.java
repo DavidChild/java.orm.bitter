@@ -160,9 +160,7 @@ public class CoreUtils {
 
     /**
      * description 获取实体的所有字段，和对应注解值(除去主键）
-     * 
-     * @param object 类型
-     * @param object 数据
+     *
      * @author davidchild
      * @version 1.0
      * @date 2022/8/15 15:47
@@ -174,9 +172,7 @@ public class CoreUtils {
 
     /**
      * description 获取实体的所有字段，和对应注解值(包含主键）
-     * 
-     * @param object 类型
-     * @param object 数据
+     *
      * @author davidchild
      * @version 1.0
      * @date 2022/8/15 15:47

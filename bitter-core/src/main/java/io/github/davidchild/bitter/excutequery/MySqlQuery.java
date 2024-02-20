@@ -107,9 +107,24 @@ public class MySqlQuery extends BaseQuery {
         ExecuteParBagUpdate bagPar = (ExecuteParBagUpdate) this.executeParBag;
         StringBuilder updateSQL = new StringBuilder(); // update语句
         StringBuilder whereSQL = new StringBuilder(); // update条件语句
-        updateSQL.append("UPDATE ").append(bagPar.getTableName()).append("  SET  ");
-
-        if (bagPar.getUpdatePairs() != null && bagPar.getUpdatePairs().size() > 0) {
+        updateSQL.append(" update  ").append(bagPar.getTableName()).append(" set ");
+        if (bagPar.getData() != null) {
+            for (DataValue p : bagPar.getProperties()) {
+                if (((!p.getIsKey()) && (!p.getIsIdentity())))
+                    if (p.getValue() != null) {
+                        updateSQL.append(String.format("%s=%s,", p.getDbName(), "?"));
+                        this.parameters.add(p.getValue());
+                    } else {
+                        updateSQL.append(String.format("%s=null,", p.getDbName()));
+                    }
+            }
+            whereSQL.append(" WHERE ");
+            Object keyValue = bagPar.getKeyInfo().getValue();
+            String keyName = bagPar.getKeyInfo().getDbName();
+            whereSQL.append(String.format("%s=?", keyName));
+            this.parameters.add(keyValue);
+        }
+        else if (bagPar.getUpdatePairs() != null && bagPar.getUpdatePairs().size() > 0) {
             bagPar.getUpdatePairs().forEach(up -> {
                 if (((UpdatePair) up).getColumnValue() != null) {
                     updateSQL.append(String.format("%s=?,", ((UpdatePair) up).getDbFieldName()));
@@ -119,30 +134,6 @@ public class MySqlQuery extends BaseQuery {
                 }
 
             });
-        } else {
-            if (bagPar.getData() != null) {
-                for (DataValue p : bagPar.getProperties()) {
-                    if ((!p.getIsKey() || !p.getIsIdentity()))
-                        if (p.getValue() != null) {
-                            updateSQL.append(String.format("%s=%s,", p.getDbName(), "?"));
-                            this.parameters.add(p.getValue());
-                        } else {
-                            updateSQL.append(String.format("%s=null,", p.getDbName()));
-                        }
-
-                }
-            }
-        }
-//        if (bagPar.condition != null)
-//            whereSQL.append(this.setWhere(bagPar.condition));
-
-        if (bagPar.getData() != null) {
-            whereSQL.append(" WHERE ");
-            Object keyValue = bagPar.getKeyInfo().getValue();
-            String keyName = bagPar.getKeyInfo().getDbName();
-            whereSQL.append(String.format("%s=?", keyName));
-            this.parameters.add(keyValue);
-        } else {
             if (bagPar.condition != null) {
                 whereSQL.append(" WHERE ");
                 whereSQL.append(this.setWhere(bagPar.condition));
@@ -152,7 +143,6 @@ public class MySqlQuery extends BaseQuery {
         this.commandText =
                 String.format("%s%s;", updateSQL.substring(0, updateSQL.toString().length() - 1), whereSQL.toString());
     }
-
     @Override
     protected void selectCommandText() {
         super.selectCommandText();

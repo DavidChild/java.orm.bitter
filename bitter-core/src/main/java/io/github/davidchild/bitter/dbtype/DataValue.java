@@ -13,7 +13,6 @@ public class DataValue {
     private Boolean isIdentity;
     private  IdType dbIdType;
     private  Class<?> classType;
-
     public  DataValue(){
 
     }

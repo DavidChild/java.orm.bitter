@@ -3,13 +3,16 @@ package io.github.davidchild.bitter.op.read;
 import io.github.davidchild.bitter.BaseModel;
 import io.github.davidchild.bitter.basequery.BaseQuery;
 import io.github.davidchild.bitter.basequery.ExecuteEnum;
-import io.github.davidchild.bitter.bitterlist.BMap;
+import io.github.davidchild.bitter.datatable.DataTable;
 import io.github.davidchild.bitter.dbtype.DataValue;
 import io.github.davidchild.bitter.parbag.ExecuteParBagExecute;
 import io.github.davidchild.bitter.tools.BitterLogUtil;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class ExecuteQuery extends BaseQuery {
 
@@ -72,21 +75,15 @@ public class ExecuteQuery extends BaseQuery {
         return this;
     }
 
-    public BMap find() {
+    public DataTable find() {
         this.convert();
         try {
-            List<Map<String, Object>> dt = this.getData();
-            if (dt != null) {
-                BMap blist = new BMap();
-                dt.forEach(item -> {
-                    blist.add(item);
-                });
-                return blist;
-            }
+            DataTable dt = this.getData();
+            return  dt;
         } catch (Exception ex) {
             BitterLogUtil.getInstance().error("bitter query error," + ex.getMessage());
         }
-        return new BMap();
+        return new DataTable();
     }
 
     protected <T extends BaseModel> T queryById(Object id)

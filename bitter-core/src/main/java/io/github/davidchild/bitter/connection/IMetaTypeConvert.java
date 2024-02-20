@@ -1,7 +1,12 @@
 package io.github.davidchild.bitter.connection;
 
 import io.github.davidchild.bitter.BaseModel;
-import io.github.davidchild.bitter.dbtype.*;
+import io.github.davidchild.bitter.datatable.DataColumn;
+import io.github.davidchild.bitter.datatable.DataRow;
+import io.github.davidchild.bitter.datatable.DataTable;
+import io.github.davidchild.bitter.dbtype.FieldProperty;
+import io.github.davidchild.bitter.dbtype.MetaTypeCt;
+import io.github.davidchild.bitter.dbtype.TypeHandlerBase;
 import io.github.davidchild.bitter.tools.BitterLogUtil;
 import io.github.davidchild.bitter.tools.CoreUtils;
 import org.apache.ibatis.io.Resources;
@@ -11,9 +16,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public interface IMetaTypeConvert {
 
@@ -21,13 +24,20 @@ public interface IMetaTypeConvert {
 
     Object convertJavaTypeToMetaTypeValue(Field field, Object javaTypeValue);
 
-    default List<Map<String, Object>> JavaBeanMapResult(ResultSet rs) throws SQLException, ClassNotFoundException {
-        List<Map<String, Object>> list = new ArrayList<>();
+    default DataTable JavaBeanMapResult(ResultSet rs) throws SQLException, ClassNotFoundException {
+        DataTable list = new DataTable();
         ResultSetMetaData md = rs.getMetaData();
         int columnCount = md.getColumnCount();
         List<TypeHandlerBase<?>> typeHandlerBases = getTypeHandlers(md);
+
+        for (int i = 1; i <= columnCount; i++) {
+            String columnName = md.getColumnName(i);
+            Class<?> clazz = MetaTypeCt.getClassForMetaName(md.getColumnClassName(i));
+            DataColumn column = new  DataColumn(columnName,clazz.getName());
+            list.getColumnMeta().add(column);
+        }
         while (rs.next()) {
-            Map<String, Object> rowData = new HashMap<>();
+            DataRow  rowData = new DataRow();
             for (int i = 1; i <= columnCount; i++) {
                 String columnName = md.getColumnName(i);
                 Class<?> type = MetaTypeCt.getClassForMetaName(md.getColumnClassName(i));
@@ -39,12 +49,19 @@ public interface IMetaTypeConvert {
         return list;
     }
 
-    default List<Map<String, Object>> OriginResult(ResultSet rs) throws SQLException {
-        List<Map<String, Object>> list = new ArrayList<>();
+    default DataTable OriginResult(ResultSet rs) throws SQLException, ClassNotFoundException {
+        DataTable list = new DataTable();
         ResultSetMetaData md = rs.getMetaData();
         int columnCount = md.getColumnCount();
+
+        for (int i = 1; i <= columnCount; i++) {
+            String columnName = md.getColumnName(i);
+            Class<?> clazz = MetaTypeCt.getClassForMetaName(md.getColumnClassName(i));
+            DataColumn column = new  DataColumn(columnName,md.getColumnClassName(i));
+            list.getColumnMeta().add(column);
+        }
         while (rs.next()) {
-            Map<String, Object> rowData = new HashMap<>();
+             DataRow rowData = new DataRow();
             for (int i = 1; i <= columnCount; i++) {
                 String columnName = md.getColumnName(i);
                 rowData.put(columnName.toLowerCase(), rs.getObject(i));

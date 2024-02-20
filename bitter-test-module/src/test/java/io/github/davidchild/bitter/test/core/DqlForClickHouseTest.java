@@ -1,23 +1,28 @@
 package io.github.davidchild.bitter.test.core;
 
+import io.github.davidchild.bitter.datatable.DataTable;
 import io.github.davidchild.bitter.db.db;
 import io.github.davidchild.bitter.op.page.PageQuery;
-import io.github.davidchild.bitter.test.initMockData.CreateBaseMockSchema;
 import io.github.davidchild.bitter.test.business.entity.TUser;
+import io.github.davidchild.bitter.test.initMockData.CreateBaseMockSchema;
 import io.github.davidchild.bitter.test.runner.ThreadTest;
 import io.github.davidchild.bitter.tools.DateUtils;
 import lombok.var;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class DqlTest extends CreateBaseMockSchema {
+@SpringBootTest
+@RunWith(SpringRunner.class)
+public class DqlForClickHouseTest extends CreateBaseMockSchema {
     @Test
     @Ignore
     public void testPageQueryInManyThread() throws Exception {
@@ -31,19 +36,21 @@ public class DqlTest extends CreateBaseMockSchema {
     @Test
     public void testPageQuery() throws Exception {
         String sql = "select  user.* from t_user user \n" +
-                     "left join t_dept dept on dept.dept_id = user.id";
+                     "left join t_dept dept on dept.dept_id = user.dept_id";
 
         PageQuery page = new PageQuery(sql);
-        page.where("IFNULL(user.username,'') = ?", "123");
+        page.where("user.username = ?", "hjb");
         page.thenASC("user.username");
         page.thenDESC("user.create_time");
 
         page.skip(1).take(10);
-        List<Map<String, Object>> mapList = page.getData();
+        DataTable mapList = page.getData();
+        assertEquals(true, mapList.size() == 1);
         Integer count = page.getCount();
-
+        assertEquals(true, count == 1);
         var query_count = db.findQuery(TUser.class).FindCount();
-        var users = db.findQuery(TUser.class).where(t -> t.getUsername() == "david-child").thenDesc(TUser::getUsername).thenAsc(TUser::getUsername).find();
+        var users = db.findQuery(TUser.class).where(t -> t.getUsername() == "hjb").thenDesc(TUser::getUsername).thenAsc(TUser::getUsername).find();
+        assertEquals(true, users.size() == 1);
         Thread.sleep(2000);
 
     }
@@ -71,7 +78,7 @@ public class DqlTest extends CreateBaseMockSchema {
     @Test
     public void testExecuteQuery() throws Exception {
 
-        List<Map<String, Object>> mapOrigin = db.findQuery("select * from t_user").find();
+        DataTable mapOrigin = db.findQuery("select * from t_user").find();
 
         List<TUser> lt = db.findQuery("select * from t_user").find().toBList(TUser.class);   // test executeQuery
         assertEquals(true, lt.size()>0);
@@ -85,10 +92,10 @@ public class DqlTest extends CreateBaseMockSchema {
         var users  = query.find().toBList(TUser.class);
         assertEquals(true, users.size()>0);
 
-        Integer value = db.findQuery("select count(0) from t_user").find().tryCase(0);  // Get the data in the first row and column, go to the specified type, and give the default value
+        Integer value = db.findQuery("select count(0) from t_user").find().tryGetFirstRowFirstColumnValue(0);  // Get the data in the first row and column, go to the specified type, and give the default value
         assertEquals(true, value>0);
 
-        String id = db.findQuery("select * from t_user limit 0,1").find().getFirstRowSomeData("id").toString(); // Get the field value of the column specified in the first row and the first column
+        String id = db.findQuery("select * from t_user limit 0,1").find().tryGetFirstRowFirstColumnValue("id").toString(); // Get the field value of the column specified in the first row and the first column
         assertEquals(true, StringUtils.isNoneBlank(id));
     }
 

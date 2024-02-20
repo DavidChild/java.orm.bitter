@@ -2,10 +2,8 @@ package io.github.davidchild.bitter.op.page;
 
 import io.github.davidchild.bitter.basequery.ExecuteMode;
 import io.github.davidchild.bitter.basequery.SubStatement;
+import io.github.davidchild.bitter.datatable.DataTable;
 import io.github.davidchild.bitter.functional.IfInnerLambda;
-
-import java.util.List;
-import java.util.Map;
 
 public interface IPageAccess {
 
@@ -47,7 +45,7 @@ public interface IPageAccess {
 
     IPageAccess thenDESC(String filedName);
 
-    List<Map<String, Object>> getData();
+    DataTable getData();
 
     IUnionPageAccess toUnionPage();
 

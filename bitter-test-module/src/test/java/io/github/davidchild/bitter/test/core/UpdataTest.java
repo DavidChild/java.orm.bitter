@@ -11,7 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertEquals;
 
-@SpringBootTest
+@SpringBootTest()
 @RunWith(SpringRunner.class)
 public class UpdataTest extends CreateBaseMockSchema {
 
@@ -30,8 +30,6 @@ public class UpdataTest extends CreateBaseMockSchema {
         var student = db.findQuery(TStudent.class).where(p->p.getId()==1).find().fistOrDefault();
         boolean bl = student.hasKeyValue();
         assertEquals(true, bl);
-
-
 
     }
 

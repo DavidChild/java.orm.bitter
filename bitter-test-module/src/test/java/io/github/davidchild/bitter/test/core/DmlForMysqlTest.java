@@ -23,12 +23,12 @@ import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class DmlTest extends CreateBaseMockSchema {
+public class DmlForMysqlTest extends CreateBaseMockSchema {
 
 
     @Autowired
     private ApplicationContext applicationContext;
-    
+
 
 
     @Test

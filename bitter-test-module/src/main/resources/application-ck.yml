@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: ck
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: ru.yandex.clickhouse.ClickHouseDriver
+    druid:
+      master:
+        url: jdbc:clickhouse://192.168.214.128:1123/ck_data
+        username: root
+        password: 123456
+      slave:
+        enabled: true
+        url: jdbc:clickhouse://192.168.214.128:1123/ck_data
+        username: root
+        password: 123456
+      initialSize: 10
+      minIdle: 10
+      maxActive: 20
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      maxEvictableIdleTimeMillis: 900000
+      validationQuery: SELECT 1
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      webStatFilter:
+        enabled: true
+      statViewServlet:
+        enabled: true
+        allow:
+        url-pattern: /druid/*
+        login-username: test
+        login-password: test123
+      filter:
+        stat:
+          enabled: true
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: true
+        wall:
+          config:
+            multi-statement-allow: true
+
+bitter:
+  sqlLog: true
+  cache:
+    enabledRedis: true
+    enabledLocalCache: false
+    redis:
+      hosts:
+        - ip: localhost
+          port: 6379
+        - ip: 127.0.0.1
+          port: 6379
+      database: 1
+      password:
+      timeout: 100
+      lettuce:
+        pool:
+          minIdle: 0
+          maxIdle: 10
+          maxActive: 30
+          maxTotal: 30
+          maxWait: 200
+
