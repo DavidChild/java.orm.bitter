@@ -61,7 +61,7 @@ public class DataAccessTest {
         MysqlDbStatementCached dbStatementCached = new MysqlDbStatementCached();
         FindQuery<TUser> find = new FindQuery<>(TUser.class);
         Integer count = find.select(TUser::getUsername, TUser::getId).thenDesc(TUser::getUsername)
-                .setSize(1).where(w -> w.getUsername() == "hjb").FindCount();
+                .setSize(1).where(w -> w.getUsername() == "hjb").findCount();
     }
 
     @Test

@@ -17,6 +17,11 @@ public class DataValue {
 
     }
 
+
+//    public Object getNullDefaultValue(){
+//        TypeHandlerBase<?>  handler = MetaTypeCt.getTypeHandler(this.classType);
+//    }
+
     public <T> DataValue  setDataValue(FieldProperty property, T data) {
         this.setDbIdType(property.getIdType());
         this.setClassType(property.getField().getType());

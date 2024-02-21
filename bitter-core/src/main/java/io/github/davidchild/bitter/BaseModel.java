@@ -15,7 +15,7 @@ import java.io.Serializable;
 public class BaseModel implements Serializable, IBaseModelOp {
 
     @Override
-    public Insert insert() {
+    public Insert insert()  {
         return new Insert(this, true);
     }
 
@@ -30,7 +30,7 @@ public class BaseModel implements Serializable, IBaseModelOp {
     }
 
     @Override
-    public boolean save() {
+    public boolean save()  {
         if (!this.hasKeyValue()) {
             return insert().submit() >= 0;
         } else {

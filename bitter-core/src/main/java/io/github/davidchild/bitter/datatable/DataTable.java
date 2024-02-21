@@ -32,13 +32,12 @@ public class DataTable extends ArrayList<DataRow> {
             return this.get(0).getColumnValue(key,v);
         }
     }
-    public <R> R tryGetFirstRowFirstColumnValue(String key, Class<?> clazz) {
+    public <R> R tryGetFirstRowFirstColumnValue(String key, Class<? extends R> clazz) {
         if(this.size() < 1) return null;
         else {
             return this.get(0).getColumnValue(key,clazz);
         }
     }
-
 
     public   <OT> BList<OT> toModelList(Class<? extends OT> clazz){
        return DataTableToBList.convetBList(this,clazz,false);

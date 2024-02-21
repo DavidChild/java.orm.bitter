@@ -2,14 +2,11 @@ package io.github.davidchild.bitter.test.core;
 
 import io.github.davidchild.bitter.datatable.DataTable;
 import io.github.davidchild.bitter.db.db;
-import io.github.davidchild.bitter.op.page.PageQuery;
 import io.github.davidchild.bitter.test.business.entity.TUser;
 import io.github.davidchild.bitter.test.initMockData.CreateBaseMockSchema;
-import io.github.davidchild.bitter.test.runner.ThreadTest;
 import io.github.davidchild.bitter.tools.DateUtils;
 import lombok.var;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,81 +19,92 @@ import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class DqlForMysqlTest extends CreateBaseMockSchema {
-    @Test
-    @Ignore
-    public void testPageQueryInManyThread() throws Exception {
-        int threadCount = 9;
-        for (int i = 0; i < threadCount; i++) {
-            ThreadTest t1 = new ThreadTest();
-            t1.start();
-        }
-    }
+public class DqlTest extends CreateBaseMockSchema {
+
+
 
     @Test
-    public void testPageQuery() throws Exception {
-        String sql = "select  user.* from t_user user \n" +
-                     "left join t_dept dept on dept.dept_id = user.id";
-
-        PageQuery page = new PageQuery(sql);
-        page.where("IFNULL(user.username,'') = ?", "123");
-        page.thenASC("user.username");
-        page.thenDESC("user.create_time");
-
-        page.skip(1).take(10);
-        DataTable mapList = page.getData();
-        Integer count = page.getCount();
-        var query_count = db.findQuery(TUser.class).FindCount();
-        var users = db.findQuery(TUser.class).where(t -> t.getUsername() == "david-child").thenDesc(TUser::getUsername).thenAsc(TUser::getUsername).find();
-        Thread.sleep(2000);
-
-    }
-
-    @Test
-    public void testQueryByGen() throws Exception {
+    public void testQueryGen1()  {
         Date s = DateUtils.parseDate("2022-8-10");
         List<TUser> list = db.findQuery(TUser.class).thenAsc(TUser::getId).find();
+        assertEquals(true, list.size()>0);
 
-        List<TUser> list_2 =
+    }
+    @Test
+    public void testQueryGen2() {
+        this.beforeInit();
+        List<TUser> list =
                 db.findQuery(TUser.class).select(TUser::getId, TUser::getUsername, TUser::getAvatar)
                         .setSize(10).thenAsc(TUser::getId).find();
-        // where sample
-        List<TUser> list_4 =
-                db.findQuery(TUser.class).where(t -> t.getCreateTime().after(s)).thenAsc(TUser::getId).find();
-        // more where sample
-        List<TUser> list_5 = db.findQuery(TUser.class).where(t -> t.getCreateTime().after(s))
-                .where(t -> t.getUsername().contains("123")).thenAsc(TUser::getId).find();
 
-        // test db entity model
-        TUser user1 = new TUser();
-        String test = "";
+        assertEquals(true, list.get(0).id != null && list.get(0).getAvatar() != null && list.get(0).getUsername() != null && list.get(0).getPhone() == null);
+    }
+
+
+    @Test
+    public void testQueryGen3()  {
+        Date s = DateUtils.parseDate("2022-8-10");
+        List<TUser> list =
+                db.findQuery(TUser.class).where(t -> t.getCreateTime().after(s)).thenAsc(TUser::getId).find();
+        assertEquals(true, list.size() > 0);
+    }
+    @Test
+    public void testQueryGen4()  {
+        this.beforeInit();
+        List<TUser> list =
+                db.findQuery(TUser.class).select(TUser::getId, TUser::getUsername, TUser::getAvatar)
+                        .setSize(10).thenAsc(TUser::getId).find();
+        assertEquals(true, list.size()>0);
     }
 
     @Test
-    public void testExecuteQuery() throws Exception {
+    public void testQueryGen5()  {
         this.beforeInit();
+        Date s = DateUtils.parseDate("2022-8-10");
+        List<TUser> list = db.findQuery(TUser.class).where(t -> t.getCreateTime().after(s))
+                .where(t -> t.getUsername().contains("hj")).thenAsc(TUser::getId).find();
+        assertEquals(true, list.size() > 0);
+    }
 
+
+    @Test
+    public void testExecuteQuery1()  {
+        this.beforeInit();
         DataTable mapOrigin = db.findQuery("select * from t_user").find();
-
         List<TUser> lt = db.findQuery("select * from t_user").find().toModelList(TUser.class);   // test executeQuery
         assertEquals(true, lt.size()>0);
+    }
 
+    @Test
+    public void testExecuteQuery2()  {
+        this.beforeInit();
         var user_models = db.findQuery("select * from t_user").find().toModelList(TUser.class, true); // test executeQuery and mapUnderscoreToCamelCase
         assertEquals(true, user_models.size()>0);
+    }
 
+    @Test
+    public void testExecuteQuery3()  {
+        this.beforeInit();
         var query = db.findQuery("select * from t_user");
         query.beginWhere(" 1=1 ");
         query.andWhere("id>'1552205343773896705'");
         var users  = query.find().toBList(TUser.class);
         assertEquals(true, users.size()>0);
+    }
 
+    @Test
+    public void testExecuteQuery4()  {
+        this.beforeInit();
         Integer value = db.findQuery("select count(0) from t_user").find().tryGetFirstRowFirstColumnValue(0);  // Get the data in the first row and column, go to the specified type, and give the default value
         assertEquals(true, value>0);
+    }
 
+    @Test
+    public void testExecuteQuery5()  {
+        this.beforeInit();
         String id = db.findQuery("select * from t_user limit 0,1").find().tryGetFirstRowFirstColumnValue("id").toString(); // Get the field value of the column specified in the first row and the first column
         assertEquals(true, StringUtils.isNoneBlank(id));
     }
-
     @Test
     public void testQueryById() throws Exception {
         var sysUser = db.findQuery(TUser.class, "1552178014981849090").find();

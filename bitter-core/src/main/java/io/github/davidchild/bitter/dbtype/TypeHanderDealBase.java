@@ -74,8 +74,6 @@ public abstract class TypeHanderDealBase<T> extends MetaTypeReference<T> impleme
     public abstract void setNonNullParameter(PreparedStatement ps, int i, T parameter, MetaType jdbcType)
             throws SQLException;
 
-
-
     public abstract T getNullableResult(ResultSet rs, String columnName) throws SQLException;
 
     public abstract T getNullableResult(ResultSet rs, int columnIndex) throws SQLException;

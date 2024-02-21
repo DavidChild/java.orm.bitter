@@ -6,5 +6,4 @@ public enum SubStatementEnum {
     PRELIKE,
     ENDLIKE,
     ALLLIKE,
-    OTHER
 }

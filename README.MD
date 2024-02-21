@@ -13,7 +13,7 @@
 <dependency>
 <groupId>io.github.davidchild</groupId>
 <artifactId>bitter</artifactId>
-<version>2.0.1-RELEASE</version>
+<version>2.1.2-RELEASE</version>
 </dependency>
 ```
 

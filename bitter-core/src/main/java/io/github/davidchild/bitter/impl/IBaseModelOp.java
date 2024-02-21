@@ -6,9 +6,9 @@ import io.github.davidchild.bitter.op.update.UpdateIns;
 
 public interface IBaseModelOp {
 
-    boolean save();
+    boolean save() throws Exception;
 
-    Insert insert();
+    Insert insert() throws Exception;
 
     UpdateIns update();
 
@@ -16,6 +16,6 @@ public interface IBaseModelOp {
 
     // Judge whether the primary key value exists. If the data is instantiated from the database, the primary key value
     // must exist
-    boolean hasKeyValue();
+    boolean hasKeyValue() throws Exception;
 
 }

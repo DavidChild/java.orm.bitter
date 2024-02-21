@@ -56,8 +56,6 @@ public class SubStatement {
             case ENDLIKE:
                 like(subStatementEnum, defaultArg, args);
                 break;
-            case OTHER:
-                //join("", "", "", defaultArg, args);
             default:
                 break;
         }

@@ -71,14 +71,24 @@ public interface IMetaTypeConvert {
         return list;
     }
 
+
     default <T extends BaseModel> List<T> ModelsResult(ResultSet rs, Class<?> targetClass) throws SQLException, InstantiationException, IllegalAccessException {
         List<T> lt = new ArrayList<>();
         ResultSetMetaData md = rs.getMetaData();
+        List<String> columns = new ArrayList<>();
+        for (int i = 1; i <= md.getColumnCount(); i++) {
+            String columnName = md.getColumnName(i);
+            columns.add(columnName.toLowerCase());
+        }
         List<FieldProperty> fields = CoreUtils.getAllFields(targetClass);
             while (rs.next()) {
                 T t = (T)targetClass.newInstance();
                 for (FieldProperty field : fields) {
+
                     String db_filed_name = field.getDbFieldName().toLowerCase();
+                    if((md.getColumnCount() != fields.size()) && (!columns.contains(db_filed_name.toLowerCase()))){
+                       continue;
+                    }
                     try {
                         TypeHandlerBase<?> typeHandlerBase = MetaTypeCt.getTypeHandler(field.getField().getType());
                         Object real_model_filed_value = typeHandlerBase.getResult(rs, db_filed_name);

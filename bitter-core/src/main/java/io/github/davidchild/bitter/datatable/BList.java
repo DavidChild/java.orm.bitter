@@ -24,7 +24,7 @@ public class BList<OT> extends ArrayList<OT> {
         OT result;
         try {
             result = (OT) myType.newInstance();
-            if (this.size() <= 0) {
+            if (this.size() < 1) {
                 return result;
 
             } else {

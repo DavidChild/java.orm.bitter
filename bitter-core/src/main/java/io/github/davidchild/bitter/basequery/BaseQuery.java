@@ -3,6 +3,8 @@ package io.github.davidchild.bitter.basequery;
 import io.github.davidchild.bitter.BaseModel;
 import io.github.davidchild.bitter.connection.DataAccess;
 import io.github.davidchild.bitter.datatable.DataTable;
+import io.github.davidchild.bitter.dbtype.DataValue;
+import io.github.davidchild.bitter.exception.ModelException;
 import io.github.davidchild.bitter.exception.VisitorException;
 import io.github.davidchild.bitter.excutequery.ClickHouseQuery;
 import io.github.davidchild.bitter.excutequery.MySqlQuery;
@@ -12,6 +14,7 @@ import io.github.davidchild.bitter.parse.BitterVisitor;
 import io.github.davidchild.bitter.parse.BitterWrapper;
 import io.github.davidchild.bitter.tools.BitterLogUtil;
 import io.github.davidchild.bitter.tools.CoreStringUtils;
+import io.github.davidchild.bitter.tools.CoreUtils;
 
 import java.lang.reflect.Type;
 import java.sql.SQLException;
@@ -52,7 +55,7 @@ public class BaseQuery extends BaseExecute implements Type {
         clearParameters();
     }
 
-    protected void selectCommandText() {
+    protected void selectCommandText()  {
         clearParameters();
     }
 
@@ -84,8 +87,13 @@ public class BaseQuery extends BaseExecute implements Type {
         StringBuilder where = new StringBuilder("1=1");
         if (lambdas != null && lambdas.size() > 0) {
             lambdas.forEach(lambda -> {
-                BitterVisitor visitor = new BitterVisitor(this.getExecuteParBag().getProperties(),
-                        this.getExecuteParBag().getKeyInfo(), "`", "`");
+                BitterVisitor visitor = null;
+                try {
+                    visitor = new BitterVisitor(this.getExecuteParBag().getProperties(),
+                            this.getExecuteParBag().getKeyInfo(), "`", "`");
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
                 try {
 
                     BitterWrapper wrapper = lambda.sql(visitor);
@@ -124,7 +132,13 @@ public class BaseQuery extends BaseExecute implements Type {
      */
     public Long submit() {
         Exception ex = null;
+        if((this.executeParBag.getExecuteEnum() == ExecuteEnum.Delete || this.executeParBag.getExecuteEnum() == ExecuteEnum.Update) && this.getExecuteParBag().getData() != null){
+            DataValue key = CoreUtils.getTypeKey(this.getExecuteParBag().getModelType(), this.getExecuteParBag().getData());
+            if(key == null)
+                throw  new ModelException("bitter checked the model entity ( "+ this.getExecuteParBag().getModelType().getName() +" ) have not the tableId annotation. ple set  the \" @TableId \"  annotation for the database model class.");
+        }
         try {
+
             convert();
         } catch (Exception exx) {
             BitterLogUtil.getInstance().error("bitter-executor-convert-error:" + exx.getMessage());
