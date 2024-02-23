@@ -32,6 +32,14 @@ public class JsonUtilTest {
         assertEquals(true, entity.isHire ==1 );
     }
 
+    @Test
+    public void testUnknownFieldMapper() {
+        String json = "{\"oano\":\"20220713LZSQ00030\",\"ishire\":1,\"password\":\"7778887778887\"}";
+        ResignApply entity = JsonUtil.string2Object(json, ResignApply.class);
+        assertEquals(true, entity.isHire ==1 );
+    }
+
+
 }
 
 

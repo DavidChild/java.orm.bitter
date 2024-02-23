@@ -63,7 +63,7 @@ public class FindQuery<T extends BaseModel> extends WhereQuery<T> {
         return this;
     }
 
-    public int FindCount() throws SQLException {
+    public int findCount() throws SQLException {
         ExecuteParBagCount countBag = new ExecuteParBagCount();
         countBag.condition = (List<BitterPredicate<T>>) ((ExecuteParBagSelect) executeParBag).condition;
         countBag.setExecuteEnum(ExecuteEnum.Count);

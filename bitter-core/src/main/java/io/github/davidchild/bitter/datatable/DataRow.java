@@ -59,6 +59,9 @@ public class DataRow extends HashMap<String, Object> {
                 myValue = java.lang.Byte.valueOf(myv.toString());
             }else if (java.lang.Enum.class.equals(clazz)) {
                 myValue = Enum.valueOf(clazz,myValue.toString());
+            }else if (java.lang.Long.class.equals(clazz)) {
+                myValue = java.lang.Long.parseLong(myv.toString());
+
             }
         }
         return  myValue;
@@ -68,12 +71,12 @@ public class DataRow extends HashMap<String, Object> {
         return this.get(key);
     }
     public <R> R getColumnValue(String key, R defaultValue) {
-        return this.tryCase(defaultValue);
+        return this.tryCase(key,defaultValue);
     }
     public <R> R getColumnValue(R defaultValue) {
         return this.tryCase(defaultValue);
     }
-    public <R> R getColumnValue(String key, Class<?> clazz) {
+    public <R> R getColumnValue(String key, Class<? extends R> clazz) {
         return this.tryCase(key,clazz);
     }
 

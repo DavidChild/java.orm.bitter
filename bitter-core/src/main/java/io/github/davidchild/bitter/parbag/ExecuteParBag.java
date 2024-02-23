@@ -82,7 +82,7 @@ public class ExecuteParBag {
         return modelType;
     }
 
-    public String getTableName() {
+    public String getTableName()  {
         if (this.getModelType() != null) {
             if (this.tableName == null || this.tableName.isEmpty()) {
                 tableName = CoreUtils.getTableNameByType(modelType);
@@ -117,7 +117,7 @@ public class ExecuteParBag {
             return false;
     }
 
-    public DataValue getKeyInfo() {
+    public DataValue getKeyInfo()  {
         if (this.getModelType() != null) {
             if (keyInfo == null) {
                 keyInfo = CoreUtils.getTypeKey(this.getModelType(), this.data);

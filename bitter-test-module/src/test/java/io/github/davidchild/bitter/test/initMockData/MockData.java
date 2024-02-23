@@ -12,6 +12,7 @@ public class MockData {
         TUser user = new TUser();
         user.setId(String.valueOf("1552178014981849090"));
         user.setUsername("hjb");
+        user.setAvatar("https://hangzhou.aliyun.com/bulkcopyname/"+MockRandomData.randomInt(80));
         user.setCreateTime(new Date());
         user.insert().submit();
 
@@ -22,6 +23,7 @@ public class MockData {
             random_user.setUsername(MockRandomData.getRandomBoyName());
             random_user.setCreateTime(MockRandomData.getRandonTime());
             random_user.setUserAge(MockRandomData.randomInt(80));
+            random_user.setAvatar("https://hangzhou.aliyun.com/bulkcopyname/"+MockRandomData.randomInt(80));
             random_user.insert().submit();
         }
 

@@ -13,14 +13,14 @@ import java.util.List;
 
 public class Insert<T extends BaseModel> extends BaseQuery {
 
-    public Insert(T data) {
+    public Insert(T data) throws Exception {
         this.executeParBag = new ExecuteParBagInsert();
         executeParBag.setExecuteEnum(ExecuteEnum.Insert);
         executeParBag.setData(data);
         checkedIdentityValue();
     }
 
-    public Insert(T data, boolean isOutIdentity) {
+    public Insert(T data, boolean isOutIdentity)  {
         this.executeParBag = new ExecuteParBagInsert();
         executeParBag.setExecuteEnum(ExecuteEnum.Insert);
         executeParBag.setData(data);
@@ -39,9 +39,9 @@ public class Insert<T extends BaseModel> extends BaseQuery {
     private void checkedIdentityValue() {
         T data = (T) executeParBag.getData();
         DataValue key = CoreUtils.getTypeKey(data.getClass(), data);
-        if (((ExecuteParBagInsert) executeParBag).isOutIdentity() && CoreStringUtils.isNotNull(key.getValue())) {
+        if (key != null && ((ExecuteParBagInsert) executeParBag).isOutIdentity() && CoreStringUtils.isNotNull(key.getValue())) {
             throw new DbException(
-                    "bitter： insert error :Violation of primary key self growth constraint: the insert statement has a primary key self growth ID, and cannot have a self growth value when inserting");
+                    "bitter：insert error :violation of primary key self growth constraint: the insert statement has a primary key self growth ID, and cannot have a self growth value when inserting");
         }
     }
 

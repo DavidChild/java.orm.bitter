@@ -1,6 +1,5 @@
 package io.github.davidchild.bitter.datatable;
 
-import com.alibaba.fastjson2.JSONObject;
 import io.github.davidchild.bitter.tools.JsonUtil;
 
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ class DataTableToBList {
         BList<OT> list = new BList<>(clazz);
         finalTempList.forEach(item -> {
             String str = JsonUtil.object2String(item);
-            OT ob = JSONObject.parseObject(str, clazz);
+            OT ob = JsonUtil.string2Object(str, clazz);
             list.add(ob);
         });
         return list;

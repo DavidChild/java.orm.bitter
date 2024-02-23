@@ -121,7 +121,7 @@ public class ClickHouseQuery extends BaseQuery {
                     updateSQL.append(String.format("%s=?,", ((UpdatePair) up).getDbFieldName()));
                     this.parameters.add(((UpdatePair) up).getColumnValue());
                 } else {
-                    updateSQL.append(String.format("%s='',", ((UpdatePair) up).getDbFieldName()));
+                    updateSQL.append(String.format("%s=null,", ((UpdatePair) up).getDbFieldName()));
                 }
 
             });

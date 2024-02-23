@@ -11,6 +11,7 @@ import io.github.davidchild.bitter.dbtype.FieldProperty;
 import io.github.davidchild.bitter.dbtype.KeyInfo;
 import io.github.davidchild.bitter.dbtype.MetaType;
 import io.github.davidchild.bitter.exception.DbException;
+import io.github.davidchild.bitter.exception.ModelException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -29,7 +30,7 @@ public class CoreUtils {
      * @version 1.0
      * @date 2022/8/15 15:47
      */
-    private static <T> KeyInfo getPrimaryField(Class<?> type) {
+    private static <T> KeyInfo getPrimaryField(Class<?> type)  {
         Field[] fields = type.getDeclaredFields();
         KeyInfo ki = null;
         String tableName = "";
@@ -45,11 +46,15 @@ public class CoreUtils {
         return ki;
     }
 
-    public static <T>  DataValue getTypeKey(Class<?> type, T data){
-        List<FieldProperty> list = getAllFields(type);
-        return list.stream().filter(property -> property.isKey).map(item
-                ->CoreUtils.getKeyDataValue(item,data)).findFirst().get();
+    public static <T>  DataValue getTypeKey(Class<?> type, T data) {
+            List<FieldProperty> list = getAllFields(type);
+//            return list.stream().filter(property -> property.isKey).map(item
+//                    ->CoreUtils.getKeyDataValue(item,data)).findFirst().get();
 
+          List<DataValue> keys = list.stream().filter(property -> property.isKey).map(item
+                      ->CoreUtils.getKeyDataValue(item,data)).collect(Collectors.toList());
+          if(keys.size() > 0 ) return  keys.get(0);
+          return  null;
     }
 
     public static <T> List<DataValue> getIdentity(Class<?> type, T data){
@@ -212,7 +217,7 @@ public class CoreUtils {
     public static <T> String getTableNameByType(Class<T> type) {
         TableName annotation = type.getDeclaredAnnotation(TableName.class);
         if (annotation == null) {
-            return "";
+            throw  new ModelException("bitter checked the model entity ( "+type.getName()+" ) have not the table name annotation. ple set  the \" @TableName \"  annotation for the database model class.");
         }
         return annotation.value();
     }

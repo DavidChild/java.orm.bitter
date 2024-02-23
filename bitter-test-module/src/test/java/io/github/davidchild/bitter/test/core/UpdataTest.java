@@ -17,7 +17,6 @@ public class UpdataTest extends CreateBaseMockSchema {
 
     @Test
     public void TestUpdateDataSomeRecodeColumn() {
-
         boolean bl = db.update(TStudent.class)
                 .setColum(TStudent::getName, "wangLaoWu")
                 .setColum(TStudent::getSexName, "男")

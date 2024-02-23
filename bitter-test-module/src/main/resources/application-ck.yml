@@ -6,12 +6,12 @@ spring:
     driverClassName: ru.yandex.clickhouse.ClickHouseDriver
     druid:
       master:
-        url: jdbc:clickhouse://192.168.214.128:1123/ck_data
+        url: jdbc:clickhouse://192.168.214.128:1113/ck_data
         username: root
         password: 123456
       slave:
         enabled: true
-        url: jdbc:clickhouse://192.168.214.128:1123/ck_data
+        url: jdbc:clickhouse://192.168.214.128:1113/ck_data
         username: root
         password: 123456
       initialSize: 10
