@@ -86,8 +86,8 @@ public class DqlTest extends CreateBaseMockSchema {
     public void testExecuteQuery3()  {
         this.beforeInit();
         var query = db.findQuery("select * from t_user");
-        query.beginWhere(" 1=1 ");
-        query.andWhere("id>'1552205343773896705'");
+        query.where(" 1=1 ");
+        query.where("id > '1552205343773896705'");
         var users  = query.find().toBList(TUser.class);
         assertEquals(true, users.size()>0);
     }

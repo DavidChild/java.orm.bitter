@@ -3,6 +3,7 @@ package io.github.davidchild.bitter.op.read;
 import io.github.davidchild.bitter.BaseModel;
 import io.github.davidchild.bitter.basequery.BaseQuery;
 import io.github.davidchild.bitter.basequery.ExecuteEnum;
+import io.github.davidchild.bitter.basequery.SubStatement;
 import io.github.davidchild.bitter.datatable.DataTable;
 import io.github.davidchild.bitter.dbtype.DataValue;
 import io.github.davidchild.bitter.parbag.ExecuteParBagExecute;
@@ -17,7 +18,6 @@ import java.util.UUID;
 public class ExecuteQuery extends BaseQuery {
 
     private ExecuteParBagExecute bag;
-
     public ExecuteQuery(String commandText, Object... params) {
         executeParBag = new ExecuteParBagExecute();
         executeParBag.setExecuteEnum(ExecuteEnum.ExecuteQuery);
@@ -37,46 +37,15 @@ public class ExecuteQuery extends BaseQuery {
         ((ExecuteParBagExecute) executeParBag).setParaMap(new LinkedHashMap<>());
     }
 
-    /// <summary>
-    /// 追加 where 1=1
-    /// </summary>
-    /// <returns></returns>
-    public ExecuteQuery beginWhere(String beginWhere, Object... params) {
-        StringBuilder strBuild = new StringBuilder(((ExecuteParBagExecute) executeParBag).getCommandText());
-        strBuild.append(" where  " + beginWhere);
-        ((ExecuteParBagExecute) executeParBag).setCommandText(strBuild.toString());
-        if (params != null && params.length > 0) {
-            Arrays.stream(params).forEach((v) -> {
-                ((ExecuteParBagExecute) executeParBag).getParaMap().put(UUID.randomUUID().toString(), v);
-            });
-        }
-        return this;
+    public ExecuteQuery where(String condition, Object... params) {
+        SubStatement subStatement = this.createSubStatement();
+        subStatement.custom(condition,params);
+         ((ExecuteParBagExecute) executeParBag).getSubStatements().add(subStatement);
+        return  this;
     }
 
-    public ExecuteQuery andWhere(String andWhere, Object... params) {
-        StringBuilder strBuild = new StringBuilder(((ExecuteParBagExecute) executeParBag).getCommandText());
-        strBuild.append(" and (" + andWhere + ") ");
-        ((ExecuteParBagExecute) executeParBag).setCommandText(strBuild.toString());
-        if (params != null && params.length > 0) {
-            Arrays.stream(params).forEach((v) -> {
-                ((ExecuteParBagExecute) executeParBag).getParaMap().put(UUID.randomUUID().toString(), v);
-            });
-        }
-        return this;
-    }
-
-
-    public ExecuteQuery addParams(Object... params) {
-        if (params != null && params.length > 0) {
-            Arrays.stream(params).forEach((v) -> {
-                ((ExecuteParBagExecute) executeParBag).getParaMap().put(UUID.randomUUID().toString(), v);
-            });
-        }
-        return this;
-    }
 
     public DataTable find() {
-        this.convert();
         try {
             DataTable dt = this.getData();
             return  dt;
@@ -90,12 +59,19 @@ public class ExecuteQuery extends BaseQuery {
             throws SQLException, InstantiationException, IllegalAccessException {
 
         T data;
+        if(id == null){
+            data= (T) (executeParBag).getType().newInstance();
+            return  data;
+        }
         String tableName = ((ExecuteParBagExecute) executeParBag).getTableName();
         DataValue keyInfo = ((ExecuteParBagExecute) executeParBag).getKeyInfo();
-        ((ExecuteParBagExecute) executeParBag).getParaMap().put(UUID.randomUUID().toString(), id);
-        String sql = String.format("select * from %s where %s = ?", tableName, keyInfo.getDbName());
+        SubStatement subStatement = this.createSubStatement();
+        subStatement.eq(keyInfo.getDbName(),id,null);
+        ((ExecuteParBagExecute) executeParBag).getSubStatements().add(subStatement);
+        String sql = String.format("select * from %s ", tableName);
         ((ExecuteParBagExecute) executeParBag).setCommandText(sql);
         List<T> st = this.getDataList();
+
         if (st != null && st.size() > 0) {
             data = st.get(0);
         } else {

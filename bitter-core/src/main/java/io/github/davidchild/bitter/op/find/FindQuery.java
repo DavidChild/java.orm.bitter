@@ -2,15 +2,13 @@ package io.github.davidchild.bitter.op.find;
 
 import io.github.davidchild.bitter.BaseModel;
 import io.github.davidchild.bitter.basequery.ExecuteEnum;
+import io.github.davidchild.bitter.basequery.SubStatement;
 import io.github.davidchild.bitter.basequery.WhereQuery;
 import io.github.davidchild.bitter.datatable.BList;
 import io.github.davidchild.bitter.datatable.DataTable;
 import io.github.davidchild.bitter.exception.DbOrConvertException;
 import io.github.davidchild.bitter.op.FieldFunction;
-import io.github.davidchild.bitter.parbag.ExecuteParBagCount;
-import io.github.davidchild.bitter.parbag.ExecuteParBagSelect;
-import io.github.davidchild.bitter.parbag.OrderBy;
-import io.github.davidchild.bitter.parbag.OrderPair;
+import io.github.davidchild.bitter.parbag.*;
 import io.github.davidchild.bitter.parse.BitterPredicate;
 
 import java.sql.SQLException;
@@ -52,6 +50,12 @@ public class FindQuery<T extends BaseModel> extends WhereQuery<T> {
     public FindQuery<T> where(BitterPredicate<T> condition) {
         super.Where(condition);
         ((ExecuteParBagSelect) executeParBag).condition = this.getCondition();
+        return this;
+    }
+
+    public FindQuery<T> where(SubStatement subStatementCondition) {
+        super.Where(subStatementCondition);
+        ((ExecuteParBagSelect)executeParBag).subStatementCondition = this.getStatementCondition();
         return this;
     }
 

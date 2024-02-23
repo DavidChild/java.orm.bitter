@@ -1,8 +1,11 @@
 package io.github.davidchild.bitter.parbag;
 
 import cn.hutool.core.util.StrUtil;
+import io.github.davidchild.bitter.basequery.SubStatement;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 public class ExecuteParBagPage extends ExecuteParBag {
 
@@ -43,6 +46,8 @@ public class ExecuteParBagPage extends ExecuteParBag {
     /// setWhere
     /// </summary>
     public StringBuilder whereBuilder = new StringBuilder("1=1");
+
+    public   List<SubStatement> subStatements = new ArrayList<>();
 
     public String getPreWith() {
         return preWith;

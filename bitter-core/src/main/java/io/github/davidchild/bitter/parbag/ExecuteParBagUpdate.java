@@ -1,5 +1,6 @@
 package io.github.davidchild.bitter.parbag;
 
+import io.github.davidchild.bitter.basequery.SubStatement;
 import io.github.davidchild.bitter.parse.BitterPredicate;
 
 import java.util.ArrayList;
@@ -8,6 +9,8 @@ import java.util.List;
 public class ExecuteParBagUpdate<T> extends ExecuteParBag {
 
     public List<BitterPredicate<T>> condition;
+
+    public List<SubStatement> subStatementCondition;
     private boolean isReSetValueInUpdatePair = false;
     private List<UpdatePair> updatePairs;
 

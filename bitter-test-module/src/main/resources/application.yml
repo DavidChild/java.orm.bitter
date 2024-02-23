@@ -12,7 +12,7 @@ spring:
   messages:
     basename: i18n/messages
   profiles:
-    active: ck
+    active: h2
   devtools:
     restart:
       enabled: true

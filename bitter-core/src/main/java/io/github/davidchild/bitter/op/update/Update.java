@@ -2,6 +2,7 @@ package io.github.davidchild.bitter.op.update;
 
 import io.github.davidchild.bitter.BaseModel;
 import io.github.davidchild.bitter.basequery.ExecuteEnum;
+import io.github.davidchild.bitter.basequery.SubStatement;
 import io.github.davidchild.bitter.basequery.WhereQuery;
 import io.github.davidchild.bitter.op.FieldFunction;
 import io.github.davidchild.bitter.parbag.ExecuteParBagUpdate;
@@ -25,6 +26,12 @@ public class Update<T extends BaseModel> extends WhereQuery<T> {
     public Update<T> setColum(FieldFunction<T> filed, Object object) {
         String filedName = executeParBag.getDbFieldByInnerClassFiled(filed);
         ((ExecuteParBagUpdate) executeParBag).SetUpdatePair(new UpdatePair(filedName, object,filedName));
+        return this;
+    }
+
+    public Update<T> where(SubStatement subStatementCondition) {
+        super.Where(subStatementCondition);
+        ((ExecuteParBagUpdate)executeParBag).subStatementCondition = this.getStatementCondition();
         return this;
     }
 

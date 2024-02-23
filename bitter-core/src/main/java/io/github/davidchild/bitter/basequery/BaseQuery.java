@@ -5,15 +5,12 @@ import io.github.davidchild.bitter.connection.DataAccess;
 import io.github.davidchild.bitter.datatable.DataTable;
 import io.github.davidchild.bitter.dbtype.DataValue;
 import io.github.davidchild.bitter.exception.ModelException;
-import io.github.davidchild.bitter.exception.VisitorException;
 import io.github.davidchild.bitter.excutequery.ClickHouseQuery;
 import io.github.davidchild.bitter.excutequery.MySqlQuery;
+import io.github.davidchild.bitter.excutequery.WhereHandler;
 import io.github.davidchild.bitter.parbag.ExecuteParBagInsert;
 import io.github.davidchild.bitter.parse.BitterPredicate;
-import io.github.davidchild.bitter.parse.BitterVisitor;
-import io.github.davidchild.bitter.parse.BitterWrapper;
 import io.github.davidchild.bitter.tools.BitterLogUtil;
-import io.github.davidchild.bitter.tools.CoreStringUtils;
 import io.github.davidchild.bitter.tools.CoreUtils;
 
 import java.lang.reflect.Type;
@@ -83,38 +80,8 @@ public class BaseQuery extends BaseExecute implements Type {
         clearParameters();
     }
 
-    public <T extends BaseModel> String setWhere(List<BitterPredicate<T>> lambdas) {
-        StringBuilder where = new StringBuilder("1=1");
-        if (lambdas != null && lambdas.size() > 0) {
-            lambdas.forEach(lambda -> {
-                BitterVisitor visitor = null;
-                try {
-                    visitor = new BitterVisitor(this.getExecuteParBag().getProperties(),
-                            this.getExecuteParBag().getKeyInfo(), "`", "`");
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-                try {
-
-                    BitterWrapper wrapper = lambda.sql(visitor);
-                    String wp = wrapper.getKey().toString();
-                    if (wp != null && CoreStringUtils.isNotEmpty(wp)) {
-                        where.append(" \n ");
-                        where.append(String.format("and ( %s )", wp));
-                    }
-                    if (wrapper.getValue() != null && wrapper.getValue().size() > 0) {
-                        wrapper.getValue().forEach(it -> this.parameters.add(it));
-                    }
-                } catch (Exception e) {
-                    // BitterLogUtil.getInstance().error("convert where error:" + e.getMessage(), e);
-                    throw new VisitorException("can't support this where expression, please use the expression syntax already supported in bitter,exception is:" + e.getMessage());//todo that can  Navigate to Instance Reference
-
-                } finally {
-                    visitor.clear();
-                }
-            });
-        }
-        return where.toString();
+    public <T extends BaseModel> String setWhere(List<BitterPredicate<T>> lambdas,List<SubStatement> subStatements) {
+        return WhereHandler.getWhere(lambdas,subStatements,this);
     }
 
     // create sub statement for in or other sql
@@ -138,7 +105,6 @@ public class BaseQuery extends BaseExecute implements Type {
                 throw  new ModelException("bitter checked the model entity ( "+ this.getExecuteParBag().getModelType().getName() +" ) have not the tableId annotation. ple set  the \" @TableId \"  annotation for the database model class.");
         }
         try {
-
             convert();
         } catch (Exception exx) {
             BitterLogUtil.getInstance().error("bitter-executor-convert-error:" + exx.getMessage());

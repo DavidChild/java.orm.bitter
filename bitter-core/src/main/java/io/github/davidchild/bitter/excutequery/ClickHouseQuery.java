@@ -11,8 +11,6 @@ import java.util.List;
 
 public class ClickHouseQuery extends BaseQuery {
 
-
-
     @Override
     protected void insertCommandText(boolean isOutIdentity) {
         super.insertCommandText(isOutIdentity);
@@ -74,9 +72,9 @@ public class ClickHouseQuery extends BaseQuery {
         ExecuteParBagDelete bagPar = (ExecuteParBagDelete) this.executeParBag;
         StringBuilder whereSQL = new StringBuilder(); // delete condition
 
-        if (bagPar.condition != null) {
+        if (bagPar.condition != null || (bagPar.subStatementCondition != null && bagPar.subStatementCondition.size()> 0)) {
             whereSQL.append(" WHERE ");
-            whereSQL.append(this.setWhere(bagPar.getCondition()));
+            whereSQL.append(this.setWhere(bagPar.getCondition(),bagPar.getSubStatementCondition()));
         } else if (bagPar.getData() != null) {
             whereSQL.append(" WHERE ");
             Object keyValue = bagPar.getKeyInfo().getValue();
@@ -125,9 +123,9 @@ public class ClickHouseQuery extends BaseQuery {
                 }
 
             });
-            if (bagPar.condition != null) {
+            if (bagPar.condition != null || (bagPar.subStatementCondition != null && bagPar.subStatementCondition.size()> 0)) {
                 whereSQL.append(" WHERE ");
-                whereSQL.append(this.setWhere(bagPar.condition));
+                whereSQL.append(this.setWhere(bagPar.condition,bagPar.subStatementCondition));
             }
         }
         bagPar.RemoveProperties();
@@ -159,7 +157,10 @@ public class ClickHouseQuery extends BaseQuery {
             selectSQL.append(" * ");
         }
         selectSQL.append(" FROM  " + bagPar.getTableName());
-        String where = this.setWhere(bagPar.condition);
+        String where = "";
+        if (bagPar.condition != null || (bagPar.subStatementCondition != null && bagPar.subStatementCondition.size()> 0)) {
+            where = this.setWhere(bagPar.condition,bagPar.subStatementCondition);
+        }
         if (CoreStringUtils.isNotEmpty(where)) {
             whereSQL.append(" WHERE ");
             whereSQL.append(where);
@@ -180,7 +181,10 @@ public class ClickHouseQuery extends BaseQuery {
         StringBuilder whereSQL = new StringBuilder(); // 条件语句
         // 语句
         String selectSQL = "SELECT COUNT(1) " + "FROM  " + bagPar.getTableName() + " ";
-        String where = this.setWhere(bagPar.condition);
+        String where = "";
+        if (bagPar.condition != null || (bagPar.subStatementCondition != null && bagPar.subStatementCondition.size()> 0)) {
+            where = this.setWhere(bagPar.condition,bagPar.subStatementCondition);
+        }
         if (CoreStringUtils.isNotEmpty(where)) {
             whereSQL.append(" WHERE ");
             whereSQL.append(where);
@@ -217,9 +221,19 @@ public class ClickHouseQuery extends BaseQuery {
     @Override
     protected void executeCommandText() {
         super.executeCommandText();
+        StringBuilder whereSQL = new StringBuilder();
         ExecuteParBagExecute bagPar = (ExecuteParBagExecute) this.executeParBag;
-        this.commandText = bagPar.getCommandText();
         this.setDynamicParameters(bagPar.getParaMap());
+        String where = "";
+        if ((bagPar.getSubStatements()  != null && bagPar.getSubStatements() .size()> 0)) {
+            where = this.setWhere(null,bagPar.getSubStatements());
+        }
+        if (CoreStringUtils.isNotEmpty(where)) {
+            whereSQL.append(" WHERE ");
+            whereSQL.append(where);
+        }
+        this.commandText = String.format("%s%s;", bagPar.getCommandText(), whereSQL);
+
         bagPar.RemoveProperties();
 
     }

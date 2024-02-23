@@ -21,7 +21,20 @@ public class BListTest  extends CreateBaseMockSchema {
         DataTable mapOrigin;
         String sql = "select * from t_user";
         if(!StringUtils.isNullOrEmpty(id)){
-            mapOrigin = db.findQuery("select * from t_user").beginWhere("id=?",id).find();
+            mapOrigin = db.findQuery("select * from t_user").where("id=?",id).find();
+        }else {
+            mapOrigin = db.findQuery("select * from t_user").find();
+        }
+
+        return  mapOrigin;
+    }
+
+    public DataTable getUser(String id){
+        this.beforeInit();
+        DataTable mapOrigin;
+        String sql = "select * from t_user";
+        if(!StringUtils.isNullOrEmpty(id)){
+            mapOrigin = db.findQuery("select * from t_user").where("id=?",id).find();
         }else {
             mapOrigin = db.findQuery("select * from t_user").find();
         }

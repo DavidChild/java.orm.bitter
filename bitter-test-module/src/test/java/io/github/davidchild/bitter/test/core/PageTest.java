@@ -1,6 +1,5 @@
 package io.github.davidchild.bitter.test.core;
 
-import io.github.davidchild.bitter.basequery.SubStatementEnum;
 import io.github.davidchild.bitter.datatable.DataTable;
 import io.github.davidchild.bitter.db.db;
 import io.github.davidchild.bitter.functional.IfInnerLambda;
@@ -172,32 +171,8 @@ public class PageTest extends CreateBaseMockSchema {
 
         IfInnerLambda lambda = ()-> name != null && nickname != "" ;
         page.whereNotBlank("user.username = ?",name,lambda);
-        page.whereNotBlank(
-                page.createSubStatement()
-                        .toField("user.id")
-                        .join(SubStatementEnum.IN, null, ids));
-        page.skip(1).take(10);
-        DataTable data = page.getData();
-        assertEquals(true, data.size() == 1);
-    }
+        page.whereNotBlank(page.createSubStatement().in("name", ids,null)); //In
 
-
-    @Test
-    public void testPageQuery9() {
-
-        this.beforeInit();
-        String name = "b";
-        List<String> ids =  new ArrayList<>();
-        String sql = "select  user.* from t_user user \n" +
-                "left join t_dept dept on dept.dept_id = user.dept_id";
-        PageQuery page = new PageQuery(sql);
-
-        IfInnerLambda lambda = ()-> name != null ;
-        page.where("user.username like ?","%"+name+"%"); //模糊查询
-        page.whereNotBlank(
-                page.createSubStatement()
-                        .toField("user.id")
-                        .join(SubStatementEnum.IN, null, ids)); // 数组 IN 查询
         page.skip(1).take(10);
         DataTable data = page.getData();
         assertEquals(true, data.size() == 1);
@@ -214,14 +189,58 @@ public class PageTest extends CreateBaseMockSchema {
 
         IfInnerLambda lambda = ()-> name != null ;
 
-        page.where(page.createSubStatement().toField("user.username").join(SubStatementEnum.ENDLIKE,null,name)); //模糊查询
-        page.where(page.createSubStatement().toField("user.username").join(SubStatementEnum.PRELIKE,null,"h"),lambda); //模糊查询
-        page.where(page.createSubStatement().toField("user.username").join(SubStatementEnum.ALLLIKE,null,"jb")); //模糊查询
+        page.where(page.createSubStatement().endLike("user.username","n",null)); //模糊查询
+        page.where(page.createSubStatement().allLike("user.username",name,null),lambda); //模糊查询
+        page.where(page.createSubStatement().preLike("user.username","h",null)); //模糊查询
 
 
         page.skip(1).take(10);
         DataTable data = page.getData();
         assertEquals(true, data.size() == 1);
+    }
+
+
+    @Test
+    public void testPageQuery10() {
+
+        this.beforeInit();
+        String name = "b";
+        List<String> ids = new ArrayList<>();
+        String sql = "select  user.* from t_user user \n" +
+                "left join t_dept dept on dept.dept_id = user.dept_id";
+        PageQuery page = new PageQuery(sql);
+
+        IfInnerLambda lambda = () -> name != null;
+        page.where("user.username like ?", "%" + name + "%"); //模糊查询
+        page.whereNotBlank(page.createSubStatement().in("name", ids, null)); //IN
+        page.skip(1).take(10);
+        DataTable data = page.getData();
+        assertEquals(true, data.size() == 1);
+    }
+    @Test
+    public void testPageQuery9() {
+        List<String> list = new ArrayList<>();
+        list.add("david");
+        List<String> list2 = new ArrayList<>();
+        list2.add("david");
+        list2.add("hjb");
+        List<String> list3 = new ArrayList<>();
+        PageQuery pq = new PageQuery("select * from t_student");
+        pq.whereNotBlank(pq.createSubStatement().allLike("name",  "hjb",null)); //ok
+        pq.whereNotBlank(pq.createSubStatement().preLike("name", "", "hjb2")); //ok
+        pq.whereNotBlank(pq.createSubStatement().endLike("name", "hjb3",null)); //ok
+        pq.whereNotBlank(pq.createSubStatement().preLike("name","hjb" ,null)); //ok
+        pq.whereNotBlank(pq.createSubStatement().preLike("name",null, new String()));
+        pq.whereNotBlank(pq.createSubStatement().in("name", list,null)); //ok
+        pq.whereNotBlank(pq.createSubStatement().in("name", list,null)); //ok
+        pq.whereNotBlank(pq.createSubStatement().in("name", list2,"")); //ok
+        pq.whereNotBlank(pq.createSubStatement().in("name", list3,null)); //ok
+        pq.whereNotBlank(pq.createSubStatement().in("name", list,null)); //ok
+        pq.whereNotBlank(pq.createSubStatement().in("name", list3,"david")); //ok
+        pq.whereNotBlank(pq.createSubStatement().in("name", list,"")); //ok
+        DataTable dt =  pq.getData();
+
+        assertEquals(true, dt.size() == 1);
     }
 
 

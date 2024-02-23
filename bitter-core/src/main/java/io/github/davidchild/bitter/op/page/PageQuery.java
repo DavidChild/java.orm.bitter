@@ -1,9 +1,6 @@
 package io.github.davidchild.bitter.op.page;
 
-import io.github.davidchild.bitter.basequery.BaseQuery;
-import io.github.davidchild.bitter.basequery.ExecuteEnum;
-import io.github.davidchild.bitter.basequery.ExecuteMode;
-import io.github.davidchild.bitter.basequery.SubStatement;
+import io.github.davidchild.bitter.basequery.*;
 import io.github.davidchild.bitter.datatable.DataTable;
 import io.github.davidchild.bitter.functional.IfInnerLambda;
 import io.github.davidchild.bitter.parbag.ExecuteParBagPage;
@@ -12,8 +9,6 @@ import io.github.davidchild.bitter.tools.CoreStringUtils;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
@@ -272,9 +267,7 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
     /// </summary>
     /// <param name="setwhere"></param>
     public IPageAccess whereNotNull(SubStatement subStatement) {
-        if (CoreStringUtils.isNotEmpty(subStatement.getSubStatement())) {
-            ((ExecuteParBagPage) this.executeParBag).whereBuilder.append(String.format(" and (%s %s %s)", subStatement.getField(), subStatement.getOp(), subStatement.getSubStatement()));
-        }
+        ((ExecuteParBagPage) this.executeParBag).subStatements.add(subStatement);
         return (IPageAccess) this;
     }
 
@@ -290,9 +283,7 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
     /// </summary>
     /// <param name="setwhere"></param>
     public IPageAccess whereNotBlank(SubStatement subStatement) {
-        if (CoreStringUtils.isNotEmpty(subStatement.getSubStatement())) {
-            ((ExecuteParBagPage) this.executeParBag).whereBuilder.append(String.format(" and (%s %s %s)", subStatement.getField(), subStatement.getOp(), subStatement.getSubStatement()));
-        }
+        ((ExecuteParBagPage) this.executeParBag).subStatements.add(subStatement);
         return (IPageAccess) this;
     }
 
@@ -308,9 +299,7 @@ public class PageQuery extends BaseQuery implements IPageAccess, Serializable {
     /// </summary>
     /// <param name="setwhere"></param>
     public IPageAccess where(SubStatement subStatement) {
-        if (CoreStringUtils.isNotEmpty(subStatement.getSubStatement())) {
-            ((ExecuteParBagPage) this.executeParBag).whereBuilder.append(String.format(" and (%s %s %s)", subStatement.getField(), subStatement.getOp(), subStatement.getSubStatement()));
-        }
+        ((ExecuteParBagPage) this.executeParBag).subStatements.add(subStatement);
         return (IPageAccess) this;
     }
 
