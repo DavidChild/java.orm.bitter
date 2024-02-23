@@ -1,18 +1,17 @@
 package io.github.davidchild.bitter.parbag;
 
-import java.util.List;
+import lombok.Data;
 
-import io.github.davidchild.bitter.parse.BitterPredicate;
+@Data
+public class ExecuteParBagDelete<T> extends ExecuteParBag implements IBagWhere {
 
-public class ExecuteParBagDelete<T> extends ExecuteParBag {
-
-    public List<BitterPredicate<T>> condition;
-
-    public List<BitterPredicate<T>> getCondition() {
-        return condition;
+    private WhereContainer whereCondition = new WhereContainer();
+    @Override
+    public WhereContainer getWhereContainer() {
+        return  this.getWhereCondition();
     }
-
-    public void setCondition(List<BitterPredicate<T>> condition) {
-        this.condition = condition;
+    @Override
+    public ExecuteParBag getParBag() {
+        return  this;
     }
 }

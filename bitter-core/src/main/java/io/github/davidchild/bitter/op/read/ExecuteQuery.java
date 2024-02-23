@@ -1,108 +1,82 @@
 package io.github.davidchild.bitter.op.read;
 
 import io.github.davidchild.bitter.BaseModel;
-import io.github.davidchild.bitter.basequery.BaseQuery;
-import io.github.davidchild.bitter.basequery.ExecuteEnum;
+import io.github.davidchild.bitter.basequery.*;
 import io.github.davidchild.bitter.datatable.DataTable;
 import io.github.davidchild.bitter.dbtype.DataValue;
-import io.github.davidchild.bitter.parbag.ExecuteParBagExecute;
+import io.github.davidchild.bitter.exception.ModelException;
+import io.github.davidchild.bitter.parbag.ExecuteParBagQuerySelect;
+import io.github.davidchild.bitter.parbag.IBagWhere;
 import io.github.davidchild.bitter.tools.BitterLogUtil;
 
-import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class ExecuteQuery extends BaseQuery {
+public class ExecuteQuery extends DqlQuery implements IWhereQuery<ExecuteQuery,BaseModel>,IOrderQuery<ExecuteQuery,BaseModel>,ITopSizeQuery<ExecuteQuery,BaseModel> {
 
-    private ExecuteParBagExecute bag;
+    private ExecuteParBagQuerySelect selectBag = new ExecuteParBagQuerySelect();
 
     public ExecuteQuery(String commandText, Object... params) {
-        executeParBag = new ExecuteParBagExecute();
-        executeParBag.setExecuteEnum(ExecuteEnum.ExecuteQuery);
-        ((ExecuteParBagExecute) executeParBag).setCommandText(commandText);
-        ((ExecuteParBagExecute) executeParBag).setParaMap(new LinkedHashMap<>());
+        SingleRunner runner = new SingleRunner();
+        this.setQuery(runner);
+
+        selectBag.setExecuteEnum(ExecuteEnum.ExecuteQuerySelect);
+        selectBag.setCommandText(commandText);
         if (params != null && params.length > 0) {
             Arrays.stream(params).forEach((v) -> {
-                ((ExecuteParBagExecute) executeParBag).getParaMap().put(UUID.randomUUID().toString(), v);
+                selectBag.getDynamics().put(UUID.randomUUID().toString(), v);
             });
         }
+        runner.setBagOp(selectBag);
     }
+
+
+
     protected <T extends BaseModel> ExecuteQuery(Class<? extends BaseModel> clazz) {
-        executeParBag = new ExecuteParBagExecute();
-        executeParBag.setExecuteEnum(ExecuteEnum.ExecuteQuery);
-        ((ExecuteParBagExecute) executeParBag).setCommandText(commandText);
-        ((ExecuteParBagExecute) executeParBag).setType(clazz);
-        ((ExecuteParBagExecute) executeParBag).setParaMap(new LinkedHashMap<>());
-    }
+        SingleRunner runner = new SingleRunner();
 
-    /// <summary>
-    /// 追加 where 1=1
-    /// </summary>
-    /// <returns></returns>
-    public ExecuteQuery beginWhere(String beginWhere, Object... params) {
-        StringBuilder strBuild = new StringBuilder(((ExecuteParBagExecute) executeParBag).getCommandText());
-        strBuild.append(" where  " + beginWhere);
-        ((ExecuteParBagExecute) executeParBag).setCommandText(strBuild.toString());
-        if (params != null && params.length > 0) {
-            Arrays.stream(params).forEach((v) -> {
-                ((ExecuteParBagExecute) executeParBag).getParaMap().put(UUID.randomUUID().toString(), v);
-            });
-        }
-        return this;
-    }
-
-    public ExecuteQuery andWhere(String andWhere, Object... params) {
-        StringBuilder strBuild = new StringBuilder(((ExecuteParBagExecute) executeParBag).getCommandText());
-        strBuild.append(" and (" + andWhere + ") ");
-        ((ExecuteParBagExecute) executeParBag).setCommandText(strBuild.toString());
-        if (params != null && params.length > 0) {
-            Arrays.stream(params).forEach((v) -> {
-                ((ExecuteParBagExecute) executeParBag).getParaMap().put(UUID.randomUUID().toString(), v);
-            });
-        }
-        return this;
-    }
-
-
-    public ExecuteQuery addParams(Object... params) {
-        if (params != null && params.length > 0) {
-            Arrays.stream(params).forEach((v) -> {
-                ((ExecuteParBagExecute) executeParBag).getParaMap().put(UUID.randomUUID().toString(), v);
-            });
-        }
-        return this;
+        selectBag.setExecuteEnum(ExecuteEnum.ExecuteQuerySelect);
+        selectBag.setModelType(clazz);
+        runner.setBagOp(selectBag);
+        this.setQuery(runner);
     }
 
     public DataTable find() {
-        this.convert();
         try {
             DataTable dt = this.getData();
-            return  dt;
+            return dt;
         } catch (Exception ex) {
             BitterLogUtil.getInstance().error("bitter query error," + ex.getMessage());
         }
         return new DataTable();
     }
 
-    protected <T extends BaseModel> T queryById(Object id)
-            throws SQLException, InstantiationException, IllegalAccessException {
+    protected <T extends BaseModel> T queryById(Object id) {
 
-        T data;
-        String tableName = ((ExecuteParBagExecute) executeParBag).getTableName();
-        DataValue keyInfo = ((ExecuteParBagExecute) executeParBag).getKeyInfo();
-        ((ExecuteParBagExecute) executeParBag).getParaMap().put(UUID.randomUUID().toString(), id);
-        String sql = String.format("select * from %s where %s = ?", tableName, keyInfo.getDbName());
-        ((ExecuteParBagExecute) executeParBag).setCommandText(sql);
-        List<T> st = this.getDataList();
-        if (st != null && st.size() > 0) {
-            data = st.get(0);
-        } else {
-            data = (T) ((ExecuteParBagExecute) executeParBag).getType().newInstance();
+        try {
+            T data;
+            if (id == null) {
+                data = (T) this.getSingleQuery().getBagOp().getModelType().newInstance();
+                return data;
+            }
+            String tableName = this.getSingleQuery().getBagOp().getTableName();
+            DataValue keyInfo = this.getSingleQuery().getBagOp().getKeyInfo();
+            SubWhereStatement SubWhereStatement = new SubWhereStatement();
+            SubWhereStatement.eq(keyInfo.getDbName(), id, null);
+            ((IBagWhere) (this.getSingleQuery().getBagOp())).getWhereContainer().getSubWhereStatementCondition().add(SubWhereStatement);
+            String sql = String.format("select * from %s ", tableName);
+            selectBag.setCommandText(sql);
+            List<T> st = this.getDataList();
+            if (st != null && st.size() > 0) {
+                data = st.get(0);
+            } else {
+                data = (T) (selectBag.getModelType()).newInstance();
+            }
+            return data;
+        } catch (Exception ex) {
+            throw new ModelException("queryById is none data that init a default data is error:" + ex.getMessage());
         }
-        return data;
-
     }
 
 }

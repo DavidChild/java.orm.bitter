@@ -1,245 +1,179 @@
 package io.github.davidchild.bitter.excutequery;
 
+import io.github.davidchild.bitter.BaseModel;
 import io.github.davidchild.bitter.basequery.BaseQuery;
+import io.github.davidchild.bitter.basequery.StatementHandeUtil;
+import io.github.davidchild.bitter.connection.RunnerParam;
 import io.github.davidchild.bitter.dbtype.DataValue;
-import io.github.davidchild.bitter.op.insert.Insert;
-import io.github.davidchild.bitter.parbag.*;
-import io.github.davidchild.bitter.tools.CoreStringUtils;
+import io.github.davidchild.bitter.parbag.IBagColumn;
+import io.github.davidchild.bitter.parbag.IBagOrder;
+import io.github.davidchild.bitter.parbag.IBagUpdateColumn;
+import io.github.davidchild.bitter.parbag.IBagWhere;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlQuery extends BaseQuery {
 
-
-
     @Override
-    protected void insertCommandText(boolean isOutIdentity) {
-        super.insertCommandText(isOutIdentity);
-        ExecuteParBagInsert bagPar = (ExecuteParBagInsert) this.executeParBag;
+    protected RunnerParam insertCommandText(boolean isOutIdentity, BuildParams buildParams) {
+        RunnerParam runnerParam = new RunnerParam();
+        runnerParam.appendOnlyParams(buildParams.getObjectParams());
+        runnerParam.setOutIdentity(isOutIdentity);
         String fields = "";
         String values = "";
-
-        for (DataValue filed : bagPar.getProperties()) {
+        for (DataValue filed : buildParams.getFiledProperties()) {
             if (!filed.getIsIdentity()) {
                 if (filed.getValue() != null) {
                     fields += filed.getDbName() + ',';
                     values += "?,";
-                    this.parameters.add(filed.getValue());
+                    StatementHandeUtil.setRunnerParamContainer(runnerParam, filed.getValue());
                 } else {
                     fields += filed.getDbName() + ',';
                     values += "null,";
                 }
             }
         }
-        bagPar.RemoveProperties();
-        this.commandText = String.format("INSERT INTO %s (%s) VALUES (%s);", bagPar.getTableName(),
-                fields.substring(0, fields.length() - 1), values.substring(0, values.length() - 1));
+        runnerParam.setCommand(String.format("INSERT INTO %s (%s) VALUES (%s);", buildParams.getTableName(),
+                fields.substring(0, fields.length() - 1), values.substring(0, values.length() - 1)));
+        return runnerParam;
     }
 
     @Override
-    protected void bachInsert() {
-        super.bachInsert();
-        List<Insert> list = ((ExecuteParBachInsert) this.executeParBag).getList();
-        if (list == null && list.size() <= 0)
-            return;
-        ExecuteParBagInsert bagPar = (ExecuteParBagInsert) list.get(0).getExecuteParBag();
+    protected RunnerParam bachInsert(BuildParams buildParams) {
+        RunnerParam runnerParam = new RunnerParam();
+        runnerParam.appendOnlyParams(buildParams.getObjectParams());
+        if (buildParams.getBatchData() == null && buildParams.getBatchData().size() < 1) return null;
+        List<DataValue> dataValues = buildParams.getBatchData().get(0);
         String fields = "";
-        for (DataValue filed : bagPar.getProperties()) {
+        for (DataValue filed : dataValues) {
             if (!filed.getIsIdentity()) {
                 fields += filed.getDbName() + ',';
             }
-
         }
         StringBuilder values = new StringBuilder(" ");
-        for (BaseQuery q : list) {
+        for (List<DataValue> q : buildParams.getBatchData()) {
             String value = "(";
-            ExecuteParBagInsert bag = (ExecuteParBagInsert) q.getExecuteParBag();
-            for (DataValue f : bag.getProperties())
+            for (DataValue f : q)
                 if (!f.getIsIdentity()) {
                     if (f.getValue() == null) {
                         value += "null,";
                     } else {
                         value += "?,";
-                        this.parameters.add(f.getValue());
+                        StatementHandeUtil.setRunnerParamContainer(runnerParam, f.getValue());
                     }
 
                 }
             value = value.substring(0, value.length() - 1) + "),";
             values.append("\n");
             values.append(value);
-            bag.RemoveProperties();
         }
         String command = values.toString();
-        this.commandText = String.format("INSERT INTO %s (%s) VALUES %s;", bagPar.getTableName(),
-                fields.substring(0, fields.length() - 1), command.substring(0, command.length() - 1));
+        runnerParam.setCommand(String.format("INSERT INTO %s (%s) VALUES %s;", buildParams.getTableName(),
+                fields.substring(0, fields.length() - 1), command.substring(0, command.length() - 1)));
+        return runnerParam;
 
     }
 
     // create delete sql
     @Override
-    protected void deleteCommandText() {
-        super.deleteCommandText();
-        ExecuteParBagDelete bagPar = (ExecuteParBagDelete) this.executeParBag;
-        StringBuilder whereSQL = new StringBuilder(); // delete condition
-
-        if (bagPar.condition != null) {
-            whereSQL.append(" WHERE ");
-            whereSQL.append(this.setWhere(bagPar.getCondition()));
-        } else if (bagPar.getData() != null) {
-            whereSQL.append(" WHERE ");
-            Object keyValue = bagPar.getKeyInfo().getValue();
-            String keyFiled = bagPar.getKeyInfo().getDbName();
-
-            this.parameters.add(keyValue);
-            whereSQL.append(String.format("%s=%s", keyFiled, "?"));
-        }
-        bagPar.RemoveProperties();
-        this.commandText = String.format("%s%s;", // delete sql text
-                "DELETE FROM " + bagPar.getTableName() // delete condition
-                , whereSQL);
-
+    protected <T extends BaseModel> RunnerParam deleteCommandText(BuildParams buildParams) {
+        RunnerParam runnerParam = new RunnerParam();
+        runnerParam.appendOnlyParams(buildParams.getObjectParams());
+        RunnerParam runner_param_where = WhereHandler.getWhere(buildParams.getData(), (IBagWhere) buildParams.getBagOp(), buildParams.getFiledProperties(), buildParams.getKeyInfo());
+        runnerParam.appendOnlyParams(runner_param_where);
+        runnerParam.setCommand(String.format("%s%s;", "DELETE FROM " + buildParams.getTableName(), runner_param_where.getCommand()));
+        return runnerParam;
     }
 
     @Override
-    protected void updateCommandText() {
-        super.updateCommandText();
-        ExecuteParBagUpdate bagPar = (ExecuteParBagUpdate) this.executeParBag;
+    protected RunnerParam updateCommandText(BuildParams buildParams) {
+        RunnerParam runnerParam = new RunnerParam();
+        runnerParam.appendOnlyParams(buildParams.getObjectParams());
         StringBuilder updateSQL = new StringBuilder(); // update语句
-        StringBuilder whereSQL = new StringBuilder(); // update条件语句
-        updateSQL.append(" update  ").append(bagPar.getTableName()).append(" set ");
-        if (bagPar.getData() != null) {
-            for (DataValue p : bagPar.getProperties()) {
-                if (((!p.getIsKey()) && (!p.getIsIdentity())))
-                    if (p.getValue() != null) {
-                        updateSQL.append(String.format("%s=%s,", p.getDbName(), "?"));
-                        this.parameters.add(p.getValue());
-                    } else {
-                        updateSQL.append(String.format("%s=null,", p.getDbName()));
-                    }
-            }
-            whereSQL.append(" WHERE ");
-            Object keyValue = bagPar.getKeyInfo().getValue();
-            String keyName = bagPar.getKeyInfo().getDbName();
-            whereSQL.append(String.format("%s=?", keyName));
-            this.parameters.add(keyValue);
-        }
-        else if (bagPar.getUpdatePairs() != null && bagPar.getUpdatePairs().size() > 0) {
-            bagPar.getUpdatePairs().forEach(up -> {
-                if (((UpdatePair) up).getColumnValue() != null) {
-                    updateSQL.append(String.format("%s=?,", ((UpdatePair) up).getDbFieldName()));
-                    this.parameters.add(((UpdatePair) up).getColumnValue());
-                } else {
-                    updateSQL.append(String.format("%s=null,", ((UpdatePair) up).getDbFieldName()));
-                }
+        updateSQL.append(" update  ").append(buildParams.getTableName()).append(" set");
+        RunnerParam runner_update_column = UpdateColumnHandler.getUpdateColumnSet(buildParams.getData(), (IBagUpdateColumn) buildParams.getBagOp(), buildParams.getFiledProperties());
+        RunnerParam runner_where = WhereHandler.getWhere(buildParams.getData(), (IBagWhere) buildParams.getBagOp(), buildParams.getFiledProperties(), buildParams.getKeyInfo());
 
-            });
-            if (bagPar.condition != null) {
-                whereSQL.append(" WHERE ");
-                whereSQL.append(this.setWhere(bagPar.condition));
-            }
-        }
-        bagPar.RemoveProperties();
-        this.commandText =
-                String.format("%s%s;", updateSQL.substring(0, updateSQL.toString().length() - 1), whereSQL.toString());
+        runnerParam.appendOnlyParams(runner_update_column);
+        runnerParam.appendOnlyParams(runner_where);
+
+        runnerParam.setCommand(String.format("%s%s%s;", updateSQL, runner_update_column.getCommand(), runner_where.getCommand()));
+        return runnerParam;
     }
+
     @Override
-    protected void selectCommandText() {
-        super.selectCommandText();
-        ExecuteParBagSelect bagPar = (ExecuteParBagSelect) this.executeParBag;
+    protected RunnerParam selectCommandText(BuildParams buildParams) {
+        RunnerParam runnerParam = new RunnerParam();
+        runnerParam.appendOnlyParams(buildParams.getObjectParams());
         StringBuilder selectSQL = new StringBuilder(); // 语句
         StringBuilder whereSQL = new StringBuilder(); // 条件语句
-        StringBuilder order = new StringBuilder(); // 条件语句
-        if (bagPar.orders != null && bagPar.orders.size() > 0) {
-            order.append(" ORDER BY ");
-            List<String> orderList = new ArrayList<>();
-            for (Object orderPair : bagPar.getOrders()) {
-                OrderPair orderPair1 = (OrderPair) orderPair;
-                orderList.add(orderPair1.getOrderName() + " " + orderPair1.getOrderBy().name());
-            }
-
-            order.append(String.join(",", orderList));
-        }
+        StringBuilder orderSQL = new StringBuilder(); // 条件语句
         selectSQL.append("SELECT ");
-        if (bagPar.selectColumns != null && bagPar.selectColumns.size() > 0) {
-            selectSQL.append(String.join(",", bagPar.selectColumns));
+        RunnerParam runner_columns = SelectColumnHandler.getColumn((IBagColumn) buildParams.getBagOp());
+        selectSQL.append(runner_columns.getCommand());
+
+        selectSQL.append(" FROM  " + buildParams.getTableName());
+
+        RunnerParam runner_param_where = WhereHandler.getWhere(buildParams.getData(), (IBagWhere) buildParams.getBagOp(), buildParams.getFiledProperties(), buildParams.getKeyInfo());
+        runnerParam.appendOnlyParams(runner_param_where);
+        whereSQL.append(runner_param_where.getCommand());
+
+        RunnerParam runner_order = OrderHandler.getOrder((IBagOrder) buildParams.getBagOp());
+        orderSQL.append(runner_order.getCommand());
+
+        if (buildParams.getTopSize() > 0) {
+            runnerParam.setCommand(String.format("%s%s%s%s", selectSQL, whereSQL, runner_order.getCommand(), " LIMIT 0," + buildParams.getTopSize() + " "));
         } else {
-            selectSQL.append(" * ");
+            runnerParam.setCommand(String.format("%s%s%s", selectSQL, whereSQL, runner_order.getCommand()));
         }
-        selectSQL.append(" FROM  " + bagPar.getTableName());
-        String where = this.setWhere(bagPar.condition);
-        if (CoreStringUtils.isNotEmpty(where)) {
-            whereSQL.append(" WHERE ");
-            whereSQL.append(where);
-        }
-        if (bagPar.topSize != null && bagPar.topSize > 0) {
-            this.commandText =
-                    String.format("%s%s%s%s", selectSQL, whereSQL, order, " LIMIT 0," + bagPar.topSize + " ");
-        } else {
-            this.commandText = String.format("%s%s%s", selectSQL, whereSQL, order);
-        }
-        bagPar.RemoveProperties();
+        return runnerParam;
     }
 
     @Override
-    protected void countCommandText() {
-        super.selectCommandText();
-        ExecuteParBagCount bagPar = (ExecuteParBagCount) this.executeParBag;
+    protected RunnerParam countCommandText(BuildParams buildParams) {
+        RunnerParam runnerParam = new RunnerParam();
+        runnerParam.appendOnlyParams(buildParams.getObjectParams());
         StringBuilder whereSQL = new StringBuilder(); // 条件语句
-        // 语句
-        String selectSQL = "SELECT COUNT(1) " + "FROM  " + bagPar.getTableName() + " ";
-        String where = this.setWhere(bagPar.condition);
-        if (CoreStringUtils.isNotEmpty(where)) {
-            whereSQL.append(" WHERE ");
-            whereSQL.append(where);
-        }
-        bagPar.RemoveProperties();
-        this.commandText = String.format("%s%s;", selectSQL, whereSQL);
+        String selectSQL = "SELECT COUNT(1) " + "FROM  " + buildParams.getTableName() + " ";
+        RunnerParam runner_param_where = WhereHandler.getWhere(buildParams.getData(), (IBagWhere) buildParams.getBagOp(), buildParams.getFiledProperties(), buildParams.getKeyInfo());
+        runnerParam.appendOnlyParams(runner_param_where);
+
+        whereSQL.append(runner_param_where.getCommand());
+        runnerParam.setCommand(String.format("%s%s;", selectSQL, whereSQL));
+        return runnerParam;
     }
 
-    @Override
-    protected void createScope() {
-
-        super.createScope();
-        this.scopeCommands = new ArrayList<>();
-        this.scopeParams = new ArrayList<>();
-        this.scopeSuccess = ((ExecuteParScope) this.executeParBag).getScopeResult();
-        if (!((ExecuteParScope) this.executeParBag).getScopeResult()) {
-            return;
-        }
-        List<BaseQuery> list = ((ExecuteParScope) this.executeParBag).getList();
-        if (list == null && list.size() <= 0)
-            return;
-        for (BaseQuery q : list) {
-            q.convert();
-            this.getScopeCommands().add(q.getCommandText());
-            if (q.getParameters() != null || q.getParameters().size() > 0) {
-                this.getScopeParams().add(q.getParameters());
-            } else {
-                this.getScopeParams().add(new ArrayList<>());
-            }
-        }
-    }
 
     // create execute sql
     @Override
-    protected void executeCommandText() {
-        super.executeCommandText();
-        ExecuteParBagExecute bagPar = (ExecuteParBagExecute) this.executeParBag;
-        this.commandText = bagPar.getCommandText();
-        this.setDynamicParameters(bagPar.getParaMap());
-        bagPar.RemoveProperties();
+    protected RunnerParam executeCommandText(BuildParams buildParams) {
+        RunnerParam runnerParam = new RunnerParam();
+        runnerParam.appendOnlyParams(buildParams.getObjectParams());
+        runnerParam.setCommand(String.format("%s;", buildParams.getExecuteCommand()));
+        return runnerParam;
 
     }
 
     @Override
-    protected void pageCommandText() {
-        MyPageManage.selectPageData(this);
+    protected RunnerParam querySelectCommandText(BuildParams buildParams) {
+        RunnerParam runnerParam = new RunnerParam();
+        runnerParam.appendOnlyParams(buildParams.getObjectParams());
+        RunnerParam runner_param_where = WhereHandler.getWhere(buildParams.getData(), (IBagWhere) buildParams.getBagOp(), buildParams.getFiledProperties(), buildParams.getKeyInfo());
+        runnerParam.appendOnlyParams(runner_param_where);
+
+        RunnerParam runner_order = OrderHandler.getOrder((IBagOrder) buildParams.getBagOp());
+
+        runnerParam.setCommand(String.format("%s%s%s;", buildParams.getExecuteCommand(), runner_param_where.getCommand(), runner_order.getCommand()));
+        return runnerParam;
     }
 
     @Override
-    protected void pageCountText() {
-        MyPageManage.selectPageDataCount(this);
+    protected RunnerParam pageCommandText(BuildParams buildParams) {
+        return MyPageManage.selectPageData(buildParams);
     }
 
+    @Override
+    protected RunnerParam pageCountText(BuildParams buildParams) {
+        return MyPageManage.selectPageDataCount(buildParams);
+    }
 }

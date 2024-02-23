@@ -15,11 +15,11 @@ public class ThreadTest extends Thread {
         String sql = "select  user.* from t_user user \n" +
                      "left join t_dept dept on dept.dept_id = user.id";
 
-        PageQuery page = new PageQuery(sql);
+        PageQuery page = new PageQuery();
         page.where("IFNULL(user.username,'') = ?", "123");
 
-        page.thenASC("user.username");
-        page.thenDESC("us.create_time");
+        page.thenAsc("user.username");
+        page.thenDesc("us.create_time");
 
         page.skip(1).take(10);
         DataTable mapList = page.getData();

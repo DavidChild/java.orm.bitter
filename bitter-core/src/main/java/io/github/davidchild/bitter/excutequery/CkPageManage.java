@@ -1,108 +1,85 @@
 package io.github.davidchild.bitter.excutequery;
 
-import io.github.davidchild.bitter.basequery.BaseQuery;
-import io.github.davidchild.bitter.parbag.ExecuteParBagPage;
+import io.github.davidchild.bitter.connection.RunnerParam;
+import io.github.davidchild.bitter.parbag.IBagOrder;
+import io.github.davidchild.bitter.parbag.IBagWhere;
 import io.github.davidchild.bitter.tools.CoreStringUtils;
 
 public class CkPageManage {
 
-    public static void selectPageData(BaseQuery baseQuery) {
-        baseQuery.setCommandText("");
-        baseQuery.clearParameters();
-        getPageDataBySelect(baseQuery);
+    public static RunnerParam selectPageData(BuildParams buildParams) {
+        return   getPageDataBySelect(buildParams);
     }
-
-    public static void selectPageDataCount(BaseQuery baseQuery) {
-        baseQuery.setCommandText("");
-        baseQuery.clearParameters();
-        getPageDataCountBySelect(baseQuery);
+    public static RunnerParam selectPageDataCount(BuildParams buildParams) {
+        return    getPageDataCountBySelect(buildParams);
     }
+    private static RunnerParam getPageDataBySelect(BuildParams buildParams) {
+        RunnerParam runnerParam = new RunnerParam();
+        runnerParam.appendOnlyParams(buildParams.getObjectParams());
+        StringBuilder sqlSelect = new StringBuilder(buildParams.getPageCommand());
+        if (!buildParams.getIsPage()) {
+            buildParams.setPageIndex(1);
+            buildParams.setPageSize(1);
+        }
+        RunnerParam runner_where = WhereHandler.getWhere(null, (IBagWhere) buildParams.getBagOp(), buildParams.getFiledProperties(), buildParams.getKeyInfo());
+        if (CoreStringUtils.isNotEmpty(runner_where.getCommand())) {
+            sqlSelect.append("\n");
+            sqlSelect.append(runner_where.getCommand());
+            runnerParam.appendOnlyParams(runner_where);
+        }
+        RunnerParam runner_order = OrderHandler.getOrder((IBagOrder) buildParams.getBagOp());
+        if (CoreStringUtils.isNotEmpty(runner_order.getCommand())) {
+            sqlSelect.append("\n");
+            sqlSelect.append(runner_order.getCommand());
+        }
 
-    private static void getPageDataBySelect(BaseQuery baseQuery) {
-        ExecuteParBagPage bag = (ExecuteParBagPage) (baseQuery.getExecuteParBag());
-        baseQuery.setDynamicParameters((bag.dynamics));
-        BaseQuery sqlTemp = new BaseQuery();
-        sqlTemp.setCommandText(bag.commandText);
-        if (bag.dynamics != null && bag.dynamics.size() > 0) {
-            bag.dynamics.forEach((k, v) -> sqlTemp.getParameters().add(v));
-        }
-        StringBuilder sqlSelect = new StringBuilder(sqlTemp.getCommandText());
-
-        if (!bag.isPage) {
-            bag.pageIndex = 1;
-            bag.pageSize = 1;
-        }
-        if (CoreStringUtils.isNotEmpty(bag.whereBuilder.toString())) {
-            String where = (CoreStringUtils.isEmpty(bag.whereBuilder.toString()) ? ""
-                    : String.format(" WHERE %s ", bag.whereBuilder.toString()));
-            sqlSelect.append(" ");
-            sqlSelect.append(where);
-        }
-        if (CoreStringUtils.isNotEmpty(bag.getOrderBy().toString())) {
-            String order;
-            if (bag.getOrderBy().toString().charAt(bag.getOrderBy().toString().length() - 1) == ',') {
-                order = bag.getOrderBy().substring(0, bag.getOrderBy().toString().length() - 1);
-            } else {
-                order = bag.getOrderBy().toString();
-            }
-            String orderBy =
-                    (CoreStringUtils.isEmpty(bag.getOrderBy()) ? "" : String.format(" ORDER BY %s ", order));
-            sqlSelect.append(" ");
-            sqlSelect.append(orderBy);
-        }
-        if (bag.pageIndex == 1) {
-            sqlSelect.append(" LIMIT " + "0" + ",").append(bag.pageSize).append(";");
+        if (buildParams.getPageIndex() == 1) {
+            sqlSelect.append(" LIMIT " + "0" + ",").append(buildParams.getPageSize()).append(";");
         } else {
-            sqlSelect.append(" LIMIT ").append(((bag.pageIndex - 1) * bag.pageSize)).append(",")
-                    .append(bag.pageSize).append(" ;");
+            sqlSelect.append(" LIMIT ").append(((buildParams.getPageIndex() - 1) * buildParams.getPageSize())).append(",")
+                    .append(buildParams.getPageSize()).append(" ;");
         }
-        try {
-            sqlSelect.append(" ");
-            if (CoreStringUtils.isNotEmpty(bag.preWith)) {
-                sqlTemp.setCommandText(bag.preWith + " " + sqlSelect.append(sqlSelect));
-            } else {
-                sqlTemp.setCommandText(sqlSelect.toString());
-            }
-            baseQuery.setCommandText(sqlTemp.getCommandText());
-            baseQuery.resetParameters(sqlTemp.getParameters());
-        } finally {
+        sqlSelect.append("\n");
+        if (CoreStringUtils.isNotEmpty(buildParams.getPreWith())) {
+            runnerParam.setCommand(buildParams.getPreWith() + "\n" + sqlSelect);
+        } else {
+            runnerParam.setCommand(sqlSelect.toString());
+        }
 
-        }
+        return runnerParam;
     }
 
-    private static void getPageDataCountBySelect(BaseQuery baseQuery) {
-        ExecuteParBagPage bag = (ExecuteParBagPage) (baseQuery.getExecuteParBag());
-        String selectTable = bag.pageTableName;
-        baseQuery.setDynamicParameters((bag.dynamics));
-        BaseQuery sqlTemp = new BaseQuery();
-        sqlTemp.setCommandText(bag.commandText);
-        if (bag.dynamics != null && bag.dynamics.size() > 0) {
-            bag.dynamics.forEach((k, v) -> sqlTemp.getParameters().add(v));
-        }
-        StringBuilder sqlCount = new StringBuilder();
-       // sqlCount.append("/*******Search TotalCount*******/\n");
-        sqlCount.append("select");
-        sqlCount.append(" ");
-        sqlCount.append("count(1) as totalcountcheok");
-        sqlCount.append(" ");
-        sqlCount.append("from");
-        sqlCount.append(" ");
-        sqlCount.append(selectTable);
-        sqlCount.append(" ");
-        if (CoreStringUtils.isNotEmpty(bag.whereBuilder.toString())) {
-            sqlCount.append(CoreStringUtils.isEmpty(bag.whereBuilder.toString()) ? ""
-                    : String.format(" WHERE %s; ", bag.whereBuilder.toString()));
-        }
-        try {
-            if (CoreStringUtils.isNotEmpty(bag.preWith)) {
-                sqlTemp.setCommandText(bag.preWith + " " + sqlCount);
-            } else {
-                sqlTemp.setCommandText(sqlCount.toString());
-            }
-            baseQuery.setCommandText(sqlTemp.getCommandText());
-            baseQuery.resetParameters(sqlTemp.getParameters());
-        } finally {
+    private static RunnerParam getPageDataCountBySelect(BuildParams buildParams) {
 
+        RunnerParam runnerParam = new RunnerParam();
+        runnerParam.appendOnlyParams(buildParams.getObjectParams());
+        String selectTable = buildParams.getTableName();
+
+        StringBuilder sqlCount = new StringBuilder();
+        sqlCount.append("/*******Search TotalCount*******/\n");
+        sqlCount.append("select");
+        sqlCount.append("\n");
+        sqlCount.append("count(1) as totalcountcheok");
+        sqlCount.append("\n");
+        sqlCount.append("from");
+        sqlCount.append("\n");
+        sqlCount.append(selectTable);
+        sqlCount.append("\n");
+
+        RunnerParam runner_where = WhereHandler.getWhere(null, (IBagWhere) buildParams.getBagOp(), buildParams.getFiledProperties(), buildParams.getKeyInfo());
+        if (CoreStringUtils.isNotEmpty(runner_where.getCommand())) {
+            sqlCount.append("\n");
+            sqlCount.append(runner_where.getCommand());
+            runnerParam.appendOnlyParams(runner_where);
         }
+
+        sqlCount.append(";");
+        if (CoreStringUtils.isNotEmpty(buildParams.getPreWith())) {
+            sqlCount.append(buildParams.getPreWith() + "\n" + sqlCount);
+        } else {
+            sqlCount.append(sqlCount.toString());
+        }
+        runnerParam.setCommand(sqlCount.toString());
+        return runnerParam;
     }
 }

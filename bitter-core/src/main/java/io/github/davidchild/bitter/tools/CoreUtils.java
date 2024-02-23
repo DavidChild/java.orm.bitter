@@ -46,6 +46,25 @@ public class CoreUtils {
         return ki;
     }
 
+
+    public static String getDbNameByInnerName(List<DataValue> list, DataValue keyInfo, String innerFieldName) {
+
+        if (keyInfo != null && CoreStringUtils.isNotEmpty(keyInfo.getDbName())
+                && keyInfo.getClassInnerName().toLowerCase().equals(innerFieldName)) {
+            return keyInfo.getDbName();
+        }
+        String dBFieldName = "";
+        if (list != null && list.size() > 0) {
+            for (DataValue item : list) {
+                if (item.getClassInnerName().toLowerCase().equals(innerFieldName.toLowerCase())) {
+                    dBFieldName = item.getDbName();
+                    break;
+                }
+            }
+        }
+        return dBFieldName;
+    }
+
     public static <T>  DataValue getTypeKey(Class<?> type, T data) {
             List<FieldProperty> list = getAllFields(type);
 //            return list.stream().filter(property -> property.isKey).map(item

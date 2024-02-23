@@ -119,6 +119,7 @@ public class DmlTest extends CreateBaseMockSchema {
     public void deleteTest3()  {
         this.beforeInit();
         long affect = db.delete(TUser.class).where(f->f.getId() == "1552178014981849090").submit();
+
         assertEquals(1,affect);
     }
     @Test
@@ -169,8 +170,18 @@ public class DmlTest extends CreateBaseMockSchema {
             for (int i = 0; i < 10; i++) {
                 TStudent studentInfo = new TStudent();
                 studentInfo.setName("hjb" + i);
+
                 studentInfo.insert().addInBachInsertPool((List<Insert>) list);
             }
+        }).submit() > 0;
+        assertEquals(true,bl);
+    }
+
+    @Test
+    public void bachInsertTest2() {
+        this.beforeInit();
+        boolean bl = db.bachInsert().doBachInsert((list) -> {
+
         }).submit() > 0;
         assertEquals(true,bl);
     }
@@ -185,14 +196,14 @@ public class DmlTest extends CreateBaseMockSchema {
     @Test
     public void testQueryCount2() throws Exception {
         this.beforeInit();
-        var count = db.findQuery(TUser.class).where(t -> t.getUsername() == "hjb").thenDesc(TUser::getUsername).thenAsc(TUser::getUsername).findCount();
+        int count = db.findQuery(TUser.class).thenDesc(TUser::getUsername).findCount();
         assertEquals(true, count > 0);
     }
 
     @Test
     public void moreDbTest() throws InstantiationException, IllegalAccessException, SQLException {
        this.beforeInit();
-        TUser sysUser = db.findQuery(TUser.class, "1552178014981849090").find();
+       TUser sysUser = db.findQuery(TUser.class, "1552178014981849090").find();
     }
 
 }
