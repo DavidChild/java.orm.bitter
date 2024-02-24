@@ -8,5 +8,6 @@ import java.util.LinkedHashMap;
 public class StatementHandlerResult {
     private String statement;
     private LinkedHashMap<String, Object> dynamics;
-    private SubStatementEnum subStatementEnum;
+    private SubWhereStatementEnum SubWhereStatementEnum;
+    private SubOrderStatementEnum subOrderStatementEnum;
 }

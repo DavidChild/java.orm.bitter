@@ -26,7 +26,7 @@ public class DqlTest extends CreateBaseMockSchema {
     @Test
     public void testQueryGen1()  {
         Date s = DateUtils.parseDate("2022-8-10");
-        List<TUser> list = db.findQuery(TUser.class).thenAsc(TUser::getId).find();
+        List<TUser> list = db.findQuery(TUser.class).thenAsc(TUser::getId).thenDesc(TUser::getPhone).find();
         assertEquals(true, list.size()>0);
 
     }

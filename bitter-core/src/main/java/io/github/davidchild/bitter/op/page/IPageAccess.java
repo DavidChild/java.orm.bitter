@@ -1,9 +1,7 @@
 package io.github.davidchild.bitter.op.page;
 
 import io.github.davidchild.bitter.basequery.ExecuteMode;
-import io.github.davidchild.bitter.basequery.SubStatement;
 import io.github.davidchild.bitter.datatable.DataTable;
-import io.github.davidchild.bitter.functional.IfInnerLambda;
 
 public interface IPageAccess {
 
@@ -49,65 +47,6 @@ public interface IPageAccess {
 
     IUnionPageAccess toUnionPage();
 
-    IPageAccess where(SubStatement subStatement);
-
-    IPageAccess where(String setWhere, Object... params);
-
-
-    IPageAccess whereNotBlank(SubStatement subStatement);
-
-    IPageAccess whereNotNull(SubStatement subStatement);
-
-
-    IPageAccess whereNotNull(String setWhere, Object arg);
-
-    IPageAccess whereNotBlank(String setWhere, String arg);
-
-    IPageAccess where(String setWhere);
-
-
-
-
-
-    IPageAccess where(SubStatement subStatement, IfInnerLambda ifInnerLambda);
-
-    IPageAccess where(IfInnerLambda ifInnerLambda,String setWhere, Object... params);
-
-
-    IPageAccess whereNotBlank(SubStatement subStatement, IfInnerLambda ifInnerLambda);
-
-    IPageAccess whereNotNull(SubStatement subStatement, IfInnerLambda ifInnerLambda);
-
-
-    IPageAccess whereNotNull(String setWhere, Object arg, IfInnerLambda ifInnerLambda);
-
-    IPageAccess whereNotBlank(String setWhere, String arg, IfInnerLambda ifInnerLambda);
-
-    IPageAccess where(String setWhere, IfInnerLambda ifInnerLambda);
-
-
-    /// <summary>
-    /// Or; Note: At this time, Or is always in parallel with the precondition
-    /// case：1：（(x.y=="1") or (x.z=3)） or (x.n=4)
-    /// case：2：（(x.y=="1") and (x.z=3)） or (x.n=4)
-    // It must be noted that there is no such writing method：(x.y=="1") and (x.z=3) or (x.n=4)
-    /// When using Or, automatically put all your previous conditions into a () to form conditions with your existing
-    /// Or, such as: (previously written conditions) or (existing conditions). This relationship is always the same
-    /// </summary>
-    /// <param name="setOr">setOr</param>
-    IPageAccess or(String setOr);
-
-    /// <summary>
-    /// Or; Note: At this time, Or is always in parallel with the precondition
-    /// case：1：（(x.y=="1") or (x.z=3)） or (x.n=4)
-    /// case：2：（(x.y=="1") and (x.z=3)） or (x.n=4)
-    // It must be noted that there is no such writing method：(x.y=="1") and (x.z=3) or (x.n=4)
-    /// When using Or, automatically put all your previous conditions into a () to form conditions with your existing
-    /// Or, such as: (previously written conditions) or (existing conditions). This relationship is always the same
-    /// </summary>
-    /// <param name="setOr">setOr</param>
-    /// <param name="parmaters...">array of args</param>
-    IPageAccess or(String setOr, Object... params);
 
     IPageAccess setExecuteMode(ExecuteMode executeMode);
 }

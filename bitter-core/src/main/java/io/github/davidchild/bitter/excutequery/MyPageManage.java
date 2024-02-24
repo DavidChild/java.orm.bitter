@@ -6,79 +6,66 @@ import io.github.davidchild.bitter.tools.CoreStringUtils;
 
 public class MyPageManage {
 
-    public static void selectPageData(BaseQuery baseQuery) {
+    public static void selectPageData(BaseQuery baseQuery,String where,String order) {
         baseQuery.setCommandText("");
         baseQuery.clearParameters();
-        getPageDataBySelect(baseQuery);
+        getPageDataBySelect(baseQuery,where,order);
     }
 
-    public static void selectPageDataCount(BaseQuery baseQuery) {
+    public static void selectPageDataCount(BaseQuery baseQuery,String where,String order) {
         baseQuery.setCommandText("");
         baseQuery.clearParameters();
-        getPageDataCountBySelect(baseQuery);
+        getPageDataCountBySelect(baseQuery,where,order);
     }
 
-    private static void getPageDataBySelect(BaseQuery baseQuery) {
-        ExecuteParBagPage bag = (ExecuteParBagPage) (baseQuery.getExecuteParBag());
-        baseQuery.setDynamicParameters((bag.dynamics));
+    private static void getPageDataBySelect(BaseQuery query,String where,String order) {
+        ExecuteParBagPage bag = (ExecuteParBagPage) (query.getExecuteParBag());
         BaseQuery sqlTemp = new BaseQuery();
-        sqlTemp.setCommandText(bag.commandText);
-        if (bag.dynamics != null && bag.dynamics.size() > 0) {
-            bag.dynamics.forEach((k, v) -> sqlTemp.getParameters().add(v));
-        }
+        sqlTemp.setCommandText(bag.getCommandText());
+        sqlTemp.getExecuteParBag().setDynamics(bag.getDynamics());
         StringBuilder sqlSelect = new StringBuilder(sqlTemp.getCommandText());
-
-        if (!bag.isPage) {
-            bag.pageIndex = 1;
-            bag.pageSize = 1;
+        if (!bag.getIsPage()) {
+            bag.setPageIndex(1);
+            bag.setPageSize(1);
         }
-        if (CoreStringUtils.isNotEmpty(bag.whereBuilder.toString())) {
-            String where = (CoreStringUtils.isEmpty(bag.whereBuilder.toString()) ? ""
-                    : String.format(" WHERE %s ", bag.whereBuilder.toString()));
+        if (CoreStringUtils.isNotEmpty(where)) {
+            String where_sql = String.format(" WHERE %s ", where);
             sqlSelect.append("\n");
-            sqlSelect.append(where);
+            sqlSelect.append(where_sql);
         }
-        if (CoreStringUtils.isNotEmpty(bag.getOrderBy().toString())) {
-            String order;
-            if (bag.getOrderBy().toString().charAt(bag.getOrderBy().toString().length() - 1) == ',') {
-                order = bag.getOrderBy().substring(0, bag.getOrderBy().toString().length() - 1);
-            } else {
-                order = bag.getOrderBy().toString();
-            }
-            String orderBy =
-                    (CoreStringUtils.isEmpty(bag.getOrderBy()) ? "" : String.format(" ORDER BY %s ", order));
+        if (CoreStringUtils.isNotEmpty(order)) {
+            String orderBy = (CoreStringUtils.isEmpty(order) ? "" : String.format(" ORDER BY %s ", order));
             sqlSelect.append("\n");
             sqlSelect.append(orderBy);
         }
-        if (bag.pageIndex == 1) {
-            sqlSelect.append(" LIMIT " + "0" + ",").append(bag.pageSize).append(";");
+
+        if (bag.getPageIndex() == 1) {
+            sqlSelect.append(" LIMIT " + "0" + ",").append(bag.getPageSize()).append(";");
         } else {
-            sqlSelect.append(" LIMIT ").append(((bag.pageIndex - 1) * bag.pageSize)).append(",")
-                    .append(bag.pageSize).append(" ;");
+            sqlSelect.append(" LIMIT ").append(((bag.getPageIndex() - 1) * bag.getPageSize())).append(",")
+                    .append(bag.getPageSize()).append(" ;");
         }
         try {
             sqlSelect.append("\n");
-            if (CoreStringUtils.isNotEmpty(bag.preWith)) {
-                sqlTemp.setCommandText(bag.preWith + "\n" + sqlSelect.append(sqlSelect));
+            if (CoreStringUtils.isNotEmpty(bag.getPreWith())) {
+                sqlTemp.setCommandText(bag.getPreWith() + "\n" + sqlSelect.append(sqlSelect));
             } else {
                 sqlTemp.setCommandText(sqlSelect.toString());
             }
-            baseQuery.setCommandText(sqlTemp.getCommandText());
-            baseQuery.resetParameters(sqlTemp.getParameters());
+            query.setCommandText(sqlTemp.getCommandText());
+            query.resetParameters(sqlTemp.getExecuteParBag().getDynamics());
         } finally {
 
         }
     }
 
-    private static void getPageDataCountBySelect(BaseQuery baseQuery) {
-        ExecuteParBagPage bag = (ExecuteParBagPage) (baseQuery.getExecuteParBag());
-        String selectTable = bag.pageTableName;
-        baseQuery.setDynamicParameters((bag.dynamics));
+    private static void getPageDataCountBySelect(BaseQuery query,String where,String order) {
+        ExecuteParBagPage bag = (ExecuteParBagPage) (query.getExecuteParBag());
+        String selectTable = bag.getTableName();
         BaseQuery sqlTemp = new BaseQuery();
-        sqlTemp.setCommandText(bag.commandText);
-        if (bag.dynamics != null && bag.dynamics.size() > 0) {
-            bag.dynamics.forEach((k, v) -> sqlTemp.getParameters().add(v));
-        }
+        sqlTemp.setCommandText(bag.getCommandText());
+        sqlTemp.getExecuteParBag().setDynamics(bag.getDynamics());
+
         StringBuilder sqlCount = new StringBuilder();
         sqlCount.append("/*******Search TotalCount*******/\n");
         sqlCount.append("select");
@@ -89,19 +76,21 @@ public class MyPageManage {
         sqlCount.append("\n");
         sqlCount.append(selectTable);
         sqlCount.append("\n");
-        if (CoreStringUtils.isNotEmpty(bag.whereBuilder.toString())) {
-            sqlCount.append(CoreStringUtils.isEmpty(bag.whereBuilder.toString()) ? ""
-                    : String.format(" WHERE %s; ", bag.whereBuilder.toString()));
+        if (CoreStringUtils.isNotEmpty(where)) {
+            String where_sql = String.format(" WHERE %s ", where);
+            sqlCount.append("\n");
+            sqlCount.append(where_sql);
         }
         sqlCount.append(";");
         try {
-            if (CoreStringUtils.isNotEmpty(bag.preWith)) {
-                sqlTemp.setCommandText(bag.preWith + "\n" + sqlCount);
+            if (CoreStringUtils.isNotEmpty(bag.getPreWith())) {
+                sqlTemp.setCommandText(bag.getPreWith() + "\n" + sqlCount);
             } else {
                 sqlTemp.setCommandText(sqlCount.toString());
             }
-            baseQuery.setCommandText(sqlTemp.getCommandText());
-            baseQuery.resetParameters(sqlTemp.getParameters());
+            query.setCommandText(sqlTemp.getCommandText());
+            query.resetParameters(sqlTemp.getExecuteParBag().getDynamics());
+
         } finally {
 
         }

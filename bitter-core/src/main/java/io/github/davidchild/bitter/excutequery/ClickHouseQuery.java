@@ -4,7 +4,6 @@ import io.github.davidchild.bitter.basequery.BaseQuery;
 import io.github.davidchild.bitter.dbtype.DataValue;
 import io.github.davidchild.bitter.op.insert.Insert;
 import io.github.davidchild.bitter.parbag.*;
-import io.github.davidchild.bitter.tools.CoreStringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,28 +64,17 @@ public class ClickHouseQuery extends BaseQuery {
 
     }
 
+
     // create delete sql
     @Override
     protected void deleteCommandText() {
         super.deleteCommandText();
         ExecuteParBagDelete bagPar = (ExecuteParBagDelete) this.executeParBag;
         StringBuilder whereSQL = new StringBuilder(); // delete condition
-
-        if (bagPar.condition != null || (bagPar.subStatementCondition != null && bagPar.subStatementCondition.size()> 0)) {
-            whereSQL.append(" WHERE ");
-            whereSQL.append(this.setWhere(bagPar.getCondition(),bagPar.getSubStatementCondition()));
-        } else if (bagPar.getData() != null) {
-            whereSQL.append(" WHERE ");
-            Object keyValue = bagPar.getKeyInfo().getValue();
-            String keyFiled = bagPar.getKeyInfo().getDbName();
-
-            this.parameters.add(keyValue);
-            whereSQL.append(String.format("%s=%s", keyFiled, "?"));
-        }
+        IBagWhere whereBag = ((IBagWhere)this.getExecuteParBag());
+        String where = WhereHandler.getWhere( this);
         bagPar.RemoveProperties();
-        this.commandText = String.format("%s%s;", // delete sql text
-                "alter table  " + bagPar.getTableName()  + " delete " // delete condition
-                , whereSQL);
+        this.commandText = String.format("%s%s;", "ALTER FROM " + bagPar.getTableName()+"DELETE",where);
 
     }
 
@@ -96,78 +84,29 @@ public class ClickHouseQuery extends BaseQuery {
         ExecuteParBagUpdate bagPar = (ExecuteParBagUpdate) this.executeParBag;
         StringBuilder updateSQL = new StringBuilder(); // update语句
         StringBuilder whereSQL = new StringBuilder(); // update条件语句
-        updateSQL.append(" alter table  ").append(bagPar.getTableName()).append("  update  ");
-        if (bagPar.getData() != null) {
-            for (DataValue p : bagPar.getProperties()) {
-                if (((!p.getIsKey()) && (!p.getIsIdentity())))
-                    if (p.getValue() != null) {
-                        updateSQL.append(String.format("%s=%s,", p.getDbName(), "?"));
-                        this.parameters.add(p.getValue());
-                    } else {
-                        updateSQL.append(String.format("%s='',", p.getDbName()));
-                    }
-            }
-            whereSQL.append(" WHERE ");
-            Object keyValue = bagPar.getKeyInfo().getValue();
-            String keyName = bagPar.getKeyInfo().getDbName();
-            whereSQL.append(String.format("%s=?", keyName));
-            this.parameters.add(keyValue);
-        }
-        else if (bagPar.getUpdatePairs() != null && bagPar.getUpdatePairs().size() > 0) {
-            bagPar.getUpdatePairs().forEach(up -> {
-                if (((UpdatePair) up).getColumnValue() != null) {
-                    updateSQL.append(String.format("%s=?,", ((UpdatePair) up).getDbFieldName()));
-                    this.parameters.add(((UpdatePair) up).getColumnValue());
-                } else {
-                    updateSQL.append(String.format("%s=null,", ((UpdatePair) up).getDbFieldName()));
-                }
-
-            });
-            if (bagPar.condition != null || (bagPar.subStatementCondition != null && bagPar.subStatementCondition.size()> 0)) {
-                whereSQL.append(" WHERE ");
-                whereSQL.append(this.setWhere(bagPar.condition,bagPar.subStatementCondition));
-            }
-        }
+        updateSQL.append(" alter  ").append(bagPar.getTableName()).append(" update ");
+        String update = UpdateColumnHandler.getUpdateColumnSet(this);
+        String where = WhereHandler.getWhere( this);
         bagPar.RemoveProperties();
-        this.commandText =
-                String.format("%s%s;", updateSQL.substring(0, updateSQL.toString().length() - 1), whereSQL.toString());
+        this.commandText = String.format("%s%s%;", updateSQL,update, where);
     }
-
     @Override
     protected void selectCommandText() {
         super.selectCommandText();
         ExecuteParBagSelect bagPar = (ExecuteParBagSelect) this.executeParBag;
         StringBuilder selectSQL = new StringBuilder(); // 语句
         StringBuilder whereSQL = new StringBuilder(); // 条件语句
-        StringBuilder order = new StringBuilder(); // 条件语句
-        if (bagPar.orders != null && bagPar.orders.size() > 0) {
-            order.append(" ORDER BY ");
-            List<String> orderList = new ArrayList<>();
-            for (Object orderPair : bagPar.getOrders()) {
-                OrderPair orderPair1 = (OrderPair) orderPair;
-                orderList.add(orderPair1.getOrderName() + " " + orderPair1.getOrderBy().name());
-            }
-
-            order.append(String.join(",", orderList));
-        }
+        StringBuilder orderSQL = new StringBuilder(); // 条件语句
         selectSQL.append("SELECT ");
-        if (bagPar.selectColumns != null && bagPar.selectColumns.size() > 0) {
-            selectSQL.append(String.join(",", bagPar.selectColumns));
-        } else {
-            selectSQL.append(" * ");
-        }
+        String columns = SelectColumnHandler.getColumn(this);
+        selectSQL.append(columns);
         selectSQL.append(" FROM  " + bagPar.getTableName());
-        String where = "";
-        if (bagPar.condition != null || (bagPar.subStatementCondition != null && bagPar.subStatementCondition.size()> 0)) {
-            where = this.setWhere(bagPar.condition,bagPar.subStatementCondition);
-        }
-        if (CoreStringUtils.isNotEmpty(where)) {
-            whereSQL.append(" WHERE ");
-            whereSQL.append(where);
-        }
-        if (bagPar.topSize != null && bagPar.topSize > 0) {
-            this.commandText =
-                    String.format("%s%s%s%s", selectSQL, whereSQL, order, " LIMIT 0," + bagPar.topSize + " ");
+        String where = WhereHandler.getWhere(this);
+        whereSQL.append(where);
+        String order = OrderHandler.getOrder(this);
+        orderSQL.append(order);
+        if (bagPar.getTopSize() != null && bagPar.getTopSize() > 0) {
+            this.commandText = String.format("%s%s%s%s", selectSQL, whereSQL, order, " LIMIT 0," + bagPar.getTopSize() + " ");
         } else {
             this.commandText = String.format("%s%s%s", selectSQL, whereSQL, order);
         }
@@ -179,23 +118,15 @@ public class ClickHouseQuery extends BaseQuery {
         super.selectCommandText();
         ExecuteParBagCount bagPar = (ExecuteParBagCount) this.executeParBag;
         StringBuilder whereSQL = new StringBuilder(); // 条件语句
-        // 语句
         String selectSQL = "SELECT COUNT(1) " + "FROM  " + bagPar.getTableName() + " ";
-        String where = "";
-        if (bagPar.condition != null || (bagPar.subStatementCondition != null && bagPar.subStatementCondition.size()> 0)) {
-            where = this.setWhere(bagPar.condition,bagPar.subStatementCondition);
-        }
-        if (CoreStringUtils.isNotEmpty(where)) {
-            whereSQL.append(" WHERE ");
-            whereSQL.append(where);
-        }
+        String where = WhereHandler.getWhere(this);
+        whereSQL.append(where);
         bagPar.RemoveProperties();
         this.commandText = String.format("%s%s;", selectSQL, whereSQL);
     }
 
     @Override
     protected void createScope() {
-
         super.createScope();
         this.scopeCommands = new ArrayList<>();
         this.scopeParams = new ArrayList<>();
@@ -223,29 +154,24 @@ public class ClickHouseQuery extends BaseQuery {
         super.executeCommandText();
         StringBuilder whereSQL = new StringBuilder();
         ExecuteParBagExecute bagPar = (ExecuteParBagExecute) this.executeParBag;
-        this.setDynamicParameters(bagPar.getParaMap());
-        String where = "";
-        if ((bagPar.getSubStatements()  != null && bagPar.getSubStatements() .size()> 0)) {
-            where = this.setWhere(null,bagPar.getSubStatements());
-        }
-        if (CoreStringUtils.isNotEmpty(where)) {
-            whereSQL.append(" WHERE ");
-            whereSQL.append(where);
-        }
+        String where = WhereHandler.getWhere(this);
+        whereSQL.append(where);
         this.commandText = String.format("%s%s;", bagPar.getCommandText(), whereSQL);
-
         bagPar.RemoveProperties();
 
     }
-
     @Override
     protected void pageCommandText() {
-        CkPageManage.selectPageData(this);
+        String where = WhereHandler.getWhere(this);
+        String order = OrderHandler.getOrder(this);
+        MyPageManage.selectPageData(this,where,order);
     }
-
     @Override
     protected void pageCountText() {
-        CkPageManage.selectPageDataCount(this);
+        String where = WhereHandler.getWhere(this);
+        String order = OrderHandler.getOrder(this);
+        MyPageManage.selectPageDataCount(this,where,order);
     }
+
 
 }

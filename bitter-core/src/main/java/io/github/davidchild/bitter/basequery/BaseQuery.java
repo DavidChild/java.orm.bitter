@@ -7,16 +7,13 @@ import io.github.davidchild.bitter.dbtype.DataValue;
 import io.github.davidchild.bitter.exception.ModelException;
 import io.github.davidchild.bitter.excutequery.ClickHouseQuery;
 import io.github.davidchild.bitter.excutequery.MySqlQuery;
-import io.github.davidchild.bitter.excutequery.WhereHandler;
 import io.github.davidchild.bitter.parbag.ExecuteParBagInsert;
-import io.github.davidchild.bitter.parse.BitterPredicate;
 import io.github.davidchild.bitter.tools.BitterLogUtil;
 import io.github.davidchild.bitter.tools.CoreUtils;
 
 import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 public class BaseQuery extends BaseExecute implements Type {
 
@@ -34,7 +31,6 @@ public class BaseQuery extends BaseExecute implements Type {
         this.convert();
         return DataAccess.executeQueryReturnDataList(this);
     }
-
 
     public void addInScope(List<BaseQuery> list) {
         list.add(this);
@@ -80,13 +76,21 @@ public class BaseQuery extends BaseExecute implements Type {
         clearParameters();
     }
 
-    public <T extends BaseModel> String setWhere(List<BitterPredicate<T>> lambdas,List<SubStatement> subStatements) {
-        return WhereHandler.getWhere(lambdas,subStatements,this);
-    }
 
     // create sub statement for in or other sql
-    public SubStatement createSubStatement() {
-        return new SubStatement(this);
+    protected SubWhereStatement createSubWhereStatement() {
+        return new SubWhereStatement(this);
+    }
+
+    protected SubColumnStatement createSubColumnStatement() {
+        return new SubColumnStatement(this);
+    }
+
+    protected SubOrderStatement createOrderStatement() {
+        return new SubOrderStatement(this);
+    }
+    protected SubUpdateColumnStatement createUpdateColumnStatement() {
+        return new SubUpdateColumnStatement(this);
     }
 
     /**
@@ -144,17 +148,6 @@ public class BaseQuery extends BaseExecute implements Type {
         return affectedCount;
     }
 
-    public void resetParameters(List<Object> dynamicParameters) {
-        this.parameters.clear();
-        this.parameters = dynamicParameters;
-    }
-
-    public void setDynamicParameters(Map<String, Object> dynamicParameters) {
-        if (dynamicParameters != null && dynamicParameters.size() > 0) {
-            dynamicParameters.forEach((k, v) -> this.parameters.add(v));
-        }
-    }
-
     public MonitorInfo toMonitorInfo() {
         convert();
         MonitorInfo info = new MonitorInfo();
@@ -166,8 +159,8 @@ public class BaseQuery extends BaseExecute implements Type {
     public void convert() {
         try {
             BaseQuery qQuery = this.mapToExecuteQuery();
-            qQuery.setCommandText(); // 构建对应的SQL语句
-            this.parameters = qQuery.parameters;
+            qQuery.setCommandText();
+            this.setParameters(qQuery.getParameters());
             this.commandText = qQuery.commandText;
             this.scopeSuccess = qQuery.scopeSuccess;
             this.setScopeCommands(qQuery.getScopeCommands());
@@ -177,7 +170,6 @@ public class BaseQuery extends BaseExecute implements Type {
             throw ex;
         }
     }
-
     private BaseQuery mapToExecuteQuery() {
         BaseQuery vdb;
         switch (this.getDbType()) {
@@ -190,8 +182,8 @@ public class BaseQuery extends BaseExecute implements Type {
         }
         vdb.executeParBag = this.executeParBag;
         vdb.setDbType(this.getDbType());
-        vdb.commandText = this.getCommandText();
-        vdb.parameters = this.parameters;
+        vdb.setCommandText(this.getCommandText());
+        vdb.setParameters( this.getParameters());
         return vdb;
     }
 

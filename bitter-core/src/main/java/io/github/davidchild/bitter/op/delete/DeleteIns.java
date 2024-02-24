@@ -1,11 +1,11 @@
 package io.github.davidchild.bitter.op.delete;
 
 import io.github.davidchild.bitter.BaseModel;
+import io.github.davidchild.bitter.basequery.BaseQuery;
 import io.github.davidchild.bitter.basequery.ExecuteEnum;
-import io.github.davidchild.bitter.basequery.WhereQuery;
 import io.github.davidchild.bitter.parbag.ExecuteParBagDelete;
 
-public class DeleteIns<T extends BaseModel> extends WhereQuery<T> {
+public class DeleteIns<T extends BaseModel> extends BaseQuery {
 
     public DeleteIns(T data) {
         executeParBag = new ExecuteParBagDelete();

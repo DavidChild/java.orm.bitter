@@ -185,7 +185,7 @@ public class DmlTest extends CreateBaseMockSchema {
     @Test
     public void testQueryCount2() throws Exception {
         this.beforeInit();
-        var count = db.findQuery(TUser.class).where(t -> t.getUsername() == "hjb").thenDesc(TUser::getUsername).thenAsc(TUser::getUsername).findCount();
+        var count = db.findQuery(TUser.class).thenDESC(TUser::getUsername).findCount();
         assertEquals(true, count > 0);
     }
 

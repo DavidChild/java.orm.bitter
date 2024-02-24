@@ -51,7 +51,7 @@ public class db {
         return new ExecuteInSql(commandText, params);
     }
     public static PageQuery pageQuery(String selectCommandText) {
-        return new PageQuery(selectCommandText);
+        return new PageQuery();
     }
 
 }

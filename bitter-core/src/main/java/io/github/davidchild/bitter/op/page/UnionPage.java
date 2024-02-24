@@ -1,16 +1,19 @@
 package io.github.davidchild.bitter.op.page;
 
-import io.github.davidchild.bitter.basequery.BaseQuery;
 import io.github.davidchild.bitter.basequery.ExecuteMode;
 import io.github.davidchild.bitter.datatable.DataTable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UnionPage extends BaseQuery implements IUnionPageAccess {
+public class UnionPage extends PageQuery {
+
+    public  UnionPage() {
+        super();
+    }
 
     private Integer totalCount;
-    private List<IPageAccess> unionQueryList = new ArrayList<>();
+    private List<PageQuery> unionQueryList = new ArrayList<>();
 
     /// <summary>
     /// Total number of collections
@@ -18,7 +21,7 @@ public class UnionPage extends BaseQuery implements IUnionPageAccess {
     public Integer getCount() {
 
         int sum = 0;
-        for (IPageAccess page : unionQueryList) {
+        for (PageQuery page : unionQueryList) {
             sum += page.getCount();
         }
         return sum;
@@ -29,8 +32,8 @@ public class UnionPage extends BaseQuery implements IUnionPageAccess {
     /// Current page
     /// </summary>
     /// <param name="pageIndex"></param>
-    public IUnionPageAccess skip(Integer pageIndex) {
-        for (IPageAccess page : unionQueryList) {
+    public UnionPage skip(Integer pageIndex) {
+        for (PageQuery page : unionQueryList) {
             page.skip(pageIndex);
         }
         return this;
@@ -40,23 +43,23 @@ public class UnionPage extends BaseQuery implements IUnionPageAccess {
     /// How many are displayed per page
     /// </summary>
     /// <param name="pageSize"></param>
-    public IUnionPageAccess take(Integer pageSize) {
-        for (IPageAccess page : unionQueryList) {
+    public UnionPage take(Integer pageSize) {
+        for (PageQuery page : unionQueryList) {
             page.take(pageSize);
         }
         return this;
     }
 
-    public IUnionPageAccess thenASC(String filedName) {
-        for (IPageAccess page : unionQueryList) {
-            page.thenASC(filedName);
+    public UnionPage thenASC(String filedName) {
+        for (PageQuery page : unionQueryList) {
+            page.thenAsc(filedName);
         }
         return this;
     }
 
-    public IUnionPageAccess thenDESC(String filedName) {
-        for (IPageAccess page : unionQueryList) {
-            page.thenDESC(filedName);
+    public UnionPage thenDESC(String filedName) {
+        for (PageQuery page : unionQueryList) {
+            page.thenDesc(filedName);
         }
         return this;
     }
@@ -67,7 +70,7 @@ public class UnionPage extends BaseQuery implements IUnionPageAccess {
     /// <returns></returns>
     public DataTable getData() {
         DataTable DRS = new DataTable();;
-        for (IPageAccess page : unionQueryList) {
+        for (PageQuery page : unionQueryList) {
             DRS.addAll(page.getData());
         }
         return DRS;
@@ -78,7 +81,7 @@ public class UnionPage extends BaseQuery implements IUnionPageAccess {
     /// </summary>
     /// <param name="page">Incorporated into a collection</param>
     /// <returns></returns>
-    public IUnionPageAccess union(IPageAccess page) {
+    public UnionPage union(PageQuery page) {
         unionQueryList.add(page);
         return this;
     }
@@ -88,7 +91,7 @@ public class UnionPage extends BaseQuery implements IUnionPageAccess {
     /// </summary>
     /// <param name="listPage">Incorporated into a collection</param>
     /// <returns></returns>
-    public IUnionPageAccess union(List<IPageAccess> listPage) {
+    public UnionPage union(List<PageQuery> listPage) {
         unionQueryList.addAll(listPage);
         return this;
     }
@@ -98,70 +101,31 @@ public class UnionPage extends BaseQuery implements IUnionPageAccess {
     /// </summary>
     /// <param name="setwhere"></param>
     /// <param name="dynamicParms"></param>
-    public IUnionPageAccess where(String setWhere, Object... dynamicParams) {
-        for (IPageAccess page : unionQueryList) {
+    public PageQuery where(String setWhere, Object... dynamicParams) {
+        for (PageQuery page : unionQueryList) {
             page.where(setWhere, dynamicParams);
         }
         return this;
     }
 
-    /// <summary>
-    /// setWhere
-    /// </summary>
-    /// <param name="setwhere"></param>
-    public IUnionPageAccess where(String setWhere) {
-        for (IPageAccess page : unionQueryList) {
-            page.where(setWhere);
-        }
-        return this;
-    }
 
-    /// <summary>
-    /// Or; Note: At this time, Or is always in parallel with the precondition
-    /// For example: 1: ((x.y=="1") or (x.z=3)) or (x.n=4)
-    /// For example: 2: ((x.y=="1") and (x.z=3)) or (x.n=4)
-    /// It must be noted that there is no such writing method: (x.y=="1") and (x.z=3) or (x.n=4), so as to eliminate
-    /// this wrong writing method
-    /// </summary>
-    /// <param name="setOr"></param>
-    public IUnionPageAccess or(String setOr) {
-        for (IPageAccess page : unionQueryList) {
-            page.or(setOr);
-        }
-        return this;
-    }
 
-    /// <summary>
-    /// Or; Note: At this time, Or is always in parallel with the precondition
-    /// For example: 1: ((x.y=="1") or (x.z=3)) or (x.n=4)
-    /// For example: 2: ((x.y=="1") and (x.z=3)) or (x.n=4)
-    /// It must be noted that there is no such writing method: (x.y=="1") and (x.z=3) or (x.n=4), so as to eliminate
-    /// this wrong writing method
-    /// </summary>
-    /// <param name="setOr"></param>
-    public IUnionPageAccess or(String setOr, Object... dynamicParams) {
-        for (IPageAccess page : unionQueryList) {
-            page.or(setOr, dynamicParams);
-        }
-        return this;
-    }
-
-    public IUnionPageAccess addPreWith(String withSql) {
-        for (IPageAccess page : unionQueryList) {
+    public UnionPage addPreWith(String withSql) {
+        for (PageQuery page : unionQueryList) {
             page.addPreWith(withSql);
         }
         return this;
     }
 
-    public IUnionPageAccess addPreWith(String withSql, Object... params) {
-        for (IPageAccess page : unionQueryList) {
+    public UnionPage addPreWith(String withSql, Object... params) {
+        for (PageQuery page : unionQueryList) {
             page.addPreWith(withSql, params);
         }
         return this;
     }
 
-    public IUnionPageAccess setExecuteMode(ExecuteMode executeMode) {
-        for (IPageAccess page : unionQueryList) {
+    public UnionPage setExecuteMode(ExecuteMode executeMode) {
+        for (PageQuery page : unionQueryList) {
             page.setExecuteMode(executeMode);
         }
         return this;

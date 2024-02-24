@@ -1,5 +1,4 @@
 package io.github.davidchild.bitter.parbag;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import io.github.davidchild.bitter.BaseModel;
 import io.github.davidchild.bitter.basequery.ExecuteEnum;
@@ -11,22 +10,33 @@ import io.github.davidchild.bitter.tools.BitterLogUtil;
 import io.github.davidchild.bitter.tools.CoreStringUtils;
 import io.github.davidchild.bitter.tools.CoreUtils;
 import io.github.davidchild.bitter.tools.FieldLamdUtils;
+import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
-public class ExecuteParBag {
 
-    public ExecuteMode executeMode;
-    List<DataValue> properties;
-    List<String> identityFields;
+@Data
+public class ExecuteParBag {
+    public  ExecuteMode executeMode;
+    private List<DataValue> properties;
+    private List<String> identityFields;
     private ExecuteEnum executeEnum;
     private String tableName;
     private Class<? extends BaseModel> modelType;
     private DataValue keyInfo;
     private boolean isIdentityModel;
-    private BaseModel data;
+    private BaseModel insData;
 
+    /** 共享封装参数 ***/
+    //动态参数
+    private LinkedHashMap<String, Object> dynamics = new LinkedHashMap<String, Object>();
+
+
+    public void  removeTheDynamics(){
+        this.dynamics = null;
+    }
     public static String getDbNameByInnerName(List<DataValue> list, DataValue keyInfo, String innerFieldName) {
 
         if (keyInfo != null && CoreStringUtils.isNotEmpty(keyInfo.getDbName())
@@ -72,11 +82,11 @@ public class ExecuteParBag {
     }
 
     public Class<?> getModelType() {
-        if (data == null && modelType == null) {
+        if (getInsData() == null && modelType == null) {
             return null;
         }
-        if (data != null) {
-            modelType = data.getClass();
+        if (getInsData() != null) {
+            modelType = getInsData().getClass();
 
         }
         return modelType;
@@ -120,7 +130,7 @@ public class ExecuteParBag {
     public DataValue getKeyInfo()  {
         if (this.getModelType() != null) {
             if (keyInfo == null) {
-                keyInfo = CoreUtils.getTypeKey(this.getModelType(), this.data);
+                keyInfo = CoreUtils.getTypeKey(this.getModelType(), this.getInsData());
             }
         }
         return keyInfo;
@@ -130,7 +140,7 @@ public class ExecuteParBag {
 
         if (this.getModelType() != null) {
             if (properties == null) {
-                properties = CoreUtils.getTypeRelationData(this.modelType, this.data);
+                properties = CoreUtils.getTypeRelationData(this.modelType, this.getInsData());
             }
             return properties;
         }
@@ -144,11 +154,11 @@ public class ExecuteParBag {
     }
 
     public BaseModel getData() {
-        return data;
+        return insData;
     }
 
     public void setData(BaseModel data) {
-        this.data = data;
+        this.insData = data;
     }
 
 }
