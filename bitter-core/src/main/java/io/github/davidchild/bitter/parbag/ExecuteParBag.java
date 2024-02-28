@@ -161,4 +161,11 @@ public class ExecuteParBag {
         this.insData = data;
     }
 
+    public void  dispose(){
+        this.dynamics = null;
+        this.properties = null;
+        this.identityFields = null;
+        this.modelType = null;
+        this.executeEnum = null;
+    }
 }

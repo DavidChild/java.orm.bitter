@@ -12,4 +12,8 @@ public enum SubWhereStatementEnum {
     leq,
     geq,
 
+    neq,
+    notIn,
+
+
 }

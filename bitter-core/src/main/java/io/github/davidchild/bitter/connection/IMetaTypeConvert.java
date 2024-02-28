@@ -29,7 +29,7 @@ public interface IMetaTypeConvert {
         ResultSetMetaData md = rs.getMetaData();
         int columnCount = md.getColumnCount();
         List<TypeHandlerBase<?>> typeHandlerBases = getTypeHandlers(md);
-
+        DataRow  rowData = new DataRow();
         for (int i = 1; i <= columnCount; i++) {
             String columnName = md.getColumnName(i);
             Class<?> clazz = MetaTypeCt.getClassForMetaName(md.getColumnClassName(i));
@@ -37,7 +37,7 @@ public interface IMetaTypeConvert {
             list.getColumnMeta().add(column);
         }
         while (rs.next()) {
-            DataRow  rowData = new DataRow();
+
             for (int i = 1; i <= columnCount; i++) {
                 String columnName = md.getColumnName(i);
                 Class<?> type = MetaTypeCt.getClassForMetaName(md.getColumnClassName(i));

@@ -33,17 +33,17 @@ public class SubWhereStatement {
 
     public SubWhereStatement eq(String field, Object arg,Object defaultArg) {
         toField(field);
-        return join(SubWhereStatementEnum.eq,defaultArg,arg);
+        return join(SubWhereStatementEnum.eq,arg,defaultArg);
     }
 
     public SubWhereStatement lt(String field, Object arg,Object defaultArg) {
         toField(field);
-        return join(SubWhereStatementEnum.lt,defaultArg,arg);
+        return join(SubWhereStatementEnum.lt,arg,defaultArg);
     }
 
     public SubWhereStatement leq(String field, Object arg,Object defaultArg) {
         toField(field);
-        return join(SubWhereStatementEnum.leq,defaultArg,arg);
+        return join(SubWhereStatementEnum.leq,arg,defaultArg);
     }
 
     public SubWhereStatement gt(String field,  Object arg,Object defaultArg) {
@@ -77,27 +77,48 @@ public class SubWhereStatement {
     public SubWhereStatement custom(String condition, Object ...args) {
         toField(field);
         this.setStatement(condition);
-        List<Object> arg= Arrays.stream(args).collect(Collectors.toList());
-        return join(SubWhereStatementEnum.custom,arg,null);
+        List<Object> arg;
+        if(args != null && args.length>0){
+            arg = Arrays.stream(args).collect(Collectors.toList());
+        }else {
+            arg = new ArrayList<>();
+        }
+        return join(SubWhereStatementEnum.custom, arg, null);
+
+
     }
 
-    
+    public <T extends BaseModel> SubWhereStatement neq(FieldFunction<T> field, Object arg,Object defaultArg) {
+        toField(field);
+        return join(SubWhereStatementEnum.neq,arg,defaultArg);
+    }
+    public <T extends BaseModel> SubWhereStatement neq(String field, Object arg,Object defaultArg) {
+        toField(field);
+        return join(SubWhereStatementEnum.neq,arg,defaultArg);
+    }
 
-
+    public <T extends BaseModel> SubWhereStatement notIn(FieldFunction<T> field, Object arg,Object defaultArg) {
+        toField(field);
+        return join(SubWhereStatementEnum.notIn,arg,defaultArg);
+    }
+    public <T extends BaseModel> SubWhereStatement notIn(String field, Object arg,Object defaultArg) {
+        toField(field);
+        return join(SubWhereStatementEnum.notIn,arg,defaultArg);
+    }
 
     public <T extends BaseModel> SubWhereStatement eq(FieldFunction<T> field, Object arg,Object defaultArg) {
         toField(field);
-        return join(SubWhereStatementEnum.eq,defaultArg,arg);
+        return join(SubWhereStatementEnum.eq,arg,defaultArg);
     }
 
     public <T extends BaseModel> SubWhereStatement lt(FieldFunction<T> field, Object arg,Object defaultArg) {
         toField(field);
-        return join(SubWhereStatementEnum.lt,defaultArg,arg);
+        return join(SubWhereStatementEnum.lt,arg,defaultArg);
     }
 
     public <T extends BaseModel> SubWhereStatement leq(FieldFunction<T> field, Object arg,Object defaultArg) {
         toField(field);
-        return join(SubWhereStatementEnum.leq,defaultArg,arg);
+        return join(SubWhereStatementEnum.leq,arg,defaultArg);
     }
 
     public <T extends BaseModel> SubWhereStatement gt(FieldFunction<T> field,  Object arg,Object defaultArg) {
@@ -136,10 +157,11 @@ public class SubWhereStatement {
             List list = (List) args;
             this.setArgs(list);
 
-        } else if (SubWhereStatementEnum == SubWhereStatementEnum.in) {
+        } else if (SubWhereStatementEnum == SubWhereStatementEnum.in || SubWhereStatementEnum == SubWhereStatementEnum.notIn) {
             List list = (List) args;
             if ((list == null || list.size() < 1) && defaultArg == null) {
                 this.setSubWhereStatement("");
+                this.setSubWhereStatementEnum(SubWhereStatementEnum);
             } else {
                 this.setSubWhereStatementEnum(SubWhereStatementEnum);
                 this.setDefaultArg(defaultArg);

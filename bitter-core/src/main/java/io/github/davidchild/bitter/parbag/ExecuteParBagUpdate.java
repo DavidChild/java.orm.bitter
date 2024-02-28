@@ -17,10 +17,6 @@ public class ExecuteParBagUpdate<T extends BaseModel> extends ExecuteParBag impl
         return updateColumnStatements;
     }
 
-    @Override
-    public T getInsData() {
-        return this.getInsData();
-    }
 
     @Override
     public WhereContainer getWhereContainer() {

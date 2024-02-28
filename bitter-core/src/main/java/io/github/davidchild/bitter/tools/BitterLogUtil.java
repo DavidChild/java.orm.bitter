@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Slf4j
@@ -13,10 +15,18 @@ public class BitterLogUtil {
         return LoggerFactory.getLogger("bitter");
     }
 
-    public static void logWriteError(Exception ex, List<Object> params) {
+    private static List<Object> getParams(LinkedHashMap<String, Object> params){
+        if(params == null|| params.size()< 1) return new ArrayList<>();
+        List<Object> list= new ArrayList<>();
+        params.forEach((k,v)->{
+            list.add(v);
+        });
+        return  list;
+    }
+    public static void logWriteError(Exception ex, LinkedHashMap<String, Object> params) {
         if (ex != null) {
             BitterLogUtil.getInstance().error("bitter-sql-execute-error:" + ex.getMessage()
-                    + "\r\n------------params------------\r\n" + JsonUtil.object2String(params), ex);
+                    + "\r\n------------params------------\r\n" + JsonUtil.object2String(getParams(params)), ex);
         }
     }
 
@@ -27,10 +37,10 @@ public class BitterLogUtil {
         }
     }
 
-    public static void logWriteSql(String commandTest, List<Object> params) {
+    public static void logWriteSql(String commandTest, LinkedHashMap<String, Object> params) {
         if (BitterConfig.getInstance().isSqlLog()) {
             BitterLogUtil.getInstance().info("bitter will  execute sql:" + "\r\n" + commandTest + "\r\n"
-                    + "------------params------------" + JsonUtil.object2String(params));
+                    + "------------params------------" + JsonUtil.object2String(getParams(params)));
         }
     }
 

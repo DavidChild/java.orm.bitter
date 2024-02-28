@@ -49,6 +49,7 @@ public class DataAccess {
         IMetaTypeConvert convert = StatementFactory.getMetaTyeConvert(baseQuery.getDbType());
         return (DataTable) StatementFactory.getStatement(baseQuery.getExecuteParBag().getExecuteMode())
                 .Query(baseQuery.getCommandText(), baseQuery.getParameters(),new JavaBeanMapResultHandler(convert,null));
+
     }
 
     public static <T extends BaseModel> T executeQueryReturnSingleData(BaseQuery baseQuery) {

@@ -7,6 +7,7 @@ import io.github.davidchild.bitter.parbag.*;
 import io.github.davidchild.bitter.tools.StatementHandeUtil;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class MySqlQuery extends BaseQuery {
@@ -14,7 +15,7 @@ public class MySqlQuery extends BaseQuery {
     @Override
     protected void insertCommandText(boolean isOutIdentity) {
         super.insertCommandText(isOutIdentity);
-        ExecuteParBagInsert bagPar = (ExecuteParBagInsert) this.executeParBag;
+        ExecuteParBagInsert bagPar = (ExecuteParBagInsert) this.getExecuteParBag();
         String fields = "";
         String values = "";
         for (DataValue filed : bagPar.getProperties()) {
@@ -30,14 +31,14 @@ public class MySqlQuery extends BaseQuery {
             }
         }
         bagPar.RemoveProperties();
-        this.commandText = String.format("INSERT INTO %s (%s) VALUES (%s);", bagPar.getTableName(),
-                fields.substring(0, fields.length() - 1), values.substring(0, values.length() - 1));
+        this.setCommandText(String.format("INSERT INTO %s (%s) VALUES (%s);", bagPar.getTableName(),
+                fields.substring(0, fields.length() - 1), values.substring(0, values.length() - 1)));
     }
 
     @Override
     protected void bachInsert() {
         super.bachInsert();
-        List<Insert> list = ((ExecuteParBachInsert) this.executeParBag).getList();
+        List<Insert> list = ((ExecuteParBachInsert) this.getExecuteParBag()).getList();
         if (list == null && list.size() <= 0)
             return;
         ExecuteParBagInsert bagPar = (ExecuteParBagInsert) list.get(0).getExecuteParBag();
@@ -68,8 +69,8 @@ public class MySqlQuery extends BaseQuery {
             bag.RemoveProperties();
         }
         String command = values.toString();
-        this.commandText = String.format("INSERT INTO %s (%s) VALUES %s;", bagPar.getTableName(),
-                fields.substring(0, fields.length() - 1), command.substring(0, command.length() - 1));
+        this.setCommandText(String.format("INSERT INTO %s (%s) VALUES %s;", bagPar.getTableName(),
+                fields.substring(0, fields.length() - 1), command.substring(0, command.length() - 1)));
 
     }
 
@@ -77,31 +78,31 @@ public class MySqlQuery extends BaseQuery {
     @Override
     protected void deleteCommandText() {
         super.deleteCommandText();
-        ExecuteParBagDelete bagPar = (ExecuteParBagDelete) this.executeParBag;
+        ExecuteParBagDelete bagPar = (ExecuteParBagDelete) this.getExecuteParBag();
         StringBuilder whereSQL = new StringBuilder(); // delete condition
         IBagWhere whereBag = ((IBagWhere)this.getExecuteParBag());
         String where = WhereHandler.getWhere( this);
+        this.setCommandText(String.format("%s%s;", "DELETE FROM " + bagPar.getTableName(),where));
         bagPar.RemoveProperties();
-        this.commandText = String.format("%s%s;", "DELETE FROM " + bagPar.getTableName(),where);
 
     }
 
     @Override
     protected void updateCommandText() {
         super.updateCommandText();
-        ExecuteParBagUpdate bagPar = (ExecuteParBagUpdate) this.executeParBag;
+        ExecuteParBagUpdate bagPar = (ExecuteParBagUpdate) this.getExecuteParBag();
         StringBuilder updateSQL = new StringBuilder(); // update语句
         StringBuilder whereSQL = new StringBuilder(); // update条件语句
-        updateSQL.append(" update  ").append(bagPar.getTableName()).append(" set ");
+        updateSQL.append(" update  ").append(bagPar.getTableName()).append(" set");
         String update = UpdateColumnHandler.getUpdateColumnSet(this);
         String where = WhereHandler.getWhere( this);
+        this.setCommandText(String.format("%s%s%s;", updateSQL,update, where));
         bagPar.RemoveProperties();
-        this.commandText = String.format("%s%s%;", updateSQL,update, where);
     }
     @Override
     protected void selectCommandText() {
         super.selectCommandText();
-        ExecuteParBagSelect bagPar = (ExecuteParBagSelect) this.executeParBag;
+        ExecuteParBagSelect bagPar = (ExecuteParBagSelect) this.getExecuteParBag();
         StringBuilder selectSQL = new StringBuilder(); // 语句
         StringBuilder whereSQL = new StringBuilder(); // 条件语句
         StringBuilder orderSQL = new StringBuilder(); // 条件语句
@@ -114,9 +115,9 @@ public class MySqlQuery extends BaseQuery {
         String order = OrderHandler.getOrder(this);
         orderSQL.append(order);
         if (bagPar.getTopSize() != null && bagPar.getTopSize() > 0) {
-            this.commandText = String.format("%s%s%s%s", selectSQL, whereSQL, order, " LIMIT 0," + bagPar.getTopSize() + " ");
+            this.setCommandText(String.format("%s%s%s%s", selectSQL, whereSQL, order, " LIMIT 0," + bagPar.getTopSize() + " "));
         } else {
-            this.commandText = String.format("%s%s%s", selectSQL, whereSQL, order);
+            this.setCommandText(String.format("%s%s%s", selectSQL, whereSQL, order));
         }
         bagPar.RemoveProperties();
     }
@@ -124,25 +125,25 @@ public class MySqlQuery extends BaseQuery {
     @Override
     protected void countCommandText() {
         super.selectCommandText();
-        ExecuteParBagCount bagPar = (ExecuteParBagCount) this.executeParBag;
+        ExecuteParBagCount bagPar = (ExecuteParBagCount) this.getExecuteParBag();
         StringBuilder whereSQL = new StringBuilder(); // 条件语句
         String selectSQL = "SELECT COUNT(1) " + "FROM  " + bagPar.getTableName() + " ";
         String where = WhereHandler.getWhere(this);
         whereSQL.append(where);
         bagPar.RemoveProperties();
-        this.commandText = String.format("%s%s;", selectSQL, whereSQL);
+        this.setCommandText(String.format("%s%s;", selectSQL, whereSQL));
     }
 
     @Override
     protected void createScope() {
         super.createScope();
-        this.scopeCommands = new ArrayList<>();
-        this.scopeParams = new ArrayList<>();
-        this.scopeSuccess = ((ExecuteParScope) this.executeParBag).getScopeResult();
-        if (!((ExecuteParScope) this.executeParBag).getScopeResult()) {
+        this.setScopeCommands(new ArrayList<>());
+        this.setScopeParams(new ArrayList<>());
+        this.setScopeSuccess(((ExecuteParScope) this.getExecuteParBag()).getScopeResult());
+        if (!((ExecuteParScope) this.getExecuteParBag()).getScopeResult()) {
             return;
         }
-        List<BaseQuery> list = ((ExecuteParScope) this.executeParBag).getList();
+        List<BaseQuery> list = ((ExecuteParScope) this.getExecuteParBag()).getList();
         if (list == null && list.size() <= 0)
             return;
         for (BaseQuery q : list) {
@@ -151,7 +152,7 @@ public class MySqlQuery extends BaseQuery {
             if (q.getParameters() != null || q.getParameters().size() > 0) {
                 this.getScopeParams().add(q.getParameters());
             } else {
-                this.getScopeParams().add(new ArrayList<>());
+                this.getScopeParams().add(new LinkedHashMap<>());
             }
         }
     }
@@ -160,25 +161,29 @@ public class MySqlQuery extends BaseQuery {
     @Override
     protected void executeCommandText() {
         super.executeCommandText();
-        StringBuilder whereSQL = new StringBuilder();
-        ExecuteParBagExecute bagPar = (ExecuteParBagExecute) this.executeParBag;
-        String where = WhereHandler.getWhere(this);
-        whereSQL.append(where);
-        this.commandText = String.format("%s%s;", bagPar.getCommandText(), whereSQL);
+        ExecuteParBagExecute bagPar = (ExecuteParBagExecute) this.getExecuteParBag();
+        this.setCommandText(String.format("%s;", bagPar.getCommandText()));
         bagPar.RemoveProperties();
 
     }
+
     @Override
-    protected void pageCommandText() {
+    protected void querySelectCommandText() {
+        super.executeCommandText();
+        ExecuteParBagQuerySelect bagPar = (ExecuteParBagQuerySelect) this.getExecuteParBag();
         String where = WhereHandler.getWhere(this);
         String order = OrderHandler.getOrder(this);
-        MyPageManage.selectPageData(this,where,order);
+        this.setCommandText(String.format("%s%s%s;", bagPar.getCommandText(), where,order));
+        bagPar.RemoveProperties();
+    }
+    @Override
+    protected void pageCommandText() {
+        MyPageManage.selectPageData(this);
     }
     @Override
     protected void pageCountText() {
-        String where = WhereHandler.getWhere(this);
-        String order = OrderHandler.getOrder(this);
-        MyPageManage.selectPageDataCount(this,where,order);
+
+        MyPageManage.selectPageDataCount(this);
     }
 
 }

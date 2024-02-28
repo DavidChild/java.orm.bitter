@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.UUID;
 
-public class PageQuery extends BaseQuery implements IWhereQuery<PageQuery,BaseModel>, IColumnQuery<PageQuery,BaseModel>,IOrderQuery<PageQuery,BaseModel> {
+public class PageQuery extends DqlQuery implements IWhereQuery<PageQuery,BaseModel>, IColumnQuery<PageQuery,BaseModel>,IOrderQuery<PageQuery,BaseModel> {
 
     /// <summary>
     /// is executed
@@ -30,17 +30,15 @@ public class PageQuery extends BaseQuery implements IWhereQuery<PageQuery,BaseMo
     private DataTable pageDt;
 
     private String lowerCommandText;
-
-    private UnionPage unionPage = new UnionPage();
     public PageQuery() {
-        this.executeParBag = new ExecuteParBagPage();
-        ((ExecuteParBagPage) this.executeParBag).setExecuteMode(ExecuteMode.Cached);
+        this.setExecuteParBag(new ExecuteParBagPage());
+        (this.getExecuteParBag()).setExecuteMode(ExecuteMode.Cached);
     }
 
     public PageQuery(String pageQuery) {
-        this.executeParBag = new ExecuteParBagPage();
-        ((ExecuteParBagPage) this.executeParBag).setExecuteMode(ExecuteMode.Cached);
-        ((ExecuteParBagPage) this.executeParBag).setCommandText(pageQuery);
+        this.setExecuteParBag(new ExecuteParBagPage());
+        (this.getExecuteParBag()).setExecuteMode(ExecuteMode.Cached);
+        ((ExecuteParBagPage) this.getExecuteParBag()).setCommandText(pageQuery);
     }
 
     /// <summary>
@@ -57,7 +55,7 @@ public class PageQuery extends BaseQuery implements IWhereQuery<PageQuery,BaseMo
 
     private String getLowerCommandText() {
         if (CoreStringUtils.isEmpty(lowerCommandText)) {
-            lowerCommandText = ((ExecuteParBagPage) this.executeParBag).getCommandText().toLowerCase();
+            lowerCommandText = ((ExecuteParBagPage) this.getExecuteParBag()).getCommandText().toLowerCase();
         }
         return lowerCommandText;
     }
@@ -69,10 +67,10 @@ public class PageQuery extends BaseQuery implements IWhereQuery<PageQuery,BaseMo
 
         if (getLowerCommandText().indexOf("]") > -1) {
             int indexFrom = getLowerCommandText().indexOf(" from", getLowerCommandText().indexOf("]"));
-            return ((ExecuteParBagPage) this.executeParBag).getCommandText().substring(
+            return ((ExecuteParBagPage) this.getExecuteParBag()).getCommandText().substring(
                     getLowerCommandText().indexOf("select") + 6, indexFrom - getLowerCommandText().indexOf("select") - 5);
         } else {
-            return ((ExecuteParBagPage) this.executeParBag).getCommandText()
+            return ((ExecuteParBagPage) this.getExecuteParBag()).getCommandText()
                     .substring(getLowerCommandText().indexOf("select") + 6, (getLowerCommandText().indexOf("select") + 6)
                             + getLowerCommandText().indexOf(" from") - getLowerCommandText().indexOf("select") - 5);
 
@@ -86,10 +84,10 @@ public class PageQuery extends BaseQuery implements IWhereQuery<PageQuery,BaseMo
     private String getTableName() {
         if (getLowerCommandText().indexOf("]") > -1) {
             int indexFrom = getLowerCommandText().indexOf(" from", getLowerCommandText().indexOf("]"));
-            return ((ExecuteParBagPage) this.executeParBag).getCommandText().substring(indexFrom + 5);
+            return ((ExecuteParBagPage) this.getExecuteParBag()).getCommandText().substring(indexFrom + 5);
         } else {
-            return ((ExecuteParBagPage) this.executeParBag).getCommandText()
-                    .substring((((ExecuteParBagPage) this.executeParBag).getCommandText().toLowerCase().indexOf(" from") + 5));
+            return ((ExecuteParBagPage) this.getExecuteParBag()).getCommandText()
+                    .substring((((ExecuteParBagPage) this.getExecuteParBag()).getCommandText().toLowerCase().indexOf(" from") + 5));
         }
     }
 
@@ -98,9 +96,9 @@ public class PageQuery extends BaseQuery implements IWhereQuery<PageQuery,BaseMo
     /// </summary>
     /// <returns></returns>
     public IPageAccess getAll() {
-        ((ExecuteParBagPage) this.executeParBag).setPageIndex(1);
-        ((ExecuteParBagPage) this.executeParBag).setPageSize(Integer.MAX_VALUE);
-        ((ExecuteParBagPage) this.executeParBag).setIsPage(true);
+        ((ExecuteParBagPage) this.getExecuteParBag()).setPageIndex(1);
+        ((ExecuteParBagPage) this.getExecuteParBag()).setPageSize(Integer.MAX_VALUE);
+        ((ExecuteParBagPage) this.getExecuteParBag()).setIsPage(true);
         isExAll = true;
         return (IPageAccess) this;
     }
@@ -111,8 +109,8 @@ public class PageQuery extends BaseQuery implements IWhereQuery<PageQuery,BaseMo
     /// </summary>
     /// <param name="pageIndex">Page of number</param>
     public PageQuery skip(Integer pageIndex) {
-        ((ExecuteParBagPage) this.executeParBag).setPageIndex(pageIndex);
-        ((ExecuteParBagPage) this.executeParBag).setIsPage(true);
+        ((ExecuteParBagPage) this.getExecuteParBag()).setPageIndex(pageIndex);
+        ((ExecuteParBagPage) this.getExecuteParBag()).setIsPage(true);
         isExSkip = true;
         return  this;
     }
@@ -122,18 +120,16 @@ public class PageQuery extends BaseQuery implements IWhereQuery<PageQuery,BaseMo
     /// </summary>
     /// <param name="pageSize">how many are displayed per page</param>
     public PageQuery take(Integer pageSize) {
-        ((ExecuteParBagPage) this.executeParBag).setPageSize(pageSize);
-        ((ExecuteParBagPage) this.executeParBag).setIsPage(true);
+        ((ExecuteParBagPage) this.getExecuteParBag()).setPageSize(pageSize);
+        ((ExecuteParBagPage) this.getExecuteParBag()).setIsPage(true);
         isExSkip = true;
         return  this;
     }
 
-    
-
     public MyPage getPage() {
         MyPage mypage = new MyPage();
-        mypage = MyPage.getPageObject(((ExecuteParBagPage) this.executeParBag).getPageIndex(),
-                ((ExecuteParBagPage) this.executeParBag).getPageSize(), getCount());
+        mypage = MyPage.getPageObject(((ExecuteParBagPage) this.getExecuteParBag()).getPageIndex(),
+                ((ExecuteParBagPage) this.getExecuteParBag()).getPageSize(), getCount());
         return mypage;
 
     }
@@ -161,12 +157,12 @@ public class PageQuery extends BaseQuery implements IWhereQuery<PageQuery,BaseMo
 
     // data:true count false
     private void setData(boolean dataOrCount) throws SQLException {
-        ((ExecuteParBagPage) this.executeParBag).setTableName(this.getTableName());
-        ((ExecuteParBagPage) this.executeParBag).setPageColumns(this.getColumns());
+        ((ExecuteParBagPage) this.getExecuteParBag()).setTableName(this.getTableName());
+        ((ExecuteParBagPage) this.getExecuteParBag()).setPageColumns(this.getColumns());
         if (dataOrCount) {
-            ((ExecuteParBagPage) this.executeParBag).setExecuteEnum(ExecuteEnum.PageQuery);
+            ((ExecuteParBagPage) this.getExecuteParBag()).setExecuteEnum(ExecuteEnum.PageQuery);
         } else {
-            ((ExecuteParBagPage) this.executeParBag).setExecuteEnum(ExecuteEnum.PageCount);
+            ((ExecuteParBagPage) this.getExecuteParBag()).setExecuteEnum(ExecuteEnum.PageCount);
         }
         DataTable dt;
         dt = super.getData();
@@ -177,27 +173,10 @@ public class PageQuery extends BaseQuery implements IWhereQuery<PageQuery,BaseMo
                 this.totalCount = 0;
             }
         } else {
-            if (dt != null && dt.size() > 0) {
-
-                if (dt != null) {
-                    DataTable bList = new DataTable();
-                    dt.forEach(item -> {
-                        bList.add(item);
-                    });
-                    this.pageDt = bList;
-                }
-            } else {
-                this.totalCount = 0;
-                if (((ExecuteParBagPage) this.executeParBag).getIsPage()) {
-                    DataTable bList = new DataTable();
-                    this.pageDt = bList;
-                }
-            }
-            ((ExecuteParBagPage) this.executeParBag).setIsPage(false);
+               this.pageDt = dt;
+               ((ExecuteParBagPage) this.getExecuteParBag()).setIsPage(false);
         }
-
     }
-
 
     /// <summary>
     /// get the number of total recode.
@@ -207,54 +186,33 @@ public class PageQuery extends BaseQuery implements IWhereQuery<PageQuery,BaseMo
         try {
             if (totalCount == -1) {
                 setData(false);
-                return totalCount;
-            } else
-                return totalCount;
+            }
+            return totalCount;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    /// <summary>
-    /// return to UnionPage
-    /// </summary>
-    /// <param name="page">pageQuery</param>
-    /// <returns></returns>
-    public UnionPage toUnionPage() {
-        unionPage.union((PageQuery) this);
-        return unionPage;
-    }
-
-    /// <summary>
-    /// association Table
-    /// </summary>
-    /// <param name="page">pageQuery</param>
-    /// <returns></returns>
-    public UnionPage union(PageQuery page) {
-        unionPage.union((PageQuery) this);
-        unionPage.union(page);
-        return  unionPage;
-    }
 
     public PageQuery addPreWith(String withSql) {
         if (CoreStringUtils.isEmpty(withSql))
-            return (PageQuery) this;
-         String pre_sql = ((ExecuteParBagPage) this.executeParBag).getPreWith() + withSql;
-        ((ExecuteParBagPage) this.executeParBag).setPreWith(pre_sql);
-        return (PageQuery) this;
+            return  this;
+         String pre_sql = ((ExecuteParBagPage) this.getExecuteParBag()).getPreWith() + withSql;
+        ((ExecuteParBagPage) this.getExecuteParBag()).setPreWith(pre_sql);
+        return  this;
     }
 
     public PageQuery addPreWith(String withSql, Object... args) {
         if (CoreStringUtils.isEmpty(withSql))
-            return (PageQuery) this;
-            String pre_sql = ((ExecuteParBagPage) this.executeParBag).getPreWith() + withSql;
-            ((ExecuteParBagPage) this.executeParBag).setPreWith(pre_sql);
+            return  this;
+            String pre_sql = ((ExecuteParBagPage) this.getExecuteParBag()).getPreWith() + withSql;
+            ((ExecuteParBagPage) this.getExecuteParBag()).setPreWith(pre_sql);
             if (args != null && args.length > 0) {
                 Arrays.stream(args).forEach(item -> {
-                    ((ExecuteParBagPage) this.executeParBag).getDynamics().put(UUID.randomUUID().toString(), item);
+                    (this.getExecuteParBag()).getDynamics().put(UUID.randomUUID().toString(), item);
                 });
             }
-        return (PageQuery) this;
+        return  this;
     }
 
     /// <summary>
@@ -262,7 +220,7 @@ public class PageQuery extends BaseQuery implements IWhereQuery<PageQuery,BaseMo
     /// </summary>
     /// <param name="excuteMode"></param>
     public PageQuery setExecuteMode(ExecuteMode executeMode) {
-        ((ExecuteParBagPage) this.executeParBag).setExecuteMode(executeMode);
-        return (PageQuery) this;
+        (this.getExecuteParBag()).setExecuteMode(executeMode);
+        return this;
     }
 }

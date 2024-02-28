@@ -10,5 +10,5 @@ public class ExecuteParBagPage extends ExecuteParBagSelect {
     private Integer pageIndex = 0;
     private Integer pageSize = 10;
     private String pageColumns;
-    private Boolean isPage;
+    private Boolean isPage = false;
 }

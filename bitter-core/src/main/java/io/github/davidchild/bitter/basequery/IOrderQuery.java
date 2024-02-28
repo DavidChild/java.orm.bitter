@@ -17,7 +17,6 @@ public interface  IOrderQuery<OP extends BaseQuery,T extends BaseModel>  {
     public default OP thenAsc(String filedName) {
         IBagOrder iBagOrder = ((IBagOrder)((OP)this).getExecuteParBag());
         SubOrderStatement subOrderStatement = ((OP)this).createOrderStatement();
-        subOrderStatement.setSubOrderStatementEnum(SubOrderStatementEnum.custom);
         subOrderStatement.thenAsc(filedName);
         iBagOrder.getOrderContain().add(subOrderStatement);
         return (OP)this;

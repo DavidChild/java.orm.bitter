@@ -11,21 +11,24 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MysqlDbStatementCached implements IDbStatement {
 
 
     @Override
-    public Object Query(String commandTest, List<Object> params,DataResultHandlerBase resultHandler) {
+    public Object Query(String commandTest, LinkedHashMap<String, Object> params,DataResultHandlerBase resultHandler) {
         BitterLogUtil.logWriteSql(commandTest, params);
          Object result = null;
         try (DbConnection db = new DbConnection()) {
             try (PreparedStatement stmt = db.connection.prepareStatement(commandTest)) {
                 if (CoreStringUtils.isNotEmpty(params)) {
-                    for (int i = 0; i < params.size(); i++) {
-                        MetaTypeCt.getTypeHandler(params.get(i).getClass()).setObjectParameter(stmt,i+1,params.get(i),null);
-                       //stmt.setObject(i + 1, params.get(i),null);
+                    int i = 0;
+                    for (Map.Entry<String,Object> entry : params.entrySet()) {
+                        MetaTypeCt.getTypeHandler(entry.getValue().getClass()).setObjectParameter(stmt,i+1,entry.getValue(),null);
+                        i++;
                     }
                 }
                 if (!stmt.execute())
@@ -38,20 +41,24 @@ public class MysqlDbStatementCached implements IDbStatement {
                         }
                     } catch (SQLException e) {
                         BitterLogUtil.logWriteError(e, params);
+                    throw  new DbException(e.getMessage());
                     }
                 catch (Exception ex){
                     BitterLogUtil.logWriteError(ex,params);
+                    throw  new DbException(ex.getMessage());
                 }
             } catch (DbException | SQLException e) {
                 BitterLogUtil.logWriteError(e, params);
+                throw  new DbException(e.getMessage());
             }
           } catch (DataSourceException e) {
             BitterLogUtil.logWriteError(e, params);
+            throw  new DbException(e.getMessage());
         }
         return result;
     }
 
-    public long Insert(String commandTest, List<Object> params, boolean isIdentity) {
+    public long Insert(String commandTest, LinkedHashMap<String, Object> params, boolean isIdentity) {
         BitterLogUtil.logWriteSql(commandTest, params);
         long id = -1L;
         try (DbConnection db = new DbConnection()) {
@@ -59,9 +66,10 @@ public class MysqlDbStatementCached implements IDbStatement {
                 try (PreparedStatement stmt =
                              db.connection.prepareStatement(commandTest, Statement.RETURN_GENERATED_KEYS)) {
                     if (CoreStringUtils.isNotEmpty(params)) {
-                        for (int i = 0; i < params.size(); i++) {
-                            MetaTypeCt.getTypeHandler(params.get(i).getClass()).setObjectParameter(stmt,i+1,params.get(i),null);
-                            //stmt.setObject(i + 1, params.get(i));
+                        int i = 0;
+                        for (Map.Entry<String,Object> entry : params.entrySet()) {
+                            MetaTypeCt.getTypeHandler(entry.getValue().getClass()).setObjectParameter(stmt,i+1,entry.getValue(),null);
+                            i++;
                         }
                     }
                     if (stmt.executeUpdate() > 0) {
@@ -83,9 +91,10 @@ public class MysqlDbStatementCached implements IDbStatement {
             } else {
                 try (PreparedStatement stmt = db.connection.prepareStatement(commandTest)) {
                     if (CoreStringUtils.isNotEmpty(params)) {
-                        for (int i = 0; i < params.size(); i++) {
-                            MetaTypeCt.getTypeHandler(params.get(i).getClass()).setObjectParameter(stmt,i+1,params.get(i),null);
-//                            stmt.setObject(i + 1, params.get(i));
+                        int i = 0;
+                        for (Map.Entry<String,Object> entry : params.entrySet()) {
+                            MetaTypeCt.getTypeHandler(entry.getValue().getClass()).setObjectParameter(stmt,i+1,entry.getValue(),null);
+                            i++;
                         }
                     }
                     int aff = stmt.executeUpdate();
@@ -103,16 +112,17 @@ public class MysqlDbStatementCached implements IDbStatement {
 
     // create bach insert sql statement
     @Override
-    public long executeBach(String commandTest, List<Object> params) {
+    public long executeBach(String commandTest, LinkedHashMap<String, Object> params) {
         BitterLogUtil.logWriteSql(commandTest, params);
         long aff = 1L;
         try (DbConnection db = new DbConnection()) {
             {
                 try (PreparedStatement stmt = db.connection.prepareStatement(commandTest)) {
                     db.connection.setAutoCommit(false);
-                    for (int i = 0; i < params.size(); i++) {
-                        MetaTypeCt.getTypeHandler(params.get(i).getClass()).setObjectParameter(stmt,i+1,params.get(i),null);
-//                        stmt.setObject(i + 1, params.get(i));
+                    int i = 0;
+                    for (Map.Entry<String,Object> entry : params.entrySet()) {
+                        MetaTypeCt.getTypeHandler(entry.getValue().getClass()).setObjectParameter(stmt,i+1,entry.getValue(),null);
+                        i++;
                     }
                     stmt.addBatch();
                     db.connection.commit();
@@ -131,7 +141,7 @@ public class MysqlDbStatementCached implements IDbStatement {
     }
 
     @Override
-    public long executeScope(List<String> commandTests, List<List<Object>> params) {
+    public long executeScope(List<String> commandTests, List<LinkedHashMap<String, Object>> params) {
         BitterLogUtil.logWriteSql(JsonUtil.object2String(commandTests), JsonUtil.object2String(params));
         long aff = 1L;
         try (DbConnection db = new DbConnection()) {
@@ -141,10 +151,11 @@ public class MysqlDbStatementCached implements IDbStatement {
                 for (String command : commandTests) {
 
                     try (PreparedStatement stmt = db.connection.prepareStatement(command)) {
-                        List<Object> list = params.get(k);
-                        for (int i = 0; i < list.size(); i++) {
-                            MetaTypeCt.getTypeHandler(params.get(i).getClass()).setObjectParameter(stmt,i+1,params.get(i),null);
-                           // stmt.setObject(i + 1, list.get(i));
+                        LinkedHashMap<String, Object> list = params.get(k);
+                        int i = 0;
+                        for (Map.Entry<String,Object> entry : list.entrySet()) {
+                            MetaTypeCt.getTypeHandler(entry.getValue().getClass()).setObjectParameter(stmt,i+1,entry.getValue(),null);
+                            i++;
                         }
                         stmt.executeUpdate();
                     }
@@ -169,15 +180,16 @@ public class MysqlDbStatementCached implements IDbStatement {
         return aff;
     }
 
-    public long update(String commandTest, List<Object> params) {
+    public long update(String commandTest, LinkedHashMap<String, Object> params) {
         BitterLogUtil.logWriteSql(commandTest, params);
         long aff = -1L;
         try (DbConnection db = new DbConnection()) {
             try (PreparedStatement stmt = db.connection.prepareStatement(commandTest)) {
                 if (CoreStringUtils.isNotEmpty(params)) {
-                    for (int i = 0; i < params.size(); i++) {
-                        MetaTypeCt.getTypeHandler(params.get(i).getClass()).setObjectParameter(stmt,i+1,params.get(i),null);
-                        //stmt.setObject(i + 1, params.get(i));
+                    int i = 0;
+                    for (Map.Entry<String,Object> entry : params.entrySet()) {
+                        MetaTypeCt.getTypeHandler(entry.getValue().getClass()).setObjectParameter(stmt,i+1,entry.getValue(),null);
+                        i++;
                     }
                 }
                 int affTemp = stmt.executeUpdate();
@@ -192,15 +204,16 @@ public class MysqlDbStatementCached implements IDbStatement {
         return aff;
     }
 
-    public long execute(String commandTest, List<Object> params) {
+    public long execute(String commandTest, LinkedHashMap<String, Object> params) {
         BitterLogUtil.logWriteSql(commandTest, params);
         long aff = -1L;
         try (DbConnection db = new DbConnection()) {
             try (PreparedStatement stmt = db.connection.prepareStatement(commandTest)) {
                 if (CoreStringUtils.isNotEmpty(params)) {
-                    for (int i = 0; i < params.size(); i++) {
-                        MetaTypeCt.getTypeHandler(params.get(i).getClass()).setObjectParameter(stmt,i+1,params.get(i),null);
-                      //  stmt.setObject(i + 1, params.get(i));
+                    int i = 0;
+                    for (Map.Entry<String,Object> entry : params.entrySet()) {
+                        MetaTypeCt.getTypeHandler(entry.getValue().getClass()).setObjectParameter(stmt,i+1,entry.getValue(),null);
+                        i++;
                     }
                 }
                 stmt.executeUpdate();

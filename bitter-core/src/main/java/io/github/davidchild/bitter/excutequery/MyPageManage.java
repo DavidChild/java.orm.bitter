@@ -4,39 +4,44 @@ import io.github.davidchild.bitter.basequery.BaseQuery;
 import io.github.davidchild.bitter.parbag.ExecuteParBagPage;
 import io.github.davidchild.bitter.tools.CoreStringUtils;
 
+import java.util.LinkedHashMap;
+
 public class MyPageManage {
 
-    public static void selectPageData(BaseQuery baseQuery,String where,String order) {
+    public static void selectPageData(BaseQuery baseQuery) {
         baseQuery.setCommandText("");
         baseQuery.clearParameters();
-        getPageDataBySelect(baseQuery,where,order);
+        getPageDataBySelect(baseQuery);
     }
 
-    public static void selectPageDataCount(BaseQuery baseQuery,String where,String order) {
+    public static void selectPageDataCount(BaseQuery baseQuery) {
         baseQuery.setCommandText("");
         baseQuery.clearParameters();
-        getPageDataCountBySelect(baseQuery,where,order);
+        getPageDataCountBySelect(baseQuery);
     }
 
-    private static void getPageDataBySelect(BaseQuery query,String where,String order) {
+    private static void getPageDataBySelect(BaseQuery query) {
         ExecuteParBagPage bag = (ExecuteParBagPage) (query.getExecuteParBag());
         BaseQuery sqlTemp = new BaseQuery();
+
         sqlTemp.setCommandText(bag.getCommandText());
-        sqlTemp.getExecuteParBag().setDynamics(bag.getDynamics());
+        sqlTemp.setExecuteParBag(query.getExecuteParBag());
+        sqlTemp.getExecuteParBag().setDynamics(new LinkedHashMap<>());
+
         StringBuilder sqlSelect = new StringBuilder(sqlTemp.getCommandText());
         if (!bag.getIsPage()) {
             bag.setPageIndex(1);
             bag.setPageSize(1);
         }
+        String where = WhereHandler.getWhere(sqlTemp);
         if (CoreStringUtils.isNotEmpty(where)) {
-            String where_sql = String.format(" WHERE %s ", where);
             sqlSelect.append("\n");
-            sqlSelect.append(where_sql);
+            sqlSelect.append(where);
         }
+        String order = OrderHandler.getOrder(sqlTemp);
         if (CoreStringUtils.isNotEmpty(order)) {
-            String orderBy = (CoreStringUtils.isEmpty(order) ? "" : String.format(" ORDER BY %s ", order));
             sqlSelect.append("\n");
-            sqlSelect.append(orderBy);
+            sqlSelect.append(order);
         }
 
         if (bag.getPageIndex() == 1) {
@@ -59,12 +64,14 @@ public class MyPageManage {
         }
     }
 
-    private static void getPageDataCountBySelect(BaseQuery query,String where,String order) {
+    private static void getPageDataCountBySelect(BaseQuery query) {
         ExecuteParBagPage bag = (ExecuteParBagPage) (query.getExecuteParBag());
         String selectTable = bag.getTableName();
         BaseQuery sqlTemp = new BaseQuery();
+
         sqlTemp.setCommandText(bag.getCommandText());
-        sqlTemp.getExecuteParBag().setDynamics(bag.getDynamics());
+        sqlTemp.setExecuteParBag(query.getExecuteParBag());
+        sqlTemp.getExecuteParBag().setDynamics(new LinkedHashMap<>());
 
         StringBuilder sqlCount = new StringBuilder();
         sqlCount.append("/*******Search TotalCount*******/\n");
@@ -76,23 +83,21 @@ public class MyPageManage {
         sqlCount.append("\n");
         sqlCount.append(selectTable);
         sqlCount.append("\n");
+        String where = WhereHandler.getWhere(sqlTemp);
         if (CoreStringUtils.isNotEmpty(where)) {
-            String where_sql = String.format(" WHERE %s ", where);
             sqlCount.append("\n");
-            sqlCount.append(where_sql);
+            sqlCount.append(where);
         }
         sqlCount.append(";");
-        try {
-            if (CoreStringUtils.isNotEmpty(bag.getPreWith())) {
-                sqlTemp.setCommandText(bag.getPreWith() + "\n" + sqlCount);
-            } else {
-                sqlTemp.setCommandText(sqlCount.toString());
-            }
-            query.setCommandText(sqlTemp.getCommandText());
-            query.resetParameters(sqlTemp.getExecuteParBag().getDynamics());
 
-        } finally {
-
+        if (CoreStringUtils.isNotEmpty(bag.getPreWith())) {
+            sqlTemp.setCommandText(bag.getPreWith() + "\n" + sqlCount);
+        } else {
+            sqlTemp.setCommandText(sqlCount.toString());
         }
+        query.setCommandText(sqlTemp.getCommandText());
+        query.resetParameters(sqlTemp.getExecuteParBag().getDynamics());
+
     }
+
 }

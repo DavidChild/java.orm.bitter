@@ -29,14 +29,12 @@ public class CkPageManage {
             bag.setPageSize(1);
         }
         if (CoreStringUtils.isNotEmpty(where)) {
-            String where_sql = String.format(" WHERE %s ", where);
             sqlSelect.append("\n");
-            sqlSelect.append(where_sql);
+            sqlSelect.append(where);
         }
         if (CoreStringUtils.isNotEmpty(order)) {
-            String orderBy = (CoreStringUtils.isEmpty(order) ? "" : String.format(" ORDER BY %s ", order));
             sqlSelect.append("\n");
-            sqlSelect.append(orderBy);
+            sqlSelect.append(order);
         }
 
         if (bag.getPageIndex() == 1) {
@@ -77,9 +75,8 @@ public class CkPageManage {
         sqlCount.append(selectTable);
         sqlCount.append("\n");
         if (CoreStringUtils.isNotEmpty(where)) {
-            String where_sql = String.format(" WHERE %s ", where);
             sqlCount.append("\n");
-            sqlCount.append(where_sql);
+            sqlCount.append(where);
         }
         sqlCount.append(";");
         try {

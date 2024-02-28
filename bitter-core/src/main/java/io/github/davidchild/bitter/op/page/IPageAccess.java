@@ -45,8 +45,6 @@ public interface IPageAccess {
 
     DataTable getData();
 
-    IUnionPageAccess toUnionPage();
-
 
     IPageAccess setExecuteMode(ExecuteMode executeMode);
 }

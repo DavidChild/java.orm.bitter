@@ -12,13 +12,10 @@ public class StatementWhereHandler {
     public static StatementHandlerResult handlerStatement(SubWhereStatement SubWhereStatement) {
         if(SubWhereStatement == null) return  null;
         StatementHandlerResult statementHandlerResult = new StatementHandlerResult();
-        if ((SubWhereStatement.getArgs() == null || SubWhereStatement.getArgs().size() <= 0) && SubWhereStatement.getDefaultArg() == null) {
-            statementHandlerResult.setStatement("");
-            return statementHandlerResult;
-        }
 
         switch (SubWhereStatement.getSubWhereStatementEnum()) {
             case in:
+            case notIn:
                 in(SubWhereStatement,statementHandlerResult);
                 break;
             case allLike:
@@ -28,6 +25,9 @@ public class StatementWhereHandler {
                 break;
             case eq:
                 eq(SubWhereStatement,statementHandlerResult);
+                break;
+            case neq:
+                neq(SubWhereStatement,statementHandlerResult);
                 break;
             case lt:
                 lt(SubWhereStatement,statementHandlerResult);
@@ -41,38 +41,48 @@ public class StatementWhereHandler {
                 geq(SubWhereStatement,statementHandlerResult);
                 break;
             case custom:
-                Custom(SubWhereStatement,statementHandlerResult);
+                custom(SubWhereStatement,statementHandlerResult);
                 break;
             default:
                 break;
         }
-        return createStatementResult(SubWhereStatement);
+        return createStatementResult(SubWhereStatement,statementHandlerResult);
     }
     private static void eq(SubWhereStatement SubWhereStatement,StatementHandlerResult statementHandlerResult) {
         SubWhereStatement.setOp("=");
+        SubWhereStatement.setStatement("?");
+    }
+
+    private static void neq(SubWhereStatement SubWhereStatement,StatementHandlerResult statementHandlerResult) {
+        SubWhereStatement.setOp("!=");
+        SubWhereStatement.setStatement("?");
     }
 
 
     private static void lt(SubWhereStatement SubWhereStatement,StatementHandlerResult statementHandlerResult) {
         SubWhereStatement.setOp("<");
+        SubWhereStatement.setStatement("?");
     }
 
     private static void leq(SubWhereStatement SubWhereStatement,StatementHandlerResult statementHandlerResult) {
         SubWhereStatement.setOp("<=");
+        SubWhereStatement.setStatement("?");
     }
 
     private static void gt(SubWhereStatement SubWhereStatement,StatementHandlerResult statementHandlerResult) {
         SubWhereStatement.setOp(">");
+        SubWhereStatement.setStatement("?");
     }
     private static void geq(SubWhereStatement SubWhereStatement,StatementHandlerResult statementHandlerResult) {
         SubWhereStatement.setOp(">=");
+        SubWhereStatement.setStatement("?");
     }
 
-    private static void Custom(SubWhereStatement SubWhereStatement,StatementHandlerResult statementHandlerResult) {
+    private static void custom(SubWhereStatement SubWhereStatement,StatementHandlerResult statementHandlerResult) {
         if(SubWhereStatement.getArgs() != null && SubWhereStatement.getArgs().size()> 0){
             SubWhereStatement.getArgs() .forEach(item->{
                 String uuid = UUID.randomUUID().toString();
-                SubWhereStatement.getDynamics().put(uuid,item);
+                statementHandlerResult.getDynamics().put(uuid,item);
             });
         }
     }
@@ -96,20 +106,28 @@ public class StatementWhereHandler {
         }
     }
 
-    private static void in(SubWhereStatement SubWhereStatement,StatementHandlerResult statementHandlerResult) {
-        List<Object> arg = (List<Object>) SubWhereStatement.getArgs();
-        if ((arg != null && arg.size() <= 1) || ((arg == null || arg.size() == 0) && SubWhereStatement.getDefaultArg() != null)) {
+    private static void in(SubWhereStatement subWhereStatement,StatementHandlerResult statementHandlerResult) {
+        List<Object> arg = subWhereStatement.getArgs();
+        if ((arg != null && arg.size() <= 1) || ((arg == null || arg.size() == 0) && subWhereStatement.getDefaultArg() != null)) {
             String uuid = UUID.randomUUID().toString();
-            SubWhereStatement.setOp("=");
-            SubWhereStatement.setSubWhereStatement("?");
-            Object dynamicArg = (arg != null && arg.size() == 1) ? arg.get(0) : SubWhereStatement.getDefaultArg();
-            SubWhereStatement.getDynamics().put(uuid, dynamicArg);
+            if (subWhereStatement.getSubWhereStatementEnum() == SubWhereStatementEnum.notIn) {
+                subWhereStatement.setOp("!=");
+            } else {
+                subWhereStatement.setOp("=");
+            }
+            subWhereStatement.setSubWhereStatement("?");
+            Object dynamicArg = (arg != null && arg.size() == 1) ? arg.get(0) : subWhereStatement.getDefaultArg();
+            statementHandlerResult.getDynamics().put(uuid, dynamicArg);
         } else {
-            SubWhereStatement.setOp("in");
-            joinForIn("(", ")", ",", arg,SubWhereStatement,statementHandlerResult);
+            if (subWhereStatement.getSubWhereStatementEnum() == SubWhereStatementEnum.notIn) {
+                subWhereStatement.setOp(" not in");
+            } else {
+                subWhereStatement.setOp("in");
+            }
+            joinForIn("(", ")", ",", arg, subWhereStatement, statementHandlerResult);
         }
     }
-    private static void joinForIn(String prefix, String suffix, String split, List<Object> args,SubWhereStatement SubWhereStatement,StatementHandlerResult statementHandlerResult) {
+    private static void joinForIn(String prefix, String suffix, String split, List<Object> args,SubWhereStatement subWhereStatement,StatementHandlerResult statementHandlerResult) {
         String subStr = "";
         if (CoreStringUtils.isNotEmpty(prefix)) subStr = prefix;
         for (int i = 0; i < args.size(); i++) {
@@ -119,28 +137,31 @@ public class StatementWhereHandler {
             } else {
                 subStr += "?" + split;
             }
-            SubWhereStatement.getDynamics().put(uuid, args.get(i));
+            statementHandlerResult.getDynamics().put(uuid, args.get(i));
         }
 
         if (CoreStringUtils.isNotEmpty(suffix)) subStr += suffix;
-        SubWhereStatement.setSubWhereStatement(subStr);
+        subWhereStatement.setSubWhereStatement(subStr);
     }
 
 
-    private static StatementHandlerResult createStatementResult(SubWhereStatement SubWhereStatement){
+    private static StatementHandlerResult createStatementResult(SubWhereStatement subWhereStatement,StatementHandlerResult result){
         // In 和  custom 在各自方法构造的时候已经塞入参数了,这边不必要重复塞入参数容器
-        if(SubWhereStatement.getSubWhereStatementEnum() != SubWhereStatementEnum.in && SubWhereStatement.getSubWhereStatementEnum() != SubWhereStatementEnum.custom){
+        if(subWhereStatement.getSubWhereStatementEnum() != SubWhereStatementEnum.notIn&&subWhereStatement.getSubWhereStatementEnum() != SubWhereStatementEnum.in && subWhereStatement.getSubWhereStatementEnum() != SubWhereStatementEnum.custom){
             String uuid = UUID.randomUUID().toString();
-            Object arg =  SubWhereStatement.getArgs() == null || SubWhereStatement.getArgs().size() == 0 || SubWhereStatement.getArgs().get(0) == null ? SubWhereStatement.getDefaultArg() : SubWhereStatement.getArgs().get(0);
-            SubWhereStatement.getDynamics().put(uuid,arg);
+            Object arg =  subWhereStatement.getArgs() == null || subWhereStatement.getArgs().size() == 0 || subWhereStatement.getArgs().get(0) == null ? subWhereStatement.getDefaultArg() : subWhereStatement.getArgs().get(0);
+            result.getDynamics().put(uuid,arg);
         }
-        String sql = String.format("%s %s %s", CoreStringUtils.isNotEmpty(SubWhereStatement.getField())?SubWhereStatement.getField() : "", CoreStringUtils.isNotEmpty(SubWhereStatement.getOp()) ? SubWhereStatement.getOp() : "", SubWhereStatement.getStatement());
-        SubWhereStatement.setStatement(sql);
-        StatementHandlerResult statementHandlerResult = new StatementHandlerResult();
-        statementHandlerResult.setStatement(sql);
-        statementHandlerResult.setSubWhereStatementEnum(SubWhereStatement.getSubWhereStatementEnum());
-        statementHandlerResult.setDynamics(SubWhereStatement.getDynamics());
-        return statementHandlerResult;
+        String sql = "";
+        if(subWhereStatement.getSubWhereStatementEnum() != SubWhereStatementEnum.custom){
+           sql = String.format("%s %s %s", CoreStringUtils.isNotEmpty(subWhereStatement.getField())?subWhereStatement.getField() : "", CoreStringUtils.isNotEmpty(subWhereStatement.getOp()) ? subWhereStatement.getOp() : "", subWhereStatement.getStatement());
+        }else{
+            sql = String.format("%s", subWhereStatement.getStatement());
+        }
+
+        result.setStatement(sql);
+        result.setSubWhereStatementEnum(subWhereStatement.getSubWhereStatementEnum());
+        return result;
     }
 
 }

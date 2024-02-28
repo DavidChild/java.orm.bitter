@@ -16,13 +16,13 @@ import java.util.List;
 
 public class WhereHandler {
     public static  <T extends BaseModel> String getWhere(BaseQuery  query) {
-        StringBuilder where = new StringBuilder(" Where 1=1");
-        if(query.getExecuteParBag().getInsData() != null){
-          return DataWhereCondition(query,where).toString();
-        }
-        if(!((IBagWhere)query.getExecuteParBag()).CheckedHaveCondition()) return where.toString() ;
+        if(query.getExecuteParBag().getInsData() != null) return  WhereHandler.DataWhereCondition(query);
+
+        if(!((IBagWhere)query.getExecuteParBag()).CheckedHaveCondition()) return  "";
+        StringBuilder conditionWhere = new StringBuilder(" Where 1=1 ");
+        if(!((IBagWhere)query.getExecuteParBag()).CheckedHaveCondition()) return conditionWhere.toString() ;
         List<BitterPredicate<T>> lambdas = ((IBagWhere)query.getExecuteParBag()).getWhereContainer().getPredicateCondition();
-        List<SubWhereStatement> SubWhereStatements = ((IBagWhere)query.getExecuteParBag()).getWhereContainer().getSubWhereStatementCondition();
+        List<SubWhereStatement> subWhereStatements = ((IBagWhere)query.getExecuteParBag()).getWhereContainer().getSubWhereStatementCondition();
 
         if (lambdas != null && lambdas.size() > 0) {
             lambdas.forEach(lambda -> {
@@ -38,8 +38,7 @@ public class WhereHandler {
                     BitterWrapper wrapper = lambda.sql(visitor);
                     String wp = wrapper.getKey().toString();
                     if (wp != null && CoreStringUtils.isNotEmpty(wp)) {
-                        where.append(" \n ");
-                        where.append(String.format("and ( %s )", wp));
+                        conditionWhere.append(String.format(" and ( %s )", wp));
                     }
                     if (wrapper.getValue() != null && wrapper.getValue().size() > 0) {
                         wrapper.getValue().forEach(v ->  StatementHandeUtil.setParamInBagContainer(query, v));
@@ -53,28 +52,28 @@ public class WhereHandler {
             });
         }
 
-        if(SubWhereStatements != null && SubWhereStatements.size()>0){
-            SubWhereStatements.forEach(item->{
+        if(subWhereStatements != null && subWhereStatements.size()>0){
+            for(SubWhereStatement item : subWhereStatements) {
                 StatementHandlerResult statementHandlerResult = StatementWhereHandler.handlerStatement(item);
                 if(statementHandlerResult.getStatement() != null && statementHandlerResult.getStatement() != ""){
-                    where.append(String.format(" and (%s)", statementHandlerResult.getStatement()));
+                    conditionWhere.append(String.format(" and (%s)", statementHandlerResult.getStatement()));
                     if(statementHandlerResult.getDynamics() != null && statementHandlerResult.getDynamics().size() > 0){
                         statementHandlerResult.getDynamics().forEach((key,param)->{
                             StatementHandeUtil.setParamInBagContainer(query, param);
                         });
                     }
                 }
-            });
+            }
         }
-        return where.toString();
+        return conditionWhere.toString();
     }
 
-    private static   StringBuilder DataWhereCondition(BaseQuery query,StringBuilder where){
+    private static   String DataWhereCondition(BaseQuery query){
         Object keyValue = query.getExecuteParBag().getKeyInfo().getValue();
         String keyName = query.getExecuteParBag().getKeyInfo().getDbName();
-        where.append(String.format("and %s=?", keyName));
         StatementHandeUtil.setParamInBagContainer(query, keyValue);
-        return  where;
+        return   String.format(" Where %s=?", keyName);
+
     }
 
 }

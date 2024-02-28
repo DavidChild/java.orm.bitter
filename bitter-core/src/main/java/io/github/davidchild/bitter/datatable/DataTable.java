@@ -15,7 +15,7 @@ public class DataTable extends ArrayList<DataRow> {
     }
 
     public Object tryGetFirstRowFirstColumnValue(String key) {
-         if(this.size() < 1) return null;
+         if(this == null || this.size() < 1) return null;
          else {
              return this.get(0).getColumnValue(key);
          }

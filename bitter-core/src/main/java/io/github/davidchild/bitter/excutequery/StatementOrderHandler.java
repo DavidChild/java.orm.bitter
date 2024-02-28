@@ -10,9 +10,11 @@ public class StatementOrderHandler {
         StatementHandlerResult statementHandlerResult = new StatementHandlerResult();
 
         switch (subOrderStatement.getSubOrderStatementEnum()) {
-            case orderAsc:
             case orderDesc:
-                orderAscOrDesc(subOrderStatement);
+                orderDesc(subOrderStatement);
+                break;
+            case orderAsc:
+                orderAsc(subOrderStatement);
                 break;
             case custom:
                 order(subOrderStatement);
@@ -23,12 +25,16 @@ public class StatementOrderHandler {
         return createStatementResult(subOrderStatement);
     }
 
-    public static void orderAscOrDesc(SubOrderStatement subOrderStatement){
+    public static void orderDesc(SubOrderStatement subOrderStatement){
         subOrderStatement.setOp("desc");
     }
 
-    public  static void order(SubOrderStatement subOrderStatement){
+    public static void orderAsc(SubOrderStatement subOrderStatement){
         subOrderStatement.setOp("asc");
+    }
+
+    public  static void order(SubOrderStatement subOrderStatement){
+        subOrderStatement.setOp("");
     }
 
     public  static void custom(SubOrderStatement subOrderStatement){
@@ -40,7 +46,7 @@ public class StatementOrderHandler {
         String sql = "";
         if(CoreStringUtils.isNotEmpty(subOrderStatement.getField()) && CoreStringUtils.isNotEmpty(subOrderStatement.getOp())) {
             //asc // desc
-            sql = String.format("%s %s",CoreStringUtils.isNotEmpty(subOrderStatement.getField())?subOrderStatement.getField() : "",CoreStringUtils.isNotEmpty(subOrderStatement.getOp()));
+            sql = String.format("%s %s",CoreStringUtils.isNotEmpty(subOrderStatement.getField())?subOrderStatement.getField() : "",subOrderStatement.getOp());
         }else{
             //custom
             sql = String.format("%s",CoreStringUtils.isNotEmpty(subOrderStatement.getStatement())?subOrderStatement.getStatement() : "");

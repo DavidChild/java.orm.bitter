@@ -25,6 +25,7 @@ public class DqlTest extends CreateBaseMockSchema {
 
     @Test
     public void testQueryGen1()  {
+        this.beforeInit();
         Date s = DateUtils.parseDate("2022-8-10");
         List<TUser> list = db.findQuery(TUser.class).thenAsc(TUser::getId).thenDesc(TUser::getPhone).find();
         assertEquals(true, list.size()>0);
@@ -102,11 +103,12 @@ public class DqlTest extends CreateBaseMockSchema {
     @Test
     public void testExecuteQuery5()  {
         this.beforeInit();
-        String id = db.findQuery("select * from t_user limit 0,1").find().tryGetFirstRowFirstColumnValue("id").toString(); // Get the field value of the column specified in the first row and the first column
+        String id = db.findQuery("select * from t_user").find().tryGetFirstRowFirstColumnValue("id").toString(); // Get the field value of the column specified in the first row and the first column
         assertEquals(true, StringUtils.isNoneBlank(id));
     }
     @Test
     public void testQueryById() throws Exception {
+        this.beforeInit();
         var sysUser = db.findQuery(TUser.class, "1552178014981849090").find();
         assertEquals(true, sysUser.hasKeyValue());
 
