@@ -4,7 +4,7 @@ import io.github.davidchild.bitter.basequery.SubOrderStatement;
 
 import java.util.List;
 
-public interface IBagOrder extends IBagBase {
+public interface IBagOrder extends IBagOp {
     public List<SubOrderStatement> getOrderContain();
     public default Boolean CheckedHaveOrder(){
         List<SubOrderStatement> container = this.getOrderContain();

@@ -1,12 +1,16 @@
 package io.github.davidchild.bitter.parbag;
 
-import com.baomidou.mybatisplus.annotation.IdType;
+import io.github.davidchild.bitter.basequery.ExecuteEnum;
 
-public class ExecuteParBagInsert extends ExecuteParBag {
-    public boolean isOutIdentity() {
-        if (getKeyInfo() != null && this.getKeyInfo().getDbIdType() == IdType.AUTO)
-            return true;
-        else
-            return false;
+public class ExecuteParBagInsert extends ExecuteParBag implements  IBagOp {
+
+
+    public ExecuteParBagInsert(){
+        this.setExecuteEnum(ExecuteEnum.Insert);
     }
+    @Override
+    public ExecuteParBag getParBag() {
+        return  this;
+    }
+
 }

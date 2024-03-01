@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
     public default OP where(BitterPredicate<T> predicate) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
         iBagWhere.getWhereContainer().getPredicateCondition().add(predicate);
         return (OP)this;
     }
@@ -19,8 +19,8 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
 
     /** string **/
     public  default OP where(String setWhere, Object... args) {
-       IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-       SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
+       IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+       SubWhereStatement subWhereStatement = new SubWhereStatement();
        subWhereStatement.custom(setWhere,args);
        iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
        return  (OP)this;
@@ -28,8 +28,8 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
 
 
     public  default OP where(String setWhere) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
         subWhereStatement.custom(setWhere,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
@@ -83,8 +83,8 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
 
     /*** eq **/
     public  default OP whereEq(String field,Object value) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
         subWhereStatement.eq(field,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
@@ -96,9 +96,10 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
         return (OP)this;
     }
     public  default OP whereEq(FieldFunction<T> field, Object value) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
-        subWhereStatement.eq(field,value,null);
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
+        String filedName = iBagWhere.getDbFiled(field);
+        subWhereStatement.eq(filedName,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
     }
@@ -163,8 +164,8 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
 
     /*** neq **/
     public  default OP whereNeq(String field,Object value) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
         subWhereStatement.neq(field,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
@@ -176,9 +177,10 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
         return (OP)this;
     }
     public  default OP whereNeq(FieldFunction<T> field, Object value) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
-        subWhereStatement.neq(field,value,null);
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
+        String filedName = iBagWhere.getDbFiled(field);
+        subWhereStatement.neq(filedName,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
     }
@@ -244,8 +246,8 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
 
     /*** lt **/
     public  default OP whereLt(String field,Object value) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
         subWhereStatement.lt(field,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
@@ -257,9 +259,10 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
         return (OP)this;
     }
     public  default OP whereLt(FieldFunction<T> field, Object value) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
-        subWhereStatement.lt(field,value,null);
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
+        String filedName = iBagWhere.getDbFiled(field);
+        subWhereStatement.lt(filedName,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
     }
@@ -326,8 +329,8 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
 
     /*** leq **/
     public  default OP whereLeq(String field,Object value) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
         subWhereStatement.leq(field,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
@@ -339,9 +342,10 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
         return (OP)this;
     }
     public  default OP whereLeq(FieldFunction<T> field, Object value) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
-        subWhereStatement.leq(field,value,null);
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
+        String filedName = iBagWhere.getDbFiled(field);
+        subWhereStatement.leq(filedName,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
     }
@@ -408,8 +412,8 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
 
     /*** gt **/
     public  default OP whereGt(String field,Object value) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
         subWhereStatement.gt(field,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
@@ -421,9 +425,10 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
         return (OP)this;
     }
     public  default OP whereGt(FieldFunction<T> field, Object value) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
-        subWhereStatement.gt(field,value,null);
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
+        String filedName = iBagWhere.getDbFiled(field);
+        subWhereStatement.gt(filedName,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
     }
@@ -488,8 +493,8 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
 
     /*** geq **/
     public  default OP whereGeq(String field,Object value) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
         subWhereStatement.geq(field,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
@@ -501,9 +506,10 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
         return (OP)this;
     }
     public  default OP whereGeq(FieldFunction<T> field, Object value) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
-        subWhereStatement.geq(field,value,null);
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
+        String filedName = iBagWhere.getDbFiled(field);
+        subWhereStatement.geq(filedName,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
     }
@@ -569,8 +575,8 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
 
     /*** allLike **/
     public  default OP whereAllLike(String field,Object value) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
         subWhereStatement.allLike(field,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
@@ -582,9 +588,10 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
         return (OP)this;
     }
     public  default OP whereAllLike(FieldFunction<T> field, Object value) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
-        subWhereStatement.allLike(field,value,null);
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
+        String filedName = iBagWhere.getDbFiled(field);
+        subWhereStatement.allLike(filedName,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
     }
@@ -649,8 +656,8 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
 
     /*** preLike **/
     public  default OP wherePreLike(String field,Object value) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
         subWhereStatement.preLike(field,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
@@ -662,9 +669,10 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
         return (OP)this;
     }
     public  default OP wherePreLike(FieldFunction<T> field, Object value) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
-        subWhereStatement.preLike(field,value,null);
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
+        String filedName = iBagWhere.getDbFiled(field);
+        subWhereStatement.preLike(filedName,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
     }
@@ -730,8 +738,8 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
 
     /*** endLike **/
     public  default OP whereEndLike(String field,Object value) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
         subWhereStatement.endLike(field,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
@@ -743,9 +751,10 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
         return (OP)this;
     }
     public  default OP whereEndLike(FieldFunction<T> field, Object value) {
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
-        subWhereStatement.endLike(field,value,null);
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
+        String filedName = iBagWhere.getDbFiled(field);
+        subWhereStatement.endLike(filedName,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
     }
@@ -814,8 +823,8 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
         if(value == null || value.size() <1) {
             return  (OP)this;
         }
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
         subWhereStatement.in(field,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
@@ -830,9 +839,10 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
         if(value == null || value.size() <1) {
             return  (OP)this;
         }
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
-        subWhereStatement.in(field,value,null);
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
+        String filedName = iBagWhere.getDbFiled(field);
+        subWhereStatement.in(filedName,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
     }
@@ -850,8 +860,8 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
         if(value == null || value.size() <1) {
             return  (OP)this;
         }
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
         subWhereStatement.notIn(field,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
@@ -866,9 +876,10 @@ public interface IWhereQuery<OP extends BaseQuery,T extends BaseModel>  {
         if(value == null || value.size() <1) {
             return  (OP)this;
         }
-        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getExecuteParBag());
-        SubWhereStatement subWhereStatement = ((OP)this).createSubWhereStatement();
-        subWhereStatement.notIn(field,value,null);
+        IBagWhere iBagWhere = ((IBagWhere)((OP)this).getSingleQuery().getBagOp());
+        SubWhereStatement subWhereStatement = new SubWhereStatement();
+        String filedName = iBagWhere.getDbFiled(field);
+        subWhereStatement.notIn(filedName,value,null);
         iBagWhere.getWhereContainer().getSubWhereStatementCondition().add(subWhereStatement);
         return  (OP)this;
     }

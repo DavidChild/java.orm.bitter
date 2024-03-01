@@ -1,20 +1,19 @@
 package io.github.davidchild.bitter.connection;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface IDbStatement {
 
-    Object Query(String commandTest, LinkedHashMap<String, Object> params,DataResultHandlerBase resultHandler);
+    Object Query(RunnerParam runnerParam,DataResultHandlerBase resultHandler);
 
-    long Insert(String commandTest, LinkedHashMap<String, Object> params, boolean isIdentity);
+    long Insert(RunnerParam runnerParam);
 
-    long update(String commandTest, LinkedHashMap<String, Object> params);
+    long update(RunnerParam runnerParam);
 
-    long execute(String commandTest, LinkedHashMap<String, Object> params);
+    long execute(RunnerParam runnerParam);
 
-    long executeBach(String commandTest, LinkedHashMap<String, Object> params);
+    long executeBach(RunnerParam runnerParam);
 
-    long executeScope(List<String> commandTests, List<LinkedHashMap<String, Object>> params);
+    long executeScope(List<RunnerParam> runnerParamList);
 
 }

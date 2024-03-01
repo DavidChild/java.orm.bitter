@@ -31,6 +31,7 @@ public class StatementWhereHandler {
                 break;
             case lt:
                 lt(SubWhereStatement,statementHandlerResult);
+                break;
             case gt:
                 gt(SubWhereStatement,statementHandlerResult);
                 break;

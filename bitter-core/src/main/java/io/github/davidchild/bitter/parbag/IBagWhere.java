@@ -1,6 +1,6 @@
 package io.github.davidchild.bitter.parbag;
 
-public interface   IBagWhere extends  IBagBase {
+public interface   IBagWhere extends  IBagOp {
     public WhereContainer getWhereContainer();
     public default Boolean CheckedHaveCondition(){
         WhereContainer container = this.getWhereContainer();

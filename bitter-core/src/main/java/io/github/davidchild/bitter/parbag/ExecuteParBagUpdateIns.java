@@ -6,10 +6,9 @@ import io.github.davidchild.bitter.basequery.SubUpdateColumnStatement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExecuteParBagUpdateIns<T extends BaseModel> extends ExecuteParBag implements IBagUpdateColumn,IBagWhere,IBagUpdateInsColumn<T> {
+public class ExecuteParBagUpdateIns<T extends BaseModel> extends ExecuteParBag implements IBagWhere,IBagUpdateInsColumn<T> {
 
     private WhereContainer whereContainer = new WhereContainer();
-    private boolean isReSetValueInUpdatePair = false;
     private List<SubUpdateColumnStatement> updateColumnStatements = new ArrayList<>();
     @Override
     public List<SubUpdateColumnStatement> getUpdateColumnContain() {

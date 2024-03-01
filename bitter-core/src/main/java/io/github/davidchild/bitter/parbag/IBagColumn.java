@@ -4,7 +4,7 @@ import io.github.davidchild.bitter.basequery.SubColumnStatement;
 
 import java.util.List;
 
-public interface IBagColumn {
+public interface IBagColumn extends IBagOp {
     public List<SubColumnStatement> getColumnContain();
     public default Boolean CheckedHaveColumn(){
         List<SubColumnStatement> container = this.getColumnContain();

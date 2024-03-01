@@ -1,9 +1,11 @@
 package io.github.davidchild.bitter.test.parese;
 
 
+import io.github.davidchild.bitter.connection.RunnerParam;
 import io.github.davidchild.bitter.db.db;
 import io.github.davidchild.bitter.excutequery.OrderHandler;
 import io.github.davidchild.bitter.op.page.PageQuery;
+import io.github.davidchild.bitter.parbag.IBagOrder;
 import io.github.davidchild.bitter.test.business.entity.TUser;
 import lombok.var;
 import org.junit.Test;
@@ -21,8 +23,8 @@ public class IOderQueryTest {
     public  void testIOderQuery() {
         PageQuery queryTest = new PageQuery("");
         queryTest.orderBy("username desc");
-        String  order = OrderHandler.getOrder(queryTest);
-        assertEquals(" ORDER BY username desc", order);
+        RunnerParam order = OrderHandler.getOrder( (IBagOrder) queryTest.getSingleQuery().getBagOp());
+        assertEquals(" ORDER BY username desc", order.getCommand());
 
     }
 
@@ -31,8 +33,9 @@ public class IOderQueryTest {
         PageQuery queryTest = new PageQuery("");
         queryTest.orderBy("username desc");
         queryTest.orderBy("age asc");
-        String  order = OrderHandler.getOrder(queryTest);
-        assertEquals(" ORDER BY username desc, age asc", order);
+
+         RunnerParam order = OrderHandler.getOrder( (IBagOrder) queryTest.getSingleQuery().getBagOp());
+        assertEquals(" ORDER BY username desc, age asc", order.getCommand());
     }
 
     @Test
@@ -40,8 +43,8 @@ public class IOderQueryTest {
         PageQuery queryTest = new PageQuery("");
         queryTest.thenDesc("username");
         queryTest.thenAsc("age");
-        String  order = OrderHandler.getOrder(queryTest);
-        assertEquals(" ORDER BY username desc, age asc", order);
+        RunnerParam order = OrderHandler.getOrder( (IBagOrder) queryTest.getSingleQuery().getBagOp());
+        assertEquals(" ORDER BY username desc, age asc", order.getCommand());
     }
 
 
@@ -51,29 +54,29 @@ public class IOderQueryTest {
         queryTest.orderBy("username desc");
         queryTest.thenDesc("username");
         queryTest.thenAsc("age");
-        String  order = OrderHandler.getOrder(queryTest);
-        assertEquals(" ORDER BY username desc, username desc, age asc", order);
+        RunnerParam order = OrderHandler.getOrder( (IBagOrder) queryTest.getSingleQuery().getBagOp());
+        assertEquals(" ORDER BY username desc, username desc, age asc", order.getCommand());
     }
 
     @Test
     public  void testIOderQueryGen() {
         var query = db.findQuery(TUser.class).orderBy("username desc").thenAsc(TUser::getNickname);
-        String  order = OrderHandler.getOrder(query);
-        assertEquals(" ORDER BY username desc, nickname asc", order);
+        RunnerParam order = OrderHandler.getOrder( (IBagOrder) query.getSingleQuery().getBagOp());
+        assertEquals(" ORDER BY username desc, nickname asc", order.getCommand());
     }
 
     @Test
     public  void testIOderQueryGen2() {
         var query = db.findQuery(TUser.class).orderBy("username desc").thenAsc(TUser::getNickname).thenDesc(TUser::getPhone);
-        String  order = OrderHandler.getOrder(query);
-        assertEquals(" ORDER BY username desc, nickname asc, phone desc", order);
+        RunnerParam order = OrderHandler.getOrder( (IBagOrder) query.getSingleQuery().getBagOp());
+        assertEquals(" ORDER BY username desc, nickname asc, phone desc", order.getCommand());
     }
 
     @Test
     public  void testIOderQueryNone() {
         PageQuery queryTest = new PageQuery("");
-        String  order = OrderHandler.getOrder(queryTest);
-        assertEquals("", order);
+        RunnerParam order = OrderHandler.getOrder( (IBagOrder) queryTest.getSingleQuery().getBagOp());
+        assertEquals("", order.getCommand());
     }
 
 

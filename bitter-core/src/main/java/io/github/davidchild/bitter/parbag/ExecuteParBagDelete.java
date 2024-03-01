@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class ExecuteParBagDelete<T> extends ExecuteParBag implements IBagWhere {
+
     private WhereContainer whereCondition = new WhereContainer();
     @Override
     public WhereContainer getWhereContainer() {

@@ -1,24 +1,20 @@
 package io.github.davidchild.bitter.parbag;
 
-import java.util.List;
-
 import io.github.davidchild.bitter.basequery.BaseQuery;
 
-public class ExecuteParScope extends ExecuteParBag {
+import java.util.List;
+
+public class ExecuteParScope extends ExecuteParBag implements  IScopeBag {
 
     List<BaseQuery> list;
-    private boolean success;
+    private Boolean success;
     private Exception ex;
 
     public ExecuteParScope() {
         this.success = true;
     }
 
-    public List<BaseQuery> getList() {
-        return list;
-    }
-
-    public void setList(List<BaseQuery> list) {
+    public void setScopeList(List<BaseQuery> list) {
         this.list = list;
     }
 
@@ -30,11 +26,21 @@ public class ExecuteParScope extends ExecuteParBag {
         this.ex = ex;
     }
 
-    public void setScopeResut(boolean rs) {
+    public void setScopeResult(boolean rs) {
         this.success = rs;
     }
 
-    public boolean getScopeResult() {
+    @Override
+    public List<BaseQuery> getScopeList() {
+        return  list;
+    }
+
+    public Boolean getScopeResult() {
         return this.success;
+    }
+
+    @Override
+    public ExecuteParBag getParBag() {
+        return  this;
     }
 }

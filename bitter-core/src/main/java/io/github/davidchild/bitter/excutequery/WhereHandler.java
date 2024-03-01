@@ -1,10 +1,11 @@
 package io.github.davidchild.bitter.excutequery;
 
 import io.github.davidchild.bitter.BaseModel;
-import io.github.davidchild.bitter.basequery.BaseQuery;
 import io.github.davidchild.bitter.basequery.StatementHandeUtil;
 import io.github.davidchild.bitter.basequery.StatementHandlerResult;
 import io.github.davidchild.bitter.basequery.SubWhereStatement;
+import io.github.davidchild.bitter.connection.RunnerParam;
+import io.github.davidchild.bitter.dbtype.DataValue;
 import io.github.davidchild.bitter.exception.VisitorException;
 import io.github.davidchild.bitter.parbag.IBagWhere;
 import io.github.davidchild.bitter.parse.BitterPredicate;
@@ -15,21 +16,24 @@ import io.github.davidchild.bitter.tools.CoreStringUtils;
 import java.util.List;
 
 public class WhereHandler {
-    public static  <T extends BaseModel> String getWhere(BaseQuery  query) {
-        if(query.getExecuteParBag().getInsData() != null) return  WhereHandler.DataWhereCondition(query);
+    public static  <T extends BaseModel> RunnerParam getWhere(T data, IBagWhere  iBagWhere, List<DataValue> fieldProperties, DataValue keyInfo) {
+        if(data != null) return  WhereHandler.DataWhereCondition(keyInfo);
+        RunnerParam runnerParam = new RunnerParam();
 
-        if(!((IBagWhere)query.getExecuteParBag()).CheckedHaveCondition()) return  "";
-        StringBuilder conditionWhere = new StringBuilder(" Where 1=1 ");
-        if(!((IBagWhere)query.getExecuteParBag()).CheckedHaveCondition()) return conditionWhere.toString() ;
-        List<BitterPredicate<T>> lambdas = ((IBagWhere)query.getExecuteParBag()).getWhereContainer().getPredicateCondition();
-        List<SubWhereStatement> subWhereStatements = ((IBagWhere)query.getExecuteParBag()).getWhereContainer().getSubWhereStatementCondition();
+        if(!iBagWhere.CheckedHaveCondition()) {
+            runnerParam.setCommand("");
+            return  runnerParam;
+        }
 
+        StringBuilder conditionWhere = new StringBuilder(" Where 1=1");
+        List<BitterPredicate<T>> lambdas = iBagWhere.getWhereContainer().getPredicateCondition();
+        List<SubWhereStatement> subWhereStatements =iBagWhere.getWhereContainer().getSubWhereStatementCondition();
         if (lambdas != null && lambdas.size() > 0) {
             lambdas.forEach(lambda -> {
                 BitterVisitor visitor = null;
                 try {
-                    visitor = new BitterVisitor(query.getExecuteParBag().getProperties(),
-                            query.getExecuteParBag().getKeyInfo(), "`", "`");
+                    visitor = new BitterVisitor(fieldProperties,
+                             keyInfo, "`", "`");
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -41,7 +45,7 @@ public class WhereHandler {
                         conditionWhere.append(String.format(" and ( %s )", wp));
                     }
                     if (wrapper.getValue() != null && wrapper.getValue().size() > 0) {
-                        wrapper.getValue().forEach(v ->  StatementHandeUtil.setParamInBagContainer(query, v));
+                        wrapper.getValue().forEach(v ->  StatementHandeUtil.setRunnerParamContainer(runnerParam, v));
                     }
                 } catch (Exception e) {
                     throw new VisitorException("can't support this where expression, please use the expression syntax already supported in bitter,exception is:" + e.getMessage());//todo that can  Navigate to Instance Reference
@@ -59,20 +63,23 @@ public class WhereHandler {
                     conditionWhere.append(String.format(" and (%s)", statementHandlerResult.getStatement()));
                     if(statementHandlerResult.getDynamics() != null && statementHandlerResult.getDynamics().size() > 0){
                         statementHandlerResult.getDynamics().forEach((key,param)->{
-                            StatementHandeUtil.setParamInBagContainer(query, param);
+                            StatementHandeUtil.setRunnerParamContainer(runnerParam, param);
                         });
                     }
                 }
             }
         }
-        return conditionWhere.toString();
+        runnerParam.setCommand(conditionWhere.toString());
+        return runnerParam;
     }
 
-    private static   String DataWhereCondition(BaseQuery query){
-        Object keyValue = query.getExecuteParBag().getKeyInfo().getValue();
-        String keyName = query.getExecuteParBag().getKeyInfo().getDbName();
-        StatementHandeUtil.setParamInBagContainer(query, keyValue);
-        return   String.format(" Where %s=?", keyName);
+    private static   RunnerParam DataWhereCondition(DataValue keyInfo){
+        RunnerParam runnerParam = new RunnerParam();
+        Object keyValue = keyInfo.getValue();
+        String keyName = keyInfo.getDbName();
+        StatementHandeUtil.setRunnerParamContainer(runnerParam, keyValue);
+        runnerParam.setCommand(String.format(" Where %s=?", keyName));
+        return  runnerParam;
 
     }
 

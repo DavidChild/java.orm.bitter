@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -76,6 +77,8 @@ public class DqlTest extends CreateBaseMockSchema {
         assertEquals(true, lt.size()>0);
     }
 
+
+
     @Test
     public void testExecuteQuery2()  {
         this.beforeInit();
@@ -119,4 +122,154 @@ public class DqlTest extends CreateBaseMockSchema {
         }
 
     }
+    @Test
+    public void testExecuteQuery10()  {
+        this.beforeInit();
+        List<TUser> lt = db.findQuery("select * from t_user")
+                .setSize(10)
+                .find().toModelList(TUser.class);   // test executeQuery
+        assertEquals(true, lt.size()>0);
+    }
+
+    @Test
+    public void testExecuteQuery11()  {
+        this.beforeInit();
+        List<TUser> lt = db.findQuery("select * from t_user")
+                .orderBy("username desc")
+                .setSize(10)
+                .find().toModelList(TUser.class);   // test executeQuery
+        assertEquals(true, lt.size()>0);
+    }
+
+    @Test
+    public void testExecuteQuery12()  {
+        this.beforeInit();
+        List<TUser> lt = db.findQuery("select * from t_user")
+                .where("id = ? and username = ?","1552178014981849090","hjb")
+                .orderBy("username desc")
+                .setSize(10).find().toModelList(TUser.class);   // test executeQuery
+        assertEquals(true, lt.size()>0);
+    }
+    @Test
+    public void testExecuteQuery13()  {
+        this.beforeInit();
+        List<TUser> lt = db.findQuery("select * from t_user")
+                .where("id = ? and username = ?","1552178014981849090","hjb")
+                .where("id = ?","1552178014981849090")
+                .orderBy("username desc")
+                .setSize(10).find().toModelList(TUser.class);   // test executeQuery
+        assertEquals(true, lt.size()>0);
+    }
+
+    @Test
+    public void testExecuteQuery14()  {
+        this.beforeInit();
+        List<TUser> lt = db.findQuery("select * from t_user")
+                .whereLeq("id","1552178014981849090")
+                .orderBy("username desc").
+                setSize(10).find().toModelList(TUser.class);   // test executeQuery
+        assertEquals(true, lt.size()>0);
+    }
+
+    @Test
+    public void testExecuteQuery15()  {
+        this.beforeInit();
+        List<TUser> lt = db.findQuery("select * from t_user")
+                .whereEq("id","1552178014981849090")
+                .whereLt("id","1552178014981849089")
+                .orderBy("username desc")
+                .setSize(10).find().toModelList(TUser.class);   // test executeQuery
+        assertEquals(true, lt.size()==0);
+    }
+
+    @Test
+    public void testExecuteQuery16()  {
+        this.beforeInit();
+        List<TUser> lt = db.findQuery("select * from t_user")
+                .whereEq("id","1552178014981849090")
+                .whereGeq("id","1552178014981849089")
+                .orderBy("username desc")
+                .setSize(10).find().toModelList(TUser.class);   // test executeQuery
+        assertEquals(true, lt.size()==1);
+    }
+
+    @Test
+    public void testExecuteQuery17()  {
+        this.beforeInit();
+        List<TUser> lt = db.findQuery("select * from t_user")
+                .whereEq("id","1552178014981849090")
+                .whereGt("id","1552178014981849089")
+                .orderBy("username desc")
+                .setSize(10).find().toModelList(TUser.class);   // test executeQuery
+        assertEquals(true, lt.size()==1);
+    }
+
+
+    @Test
+    public void testExecuteQuery18()  {
+        this.beforeInit();
+        List<String > ids = new ArrayList<>();
+        ids.add("1552178014981849090");
+        ids.add("1552178014981849089");
+        List<TUser> lt = db.findQuery("select * from t_user")
+                .whereEq("id","1552178014981849090")
+                .whereIn("id",ids)
+                .orderBy("username desc")
+                .setSize(10).find().toModelList(TUser.class);   // test executeQuery
+        assertEquals(true, lt.size()==1);
+    }
+
+    @Test
+    public void testExecuteQuery19()  {
+        this.beforeInit();
+        List<String > ids = new ArrayList<>();
+        ids.add("1552178014981849090");
+        ids.add("1552178014981849089");
+        List<TUser> lt = db.findQuery("select * from t_user")
+                .whereEq("id","1552178014981849090")
+                .whereNotIn("id",ids)
+                .orderBy("username desc")
+                .setSize(10).find().toModelList(TUser.class);   // test executeQuery
+        assertEquals(false, lt.size()==1);
+    }
+
+    @Test
+    public void testExecuteQuery20()  {
+        this.beforeInit();
+        List<String > ids = new ArrayList<>();
+        ids.add("1552178014981849090");
+        ids.add("1552178014981849089");
+        List<TUser> lt = db.findQuery("select * from t_user")
+                .whereAllLike("id","98184")
+                .orderBy("username desc")
+                .setSize(10).find().toModelList(TUser.class);   // test executeQuery
+        assertEquals(true, lt.size()==1);
+    }
+
+    @Test
+    public void testExecuteQuery21()  {
+        this.beforeInit();
+        List<String > ids = new ArrayList<>();
+        ids.add("1552178014981849090");
+        ids.add("1552178014981849089");
+        List<TUser> lt = db.findQuery("select * from t_user")
+                .wherePreLike("id","1552178014")
+                .orderBy("username desc")
+                .setSize(10).find().toModelList(TUser.class);   // test executeQuery
+        assertEquals(true, lt.size()==1);
+    }
+
+    @Test
+    public void testExecuteQuery22()  {
+        this.beforeInit();
+        List<String > ids = new ArrayList<>();
+        ids.add("1552178014981849090");
+        ids.add("1552178014981849089");
+        List<TUser> lt = db.findQuery("select * from t_user")
+                .whereEndLike("id","81849090")
+                .orderBy("username desc")
+                .setSize(10).find().toModelList(TUser.class);   // test executeQuery
+        assertEquals(true, lt.size()==1);
+    }
+
 }

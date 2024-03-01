@@ -2,7 +2,7 @@ package io.github.davidchild.bitter.parse;
 
 import co.streamx.fluent.extree.expression.*;
 import io.github.davidchild.bitter.dbtype.DataValue;
-import io.github.davidchild.bitter.parbag.ExecuteParBag;
+import io.github.davidchild.bitter.tools.CoreUtils;
 import io.github.davidchild.bitter.tools.DateTimeUtils;
 import lombok.NonNull;
 
@@ -191,7 +191,7 @@ public class BitterVisitor implements ExpressionVisitor<BitterWrapper> {
             String name = member.getName();
             name = name.replaceAll("^(get)", "");
             name = name.substring(0, 1).toLowerCase() + name.substring(1);
-            name = ExecuteParBag.getDbNameByInnerName(bitterFields, keyInfo, name);
+            name = CoreUtils.getDbNameByInnerName(bitterFields, keyInfo, name);
             SQL.getKey().append(head).append(name).append(tail);
         }
         if (instance instanceof ConstantExpression) {

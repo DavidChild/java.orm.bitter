@@ -170,8 +170,18 @@ public class DmlTest extends CreateBaseMockSchema {
             for (int i = 0; i < 10; i++) {
                 TStudent studentInfo = new TStudent();
                 studentInfo.setName("hjb" + i);
+
                 studentInfo.insert().addInBachInsertPool((List<Insert>) list);
             }
+        }).submit() > 0;
+        assertEquals(true,bl);
+    }
+
+    @Test
+    public void bachInsertTest2() {
+        this.beforeInit();
+        boolean bl = db.bachInsert().doBachInsert((list) -> {
+
         }).submit() > 0;
         assertEquals(true,bl);
     }

@@ -1,104 +1,74 @@
 package io.github.davidchild.bitter.basequery;
 
+import io.github.davidchild.bitter.BaseModel;
+import io.github.davidchild.bitter.connection.RunnerParam;
+import io.github.davidchild.bitter.excutequery.BuildParams;
 import io.github.davidchild.bitter.excutequery.ClickHouseQuery;
 import io.github.davidchild.bitter.excutequery.MySqlQuery;
+import io.github.davidchild.bitter.parbag.IScopeBag;
 import io.github.davidchild.bitter.tools.BitterLogUtil;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
-public class BaseQuery extends BaseExecute implements Type {
+public abstract class BaseQuery extends BaseExecute implements Type {
 
+    protected  RunnerParam  insertCommandText(boolean IsOutIdentity,BuildParams buildParams){ return  null;};
 
+    protected  <T extends BaseModel> RunnerParam deleteCommandText(BuildParams buildParams){ return  null;};
 
+    protected  <T extends BaseModel> RunnerParam updateCommandText(BuildParams buildParams){ return  null;};
 
+    protected  RunnerParam selectCommandText(BuildParams buildParams){ return  null;};
 
-    protected void insertCommandText(boolean IsOutIdentity) {
-        clearParameters();
-    }
+    protected  RunnerParam querySelectCommandText(BuildParams buildParams){ return  null;};
 
-    protected void deleteCommandText() {
-        clearParameters();
-    }
+    protected  RunnerParam countCommandText(BuildParams buildParams){ return  null;};
 
-    protected void updateCommandText() {
-        clearParameters();
-    }
+    protected  RunnerParam executeCommandText(BuildParams buildParams){ return  null;};
 
-    protected void selectCommandText()  {
-        clearParameters();
-    }
+    protected  RunnerParam pageCommandText(BuildParams buildParams){ return  null;};
 
+    protected   RunnerParam pageCountText(BuildParams buildParams){ return  null;};
 
-    protected void querySelectCommandText()  {
-        clearParameters();
-    }
+    protected  RunnerParam bachInsert(BuildParams buildParams){ return  null;};
 
-    protected void countCommandText() {
-        clearParameters();
-    }
-
-    protected void executeCommandText() {
-        clearParameters();
-    }
-
-    protected void pageCommandText() {
-        clearParameters();
-    }
-
-    protected void pageCountText() {
-        clearParameters();
-    }
-
-    protected void bachInsert() {
-        clearParameters();
-    }
-
-    protected void createScope() {
-        clearParameters();
+    protected  List<RunnerParam> createScope(){
+        List<RunnerParam> runnerParamList = new ArrayList<>();
+        List<BaseQuery> list = ((IScopeBag)this.getSingleQuery().getBagOp()).getScopeList();
+        if (list == null && list.size() <1) {
+            return null;
+        }
+        for (BaseQuery q : list) {
+            q.convert();
+            RunnerParam runnerParam = q.setCommandText();
+            runnerParamList.add(runnerParam);
+        }
+        return  runnerParamList;
     }
 
 
     // create sub statement for in or other sql
-    protected SubWhereStatement createSubWhereStatement() {
-        return new SubWhereStatement(this);
-    }
-
-    protected SubColumnStatement createSubColumnStatement() {
-        return new SubColumnStatement(this);
-    }
-
-    protected SubOrderStatement createOrderStatement() {
-        return new SubOrderStatement(this);
-    }
-    protected SubUpdateColumnStatement createUpdateColumnStatement() {
-        return new SubUpdateColumnStatement(this);
-    }
-
-    public MonitorInfo toMonitorInfo() {
-        convert();
+    public MonitorInfo getMonitor() {
         MonitorInfo info = new MonitorInfo();
-        info.setCommandSqlText(this.getCommandText());
-        info.setParameters(this.getExecuteParBag().getDynamics());
         return info;
     }
 
-     public void convert() {
+    protected RunnerParam convert() {
         try {
             BaseQuery qQuery = this.mapToExecuteQuery();
-            qQuery.setCommandText();
-            this.setParameters(qQuery.getParameters());
-            this.setCommandText(qQuery.getCommandText());
-            this.setScopeSuccess(qQuery.isScopeSuccess());
-            this.setScopeCommands(qQuery.getScopeCommands());
-            this.setScopeParams(qQuery.getScopeParams());
-        } catch (Exception ex) {
+            RunnerParam  runnerParam = qQuery.setCommandText();
+            return  runnerParam;
+        } catch(Exception ex) {
             BitterLogUtil.getInstance().error("baseQuery.convert error:" + ex.getMessage());
             throw ex;
         }
     }
+
     private BaseQuery mapToExecuteQuery() {
         BaseQuery vdb;
-        switch (this.getDbType()) {
+        switch (this.getSingleQuery().getBagOp().getDbType()) {
             case ClickHouse:
                 vdb = new ClickHouseQuery();
                 break;
@@ -106,51 +76,48 @@ public class BaseQuery extends BaseExecute implements Type {
                 vdb = new MySqlQuery();
                 break;
         }
-        vdb.setExecuteParBag(this.getExecuteParBag());
-        vdb.setDbType(this.getDbType());
-        vdb.setCommandText(this.getCommandText());
-        vdb.getExecuteParBag().setDynamics(this.getExecuteParBag().getDynamics());
+        vdb.setQuery(this.getSingleQuery());
         return vdb;
     }
 
-    private void setCommandText() {
-        switch (this.getExecuteParBag().getExecuteEnum()) {
+    protected   RunnerParam setCommandText() {
+        RunnerParam runnerParam = null;
+        BuildParams buildParams  = new BuildParams(this.getSingleQuery());
+        switch (this.getSingleQuery().getBagOp().getBehaviorEnum()) {
             case PageQuery:
-                pageCommandText();
+                runnerParam = pageCommandText(buildParams);
                 break;
             case ExecuteQuery:
-                executeCommandText();
+                runnerParam = executeCommandText(buildParams);
                 break;
             case ExecuteQuerySelect:
-                querySelectCommandText();
+                runnerParam = querySelectCommandText(buildParams);
                 break;
             case Delete:
-                deleteCommandText();
+                runnerParam = deleteCommandText(buildParams);
                 break;
             case Select:
-                selectCommandText();
+                runnerParam = selectCommandText(buildParams);
                 break;
             case Update:
-                updateCommandText();
+                runnerParam = updateCommandText(buildParams);
                 break;
             case Insert:
-                insertCommandText(false);
+                runnerParam = insertCommandText(false,buildParams);
                 break;
             case Count:
-                countCommandText();
+                runnerParam = countCommandText(buildParams);
                 break;
             case PageCount:
-                pageCountText();
+                runnerParam = pageCountText(buildParams);
                 break;
             case BachInsert:
-                bachInsert();
-                break;
-            case Scope:
-                createScope();
+                runnerParam = bachInsert(buildParams);
                 break;
             default:
                 break;
         }
+        return runnerParam;
 
     }
 }

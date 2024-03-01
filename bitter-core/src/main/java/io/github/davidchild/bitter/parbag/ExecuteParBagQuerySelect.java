@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class ExecuteParBagQuerySelect extends ExecuteParBag implements  IBagWhere,IBagOrder {
+public class ExecuteParBagQuerySelect extends ExecuteParBag implements  IBagWhere,IBagOrder,ITopSizeBag,ICommandBag {
+
     private String commandText;
+    private Integer topSize;
     private WhereContainer whereCondition = new WhereContainer();
     private List<SubOrderStatement> orders = new ArrayList<>();
     @Override
@@ -25,4 +27,5 @@ public class ExecuteParBagQuerySelect extends ExecuteParBag implements  IBagWher
     public List<SubOrderStatement> getOrderContain() {
         return  getOrders();
     }
+
 }

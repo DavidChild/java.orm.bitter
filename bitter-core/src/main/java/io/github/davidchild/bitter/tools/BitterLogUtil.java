@@ -44,10 +44,9 @@ public class BitterLogUtil {
         }
     }
 
-    public static void logWriteSql(String commandTest, String params) {
+    public static void logWriteSql(String params) {
         if (BitterConfig.getInstance().isSqlLog()) {
-            BitterLogUtil.getInstance().info("bitter will  execute sql:" + "\r\n" + commandTest + "\r\n"
-                    + "------------params------------" + params);
+            BitterLogUtil.getInstance().info("bitter will  execute sql and params:" + "\r\n" + params + "\r\n");
         }
     }
 }
