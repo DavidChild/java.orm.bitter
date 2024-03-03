@@ -51,7 +51,7 @@ public class PageQuery extends DqlQuery implements IWhereQuery<PageQuery,BaseMod
     /// <summary>
     /// Get the number of pages
     /// </summary>
-    private Integer Count() {
+    private Integer count() {
         if (totalCount == -1) {
             return totalCount = getCount();
         } else {
