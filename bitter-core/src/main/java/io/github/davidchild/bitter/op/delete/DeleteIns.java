@@ -1,21 +1,30 @@
 package io.github.davidchild.bitter.op.delete;
 
 import io.github.davidchild.bitter.BaseModel;
+import io.github.davidchild.bitter.basequery.DmlQuery;
 import io.github.davidchild.bitter.basequery.ExecuteEnum;
-import io.github.davidchild.bitter.basequery.WhereQuery;
+import io.github.davidchild.bitter.basequery.SingleRunner;
 import io.github.davidchild.bitter.parbag.ExecuteParBagDelete;
 
-public class DeleteIns<T extends BaseModel> extends WhereQuery<T> {
+public class DeleteIns<T extends BaseModel> extends DmlQuery {
+
 
     public DeleteIns(T data) {
-        executeParBag = new ExecuteParBagDelete();
-        executeParBag.setExecuteEnum(ExecuteEnum.Delete);
-        this.executeParBag.setData(data);
+        ExecuteParBagDelete deleteBag = new ExecuteParBagDelete();
+        SingleRunner singleRunner = new SingleRunner();
+        singleRunner.setBagOp(deleteBag);
+        singleRunner.getBagOp().setExecuteEnum(ExecuteEnum.Delete);
+        singleRunner.getBagOp().setData(data);
+        this.setQuery(singleRunner);
     }
 
     public DeleteIns() {
-        executeParBag = new ExecuteParBagDelete();
-        executeParBag.setExecuteEnum(ExecuteEnum.Delete);
+        ExecuteParBagDelete deleteBag = new ExecuteParBagDelete();
+        SingleRunner singleRunner = new SingleRunner();
+        singleRunner.setBagOp(deleteBag);
+        singleRunner.getBagOp().setExecuteEnum(ExecuteEnum.Delete);
+        this.setQuery(singleRunner);
+
     }
 
 }

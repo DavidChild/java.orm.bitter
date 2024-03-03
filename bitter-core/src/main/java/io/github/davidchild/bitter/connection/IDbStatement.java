@@ -4,16 +4,16 @@ import java.util.List;
 
 public interface IDbStatement {
 
-    Object Query(String commandTest, List<Object> params,DataResultHandlerBase resultHandler);
+    Object Query(RunnerParam runnerParam,DataResultHandlerBase resultHandler);
 
-    long Insert(String commandTest, List<Object> params, boolean isIdentity);
+    long Insert(RunnerParam runnerParam);
 
-    long update(String commandTest, List<Object> params);
+    long update(RunnerParam runnerParam);
 
-    long execute(String commandTest, List<Object> params);
+    long execute(RunnerParam runnerParam);
 
-    long executeBach(String commandTest, List<Object> params);
+    long executeBach(RunnerParam runnerParam);
 
-    long executeScope(List<String> commandTests, List<List<Object>> params);
+    long executeScope(List<RunnerParam> runnerParamList);
 
 }

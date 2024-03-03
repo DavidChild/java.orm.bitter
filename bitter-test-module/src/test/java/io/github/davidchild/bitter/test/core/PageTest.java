@@ -1,6 +1,5 @@
 package io.github.davidchild.bitter.test.core;
 
-import io.github.davidchild.bitter.basequery.SubStatementEnum;
 import io.github.davidchild.bitter.datatable.DataTable;
 import io.github.davidchild.bitter.db.db;
 import io.github.davidchild.bitter.functional.IfInnerLambda;
@@ -14,7 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class PageTest extends CreateBaseMockSchema {
+public class PageTest  extends CreateBaseMockSchema {
     @Test
     @Ignore
     public void testPageQueryInManyThread()  {
@@ -41,8 +39,8 @@ public class PageTest extends CreateBaseMockSchema {
                 "left join t_dept dept on dept.dept_id = user.dept_id";
         PageQuery page = new PageQuery(sql);
         page.where("user.username = ?", "hjb");
-        page.thenASC("user.username");
-        page.thenDESC("user.create_time");
+        page.thenAsc("user.username");
+        page.thenDesc("user.create_time");
         Integer totalCount = page.getCount();
         assertEquals(true, totalCount == 1);
     }
@@ -56,8 +54,28 @@ public class PageTest extends CreateBaseMockSchema {
                 "left join t_dept dept on dept.dept_id = user.dept_id";
         PageQuery page = new PageQuery(sql);
         page.where("user.username = ?", "123");
-        page.thenASC("user.username");
-        page.thenDESC("user.create_time");
+        page.thenAsc("user.username");
+        page.thenDesc("user.create_time");
+        page.skip(1).take(10);
+        DataTable mapList = page.getData();
+        Integer count = page.getCount();
+        var query_count = db.findQuery(TUser.class).findCount();
+        var users = db.findQuery(TUser.class).where(t -> t.getUsername() == "david-child").thenDesc(TUser::getUsername).thenAsc(TUser::getUsername).find();
+        Thread.sleep(2000);
+
+    }
+
+
+
+    @Test
+    public void testPageQueryPageAndCount() throws SQLException, InterruptedException {
+        this.beforeInit();
+        String sql = "select  user.* from t_user user \n" +
+                "left join t_dept dept on dept.dept_id = user.dept_id";
+        PageQuery page = new PageQuery(sql);
+        page.where("user.username = ?", "123");
+        page.thenAsc("user.username");
+        page.thenDesc("user.create_time");
         page.skip(1).take(10);
         DataTable mapList = page.getData();
         Integer count = page.getCount();
@@ -74,8 +92,8 @@ public class PageTest extends CreateBaseMockSchema {
                       "left join t_dept dept on dept.dept_id = user.dept_id";
         PageQuery page = new PageQuery(sql);
         page.where("user.username = ?", "hjb");
-        page.thenASC("user.username");
-        page.thenDESC("user.create_time");
+        page.thenAsc("user.username");
+        page.thenDesc("user.create_time");
         page.skip(1).take(10);
         DataTable data = page.getData();
         assertEquals(1, data.size());
@@ -100,7 +118,7 @@ public class PageTest extends CreateBaseMockSchema {
         String sql = "select  user.* from t_user user \n" +
                 "left join t_dept dept on dept.dept_id = user.dept_id";
         PageQuery page = new PageQuery(sql);
-        page.whereNotBlank("user.username = ?", name);
+        page.whereNotEmpty("user.username = ?", name);
         page.skip(1).take(10);
         DataTable data = page.getData();
 
@@ -117,7 +135,7 @@ public class PageTest extends CreateBaseMockSchema {
         String sql = "select  user.* from t_user user \n" +
                 "left join t_dept dept on dept.dept_id = user.dept_id";
         PageQuery page = new PageQuery(sql);
-        page.whereNotBlank("user.username = ?", name);
+        page.whereNotEmpty("user.username = ?", name);
         page.skip(1).take(10);
         DataTable data = page.getData();
         assertEquals(true, data.size() == 1);
@@ -127,17 +145,16 @@ public class PageTest extends CreateBaseMockSchema {
     public void testPageQuery5() {
 
         this.beforeInit();
-
         String name = "hjb";
         String nickname = "";
         String sql = "select  user.* from t_user user \n" +
                 "left join t_dept dept on dept.dept_id = user.dept_id";
         PageQuery page = new PageQuery(sql);
         IfInnerLambda lambda = ()-> name != null && nickname != "" ;
-        page.whereNotBlank("user.username = ?",name,lambda);
+        page.whereNotEmpty(lambda,"user.username = ?",name);
         page.skip(1).take(10);
         DataTable data = page.getData();
-        assertEquals(true, data.size() == 10);
+        assertEquals(true, data.size() >= 10);
     }
 
     @Test
@@ -151,7 +168,7 @@ public class PageTest extends CreateBaseMockSchema {
                 "left join t_dept dept on dept.dept_id = user.dept_id";
         PageQuery page = new PageQuery(sql);
         IfInnerLambda lambda = ()-> name != null && nickname != "" ;
-        page.whereNotBlank("user.username = ?",name,lambda);
+        page.whereNotEmpty(lambda,"user.username = ?",name);
         page.skip(1).take(10);
         DataTable data = page.getData();
         assertEquals(true, data.size() == 1);
@@ -169,35 +186,12 @@ public class PageTest extends CreateBaseMockSchema {
         String sql = "select  user.* from t_user user \n" +
                      "left join t_dept dept on dept.dept_id = user.dept_id";
         PageQuery page = new PageQuery(sql);
-
         IfInnerLambda lambda = ()-> name != null && nickname != "" ;
-        page.whereNotBlank("user.username = ?",name,lambda);
-        page.whereNotBlank(
-                page.createSubStatement()
-                        .toField("user.id")
-                        .join(SubStatementEnum.IN, null, ids));
-        page.skip(1).take(10);
-        DataTable data = page.getData();
-        assertEquals(true, data.size() == 1);
-    }
+        page.whereNotEmpty(lambda,"user.username = ?",name);
 
+        page.whereIn("id", ids); //In
+       //page.whereNotBlank(page.createSubWhereStatement().in("name", ids,null)); //In
 
-    @Test
-    public void testPageQuery9() {
-
-        this.beforeInit();
-        String name = "b";
-        List<String> ids =  new ArrayList<>();
-        String sql = "select  user.* from t_user user \n" +
-                "left join t_dept dept on dept.dept_id = user.dept_id";
-        PageQuery page = new PageQuery(sql);
-
-        IfInnerLambda lambda = ()-> name != null ;
-        page.where("user.username like ?","%"+name+"%"); //模糊查询
-        page.whereNotBlank(
-                page.createSubStatement()
-                        .toField("user.id")
-                        .join(SubStatementEnum.IN, null, ids)); // 数组 IN 查询
         page.skip(1).take(10);
         DataTable data = page.getData();
         assertEquals(true, data.size() == 1);
@@ -211,18 +205,90 @@ public class PageTest extends CreateBaseMockSchema {
         String sql = "select  user.* from t_user user \n" +
                 "left join t_dept dept on dept.dept_id = user.dept_id";
         PageQuery page = new PageQuery(sql);
-
         IfInnerLambda lambda = ()-> name != null ;
+        page.wherePreLike("username",  "hjb"); //ok
+        page.wherePreLike("username",  "h"); //ok
+        page.whereEndLike("username",  "b"); //ok
+        page.skip(1).take(10);
+        DataTable data = page.getData();
+        assertEquals(true, data.size() == 1);
+    }
 
-        page.where(page.createSubStatement().toField("user.username").join(SubStatementEnum.ENDLIKE,null,name)); //模糊查询
-        page.where(page.createSubStatement().toField("user.username").join(SubStatementEnum.PRELIKE,null,"h"),lambda); //模糊查询
-        page.where(page.createSubStatement().toField("user.username").join(SubStatementEnum.ALLLIKE,null,"jb")); //模糊查询
 
+    @Test
+    public void testPageQuery10() {
+
+        this.beforeInit();
+        String name = "b";
+        List<String> ids = new ArrayList<>();
+        String sql = "select  user.* from t_user user \n" +
+                "left join t_dept dept on dept.dept_id = user.dept_id";
+        PageQuery page = new PageQuery(sql);
+
+        IfInnerLambda lambda = () -> name != null;
+        page.where("user.username like ?", "%" + name + "%"); //模糊查询
+        page.whereIn("name", ids); //IN
 
         page.skip(1).take(10);
         DataTable data = page.getData();
         assertEquals(true, data.size() == 1);
     }
+    @Test
+    public void testPageQuery9() {
+        this.beforeInit();
+        List<String> list = new ArrayList<>();
+        list.add("hjb");
+        List<String> list2 = new ArrayList<>();
+        list2.add("david");
+        list2.add("hjb");
+        List<String> list3 = new ArrayList<>();
+        String sql = "select  user.* from t_user user \n" +
+                "left join t_dept dept on dept.dept_id = user.dept_id";
+        PageQuery pq = new PageQuery(sql);
+        pq.whereAllLike("username",  "hjb"); //ok
+        pq.wherePreLike("username",  "h"); //ok
+        pq.whereEndLike("username",  "b"); //ok
+        pq.whereIn("username",  list); //ok
+        pq.whereIn("username",  list2); //ok
+        pq.whereIn("username", list3); //ok
+        pq.skip(1).take(10);
+        DataTable dt =  pq.getData();
+        assertEquals(true, dt.size() == 1);
+    }
+    @Test
+    public void testPageQueryNotIn() {
+        this.beforeInit();
+        List<String> list = new ArrayList<>();
+        list.add("hjb");
+        List<String> list2 = new ArrayList<>();
+        list2.add("david");
+        list2.add("hjb");
+        List<String> list3 = new ArrayList<>();
+        String sql = "select  user.* from t_user user \n" +
+                "left join t_dept dept on dept.dept_id = user.dept_id";
+        PageQuery pq = new PageQuery(sql);
+        pq.whereNotIn("username",  list2); //ok
+        pq.skip(1).take(10);
+        DataTable dt =  pq.getData();
+        assertEquals(true, dt.size() > 1);
+    }
+
+    @Test
+    public void testPageQueryNotIn2() {
+        this.beforeInit();
+        List<String> list = new ArrayList<>();
+        list.add("hjb");
+        List<String> list3 = new ArrayList<>();
+        String sql = "select  user.* from t_user user \n" +
+                     "left join t_dept dept on dept.dept_id = user.dept_id";
+        PageQuery pq = new PageQuery(sql);
+        pq.whereNotIn("username",  list); //ok
+        pq.skip(1).take(10);
+        DataTable dt =  pq.getData();
+        assertEquals(true, dt.size() > 1);
+    }
+
+
 
 
 

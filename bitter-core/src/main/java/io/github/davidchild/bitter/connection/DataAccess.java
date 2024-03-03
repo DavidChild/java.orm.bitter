@@ -1,7 +1,7 @@
 package io.github.davidchild.bitter.connection;
 
 import io.github.davidchild.bitter.BaseModel;
-import io.github.davidchild.bitter.basequery.BaseQuery;
+import io.github.davidchild.bitter.basequery.ExecuteMode;
 import io.github.davidchild.bitter.datatable.DataTable;
 
 import java.util.List;
@@ -9,59 +9,59 @@ import java.util.List;
 public class DataAccess {
 
     DataAccess() {}
-    public static Long executeScalarToWriterOnlyForInsertReturnIdentity(BaseQuery baseQuery) {
+    public static Long executeScalarToWriterOnlyForInsertReturnIdentity(RunnerParam runnerParam) {
         long id;
-        IDbStatement statement = StatementFactory.getStatement(baseQuery.getExecuteParBag().getExecuteMode());
-        id = statement.Insert(baseQuery.getCommandText(), baseQuery.getParameters(),
-            baseQuery.getExecuteParBag().getIsIdentity());
+        IDbStatement statement = StatementFactory.getStatement(runnerParam.getMode());
+        id = statement.Insert(runnerParam);
         return id;
     }
 
-    public static Long executeScalarToUpdateOrDeleteOnlyReturnAff(BaseQuery baseQuery) {
+    public static Long executeScalarToUpdateOrDeleteOnlyReturnAff(RunnerParam runnerParam) {
         long aff;
-        IDbStatement statement = StatementFactory.getStatement(baseQuery.getExecuteParBag().getExecuteMode());
-        aff = statement.update(baseQuery.getCommandText(), baseQuery.getParameters());
+        IDbStatement statement = StatementFactory.getStatement(runnerParam.getMode());
+        aff = statement.update(runnerParam);
         return aff;
     }
 
-    public static Long executeNonQuery(BaseQuery baseQuery) {
+    public static Long executeNonQuery(RunnerParam runnerParam) {
         long isSuccess;
-        IDbStatement statement = StatementFactory.getStatement(baseQuery.getExecuteParBag().getExecuteMode());
-        isSuccess = statement.execute(baseQuery.getCommandText(), baseQuery.getParameters());
+        IDbStatement statement = StatementFactory.getStatement(runnerParam.getMode());
+        isSuccess = statement.execute(runnerParam);
         return isSuccess;
     }
 
-    public static Long executeInsertBach(BaseQuery baseQuery) {
+    public static Long executeInsertBach(RunnerParam runnerParam) {
         long isSuccess;
-        IDbStatement statement = StatementFactory.getStatement(baseQuery.getExecuteParBag().getExecuteMode());
-        isSuccess = statement.execute(baseQuery.getCommandText(), baseQuery.getParameters());
+        IDbStatement statement = StatementFactory.getStatement(runnerParam.getMode());
+        isSuccess = statement.execute(runnerParam);
         return isSuccess;
     }
 
-    public static Long executeScope(BaseQuery baseQuery) {
+    public static Long executeScope(List<RunnerParam> runnerParam,ExecuteMode mode) {
         long isSuccess;
-        IDbStatement statement = StatementFactory.getStatement(baseQuery.getExecuteParBag().getExecuteMode());
-        isSuccess = statement.executeScope(baseQuery.getScopeCommands(), baseQuery.getScopeParams());
+        IDbStatement statement = StatementFactory.getStatement(mode);
+        isSuccess = statement.executeScope(runnerParam);
         return isSuccess;
     }
 
-    public static DataTable executeQuery(BaseQuery baseQuery) {
-        IMetaTypeConvert convert = StatementFactory.getMetaTyeConvert(baseQuery.getDbType());
-        return (DataTable) StatementFactory.getStatement(baseQuery.getExecuteParBag().getExecuteMode())
-                .Query(baseQuery.getCommandText(), baseQuery.getParameters(),new JavaBeanMapResultHandler(convert,null));
+    public static DataTable executeQuery(RunnerParam runnerParam,DatabaseType databaseType) {
+        IMetaTypeConvert convert = StatementFactory.getMetaTyeConvert(databaseType);
+        return (DataTable) StatementFactory.getStatement(runnerParam.getMode())
+                .Query(runnerParam, new JavaBeanMapResultHandler(convert,null));
+
     }
 
-    public static <T extends BaseModel> T executeQueryReturnSingleData(BaseQuery baseQuery) {
-        IMetaTypeConvert convert = StatementFactory.getMetaTyeConvert(baseQuery.getDbType());
-        T t = (T) StatementFactory.getStatement(baseQuery.getExecuteParBag().getExecuteMode())
-                .Query(baseQuery.getCommandText(), baseQuery.getParameters(), new SingleModelResultHandler(convert,baseQuery.getExecuteParBag().getModelType()));
+    public static <T extends BaseModel> T executeQueryReturnSingleData(RunnerParam runnerParam, DatabaseType databaseType, Class<?> modelType ) {
+        IMetaTypeConvert convert = StatementFactory.getMetaTyeConvert(databaseType);
+        T t = (T) StatementFactory.getStatement(runnerParam.getMode())
+                .Query(runnerParam, new SingleModelResultHandler(convert,modelType));
         return t;
 
     }
-    public static <T extends BaseModel> List<T> executeQueryReturnDataList(BaseQuery baseQuery) {
-        IMetaTypeConvert convert = StatementFactory.getMetaTyeConvert(baseQuery.getDbType());
-        List<T> lt = (List<T>) StatementFactory.getStatement(baseQuery.getExecuteParBag().getExecuteMode())
-                .Query(baseQuery.getCommandText(), baseQuery.getParameters(), new ModesResultHandler(convert,baseQuery.getExecuteParBag().getModelType()));
+    public static <T extends BaseModel> List<T> executeQueryReturnDataList(RunnerParam runnerParam,DatabaseType databaseType,Class<?> modelType) {
+        IMetaTypeConvert convert = StatementFactory.getMetaTyeConvert(databaseType);
+        List<T> lt = (List<T>) StatementFactory.getStatement(runnerParam.getMode())
+                .Query(runnerParam, new ModesResultHandler(convert,modelType));
         return lt;
 
     }

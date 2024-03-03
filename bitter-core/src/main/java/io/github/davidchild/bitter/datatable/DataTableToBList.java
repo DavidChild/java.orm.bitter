@@ -7,7 +7,7 @@ import java.util.ArrayList;
 class DataTableToBList {
 
     static  <OT> BList<OT> convetBList(DataTable dt, Class<? extends OT> clazz, boolean mapUnderscoreToCamelCase) {
-        if (dt.size() <= 0) {
+        if (dt == null || dt.size() < 1) {
             return new BList<>(clazz);
         }
         ArrayList<DataRow> finalTempList =  new ArrayList<>();

@@ -1,212 +1,66 @@
 package io.github.davidchild.bitter.basequery;
 
 import io.github.davidchild.bitter.BaseModel;
-import io.github.davidchild.bitter.connection.DataAccess;
-import io.github.davidchild.bitter.datatable.DataTable;
-import io.github.davidchild.bitter.dbtype.DataValue;
-import io.github.davidchild.bitter.exception.ModelException;
-import io.github.davidchild.bitter.exception.VisitorException;
+import io.github.davidchild.bitter.connection.RunnerParam;
+import io.github.davidchild.bitter.excutequery.BuildParams;
 import io.github.davidchild.bitter.excutequery.ClickHouseQuery;
 import io.github.davidchild.bitter.excutequery.MySqlQuery;
-import io.github.davidchild.bitter.parbag.ExecuteParBagInsert;
-import io.github.davidchild.bitter.parse.BitterPredicate;
-import io.github.davidchild.bitter.parse.BitterVisitor;
-import io.github.davidchild.bitter.parse.BitterWrapper;
+import io.github.davidchild.bitter.parbag.IScopeBag;
 import io.github.davidchild.bitter.tools.BitterLogUtil;
-import io.github.davidchild.bitter.tools.CoreStringUtils;
-import io.github.davidchild.bitter.tools.CoreUtils;
 
 import java.lang.reflect.Type;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class BaseQuery extends BaseExecute implements Type {
+public abstract class BaseQuery extends BaseExecute implements Type {
 
-    protected DataTable getData() throws SQLException {
-        this.convert();
-        DataTable mapData = DataAccess.executeQuery(this);
-        if (mapData != null && mapData.size() > 0) {
-            return mapData;
+    protected  RunnerParam  insertCommandText(boolean IsOutIdentity,BuildParams buildParams){ return  null;};
+
+    protected  <T extends BaseModel> RunnerParam deleteCommandText(BuildParams buildParams){ return  null;};
+
+    protected  <T extends BaseModel> RunnerParam updateCommandText(BuildParams buildParams){ return  null;};
+
+    protected  RunnerParam selectCommandText(BuildParams buildParams){ return  null;};
+
+    protected  RunnerParam querySelectCommandText(BuildParams buildParams){ return  null;};
+
+    protected  RunnerParam countCommandText(BuildParams buildParams){ return  null;};
+
+    protected  RunnerParam executeCommandText(BuildParams buildParams){ return  null;};
+
+    protected  RunnerParam pageCommandText(BuildParams buildParams){ return  null;};
+
+    protected   RunnerParam pageCountText(BuildParams buildParams){ return  null;};
+
+    protected  RunnerParam bachInsert(BuildParams buildParams){ return  null;};
+
+    protected  List<RunnerParam> createScope(){
+        List<RunnerParam> runnerParamList = new ArrayList<>();
+        List<BaseQuery> list = ((IScopeBag)this.getSingleQuery().getBagOp()).getScopeList();
+        if (list == null && list.size() <1) {
+            return null;
         }
-        return null;
-    }
-
-
-    protected <T extends BaseModel> List<T> getDataList() {
-        this.convert();
-        return DataAccess.executeQueryReturnDataList(this);
-    }
-
-
-    public void addInScope(List<BaseQuery> list) {
-        list.add(this);
-    }
-
-    protected void insertCommandText(boolean IsOutIdentity) {
-        clearParameters();
-    }
-
-    protected void deleteCommandText() {
-        clearParameters();
-    }
-
-    protected void updateCommandText() {
-        clearParameters();
-    }
-
-    protected void selectCommandText()  {
-        clearParameters();
-    }
-
-    protected void countCommandText() {
-        clearParameters();
-    }
-
-    protected void executeCommandText() {
-        clearParameters();
-    }
-
-    protected void pageCommandText() {
-        clearParameters();
-    }
-
-    protected void pageCountText() {
-        clearParameters();
-    }
-
-    protected void bachInsert() {
-        clearParameters();
-    }
-
-    protected void createScope() {
-        clearParameters();
-    }
-
-    public <T extends BaseModel> String setWhere(List<BitterPredicate<T>> lambdas) {
-        StringBuilder where = new StringBuilder("1=1");
-        if (lambdas != null && lambdas.size() > 0) {
-            lambdas.forEach(lambda -> {
-                BitterVisitor visitor = null;
-                try {
-                    visitor = new BitterVisitor(this.getExecuteParBag().getProperties(),
-                            this.getExecuteParBag().getKeyInfo(), "`", "`");
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-                try {
-
-                    BitterWrapper wrapper = lambda.sql(visitor);
-                    String wp = wrapper.getKey().toString();
-                    if (wp != null && CoreStringUtils.isNotEmpty(wp)) {
-                        where.append(" \n ");
-                        where.append(String.format("and ( %s )", wp));
-                    }
-                    if (wrapper.getValue() != null && wrapper.getValue().size() > 0) {
-                        wrapper.getValue().forEach(it -> this.parameters.add(it));
-                    }
-                } catch (Exception e) {
-                    // BitterLogUtil.getInstance().error("convert where error:" + e.getMessage(), e);
-                    throw new VisitorException("can't support this where expression, please use the expression syntax already supported in bitter,exception is:" + e.getMessage());//todo that can  Navigate to Instance Reference
-
-                } finally {
-                    visitor.clear();
-                }
-            });
+        for (BaseQuery q : list) {
+            q.convert();
+            RunnerParam runnerParam = q.setCommandText();
+            runnerParamList.add(runnerParam);
         }
-        return where.toString();
+        return  runnerParamList;
     }
+
 
     // create sub statement for in or other sql
-    public SubStatement createSubStatement() {
-        return new SubStatement(this);
-    }
-
-    /**
-     * If it is a self growing entity INSERT submission, - 1l returns a failure and a successful self increasing primary
-     * key ID. n If it is a none self increasing entity, a 1l code is returned indicating success, and - 1l indicates
-     * failure. n Batch statements, - 1l represents failure, 1 represents success n Batch adding returns 1 for success,
-     * - 1 for failure n If the value is UPDATE, DELETE statement, the number of affected rows will be returned.
-     * Otherwise, - 1l represents failure, and the number of affected rows will be returned successfully. n Transaction
-     * execution: returns 1 if successful, and - 1 if unsuccessful; The exception record is output in the log
-     */
-    public Long submit() {
-        Exception ex = null;
-        if((this.executeParBag.getExecuteEnum() == ExecuteEnum.Delete || this.executeParBag.getExecuteEnum() == ExecuteEnum.Update) && this.getExecuteParBag().getData() != null){
-            DataValue key = CoreUtils.getTypeKey(this.getExecuteParBag().getModelType(), this.getExecuteParBag().getData());
-            if(key == null)
-                throw  new ModelException("bitter checked the model entity ( "+ this.getExecuteParBag().getModelType().getName() +" ) have not the tableId annotation. ple set  the \" @TableId \"  annotation for the database model class.");
-        }
-        try {
-
-            convert();
-        } catch (Exception exx) {
-            BitterLogUtil.getInstance().error("bitter-executor-convert-error:" + exx.getMessage());
-            return -1L;
-        }
-        long affectedCount = -1L;
-        try {
-            if (this.executeParBag.getExecuteEnum() == ExecuteEnum.Insert) {
-                long aff = DataAccess.executeScalarToWriterOnlyForInsertReturnIdentity(this);
-                if (aff == -1L)
-                    return aff;
-                if (!((ExecuteParBagInsert) this.executeParBag).isOutIdentity()) {
-                    return 1L;
-                }
-                affectedCount = aff;
-            } else if (this.executeParBag.getExecuteEnum() == ExecuteEnum.BachInsert) {
-                affectedCount = DataAccess.executeInsertBach(this);
-            } else if (this.executeParBag.getExecuteEnum() == ExecuteEnum.Scope) {
-                if (!this.scopeSuccess)
-                    return -1L;
-                affectedCount = DataAccess.executeScope(this);
-            } else if (this.executeParBag.getExecuteEnum() == ExecuteEnum.Delete
-                    || this.executeParBag.getExecuteEnum() == ExecuteEnum.Update) {
-                affectedCount = DataAccess.executeScalarToUpdateOrDeleteOnlyReturnAff(this);
-            } else {
-                affectedCount = DataAccess.executeNonQuery(this);
-            }
-            if (affectedCount == -1L) {
-                if (ex != null) {
-                    ex.printStackTrace();
-                    BitterLogUtil.getInstance().error(ex.getMessage());
-                }
-            }
-        } catch (Exception exx) {
-            BitterLogUtil.getInstance().error(exx.getMessage());
-        }
-        return affectedCount;
-    }
-
-    public void resetParameters(List<Object> dynamicParameters) {
-        this.parameters.clear();
-        this.parameters = dynamicParameters;
-    }
-
-    public void setDynamicParameters(Map<String, Object> dynamicParameters) {
-        if (dynamicParameters != null && dynamicParameters.size() > 0) {
-            dynamicParameters.forEach((k, v) -> this.parameters.add(v));
-        }
-    }
-
-    public MonitorInfo toMonitorInfo() {
-        convert();
+    public MonitorInfo getMonitor() {
         MonitorInfo info = new MonitorInfo();
-        info.setCommandSqlText(this.commandText);
-        info.setParameters(this.parameters);
         return info;
     }
 
-    public void convert() {
+    protected RunnerParam convert() {
         try {
             BaseQuery qQuery = this.mapToExecuteQuery();
-            qQuery.setCommandText(); // 构建对应的SQL语句
-            this.parameters = qQuery.parameters;
-            this.commandText = qQuery.commandText;
-            this.scopeSuccess = qQuery.scopeSuccess;
-            this.setScopeCommands(qQuery.getScopeCommands());
-            this.setScopeParams(qQuery.getScopeParams());
-        } catch (Exception ex) {
+            RunnerParam  runnerParam = qQuery.setCommandText();
+            return  runnerParam;
+        } catch(Exception ex) {
             BitterLogUtil.getInstance().error("baseQuery.convert error:" + ex.getMessage());
             throw ex;
         }
@@ -214,7 +68,7 @@ public class BaseQuery extends BaseExecute implements Type {
 
     private BaseQuery mapToExecuteQuery() {
         BaseQuery vdb;
-        switch (this.getDbType()) {
+        switch (this.getSingleQuery().getBagOp().getDbType()) {
             case ClickHouse:
                 vdb = new ClickHouseQuery();
                 break;
@@ -222,47 +76,48 @@ public class BaseQuery extends BaseExecute implements Type {
                 vdb = new MySqlQuery();
                 break;
         }
-        vdb.executeParBag = this.executeParBag;
-        vdb.setDbType(this.getDbType());
-        vdb.commandText = this.getCommandText();
-        vdb.parameters = this.parameters;
+        vdb.setQuery(this.getSingleQuery());
         return vdb;
     }
 
-    private void setCommandText() {
-        switch (this.getExecuteParBag().getExecuteEnum()) {
+    protected   RunnerParam setCommandText() {
+        RunnerParam runnerParam = null;
+        BuildParams buildParams  = new BuildParams(this.getSingleQuery());
+        switch (this.getSingleQuery().getBagOp().getBehaviorEnum()) {
             case PageQuery:
-                pageCommandText();
+                runnerParam = pageCommandText(buildParams);
                 break;
             case ExecuteQuery:
-                executeCommandText();
+                runnerParam = executeCommandText(buildParams);
+                break;
+            case ExecuteQuerySelect:
+                runnerParam = querySelectCommandText(buildParams);
                 break;
             case Delete:
-                deleteCommandText();
+                runnerParam = deleteCommandText(buildParams);
                 break;
             case Select:
-                selectCommandText();
+                runnerParam = selectCommandText(buildParams);
                 break;
             case Update:
-                updateCommandText();
+                runnerParam = updateCommandText(buildParams);
                 break;
             case Insert:
-                insertCommandText(false);
+                runnerParam = insertCommandText(false,buildParams);
                 break;
             case Count:
-                countCommandText();
+                runnerParam = countCommandText(buildParams);
                 break;
             case PageCount:
-                pageCountText();
+                runnerParam = pageCountText(buildParams);
                 break;
             case BachInsert:
-                bachInsert();
-                break;
-            case Scope:
-                createScope();
+                runnerParam = bachInsert(buildParams);
                 break;
             default:
                 break;
         }
+        return runnerParam;
+
     }
 }

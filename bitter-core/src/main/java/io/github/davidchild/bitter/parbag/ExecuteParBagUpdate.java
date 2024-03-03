@@ -1,40 +1,30 @@
 package io.github.davidchild.bitter.parbag;
 
-import io.github.davidchild.bitter.parse.BitterPredicate;
+import io.github.davidchild.bitter.BaseModel;
+import io.github.davidchild.bitter.basequery.SubUpdateColumnStatement;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExecuteParBagUpdate<T> extends ExecuteParBag {
+public class ExecuteParBagUpdate<T extends BaseModel> extends ExecuteParBag implements IBagUpdateColumn,IBagWhere,IBagUpdateInsColumn<T> {
 
-    public List<BitterPredicate<T>> condition;
+    private WhereContainer whereContainer = new WhereContainer();
     private boolean isReSetValueInUpdatePair = false;
-    private List<UpdatePair> updatePairs;
+    private List<SubUpdateColumnStatement> updateColumnStatements = new ArrayList<>();
 
-    public ExecuteParBagUpdate() {
-        updatePairs = new ArrayList<>();
+    @Override
+    public List<SubUpdateColumnStatement> getUpdateColumnContain() {
+        return updateColumnStatements;
     }
 
 
-    public void SetUpdatePair(UpdatePair updatePair) {
-        this.updatePairs.add(updatePair);
+    @Override
+    public WhereContainer getWhereContainer() {
+        return  whereContainer;
     }
 
-    public List<UpdatePair> getUpdatePairs() {
-        if (updatePairs != null && updatePairs.size() > 0)
-            return updatePairs;
-        if (isReSetValueInUpdatePair)
-            return updatePairs;
-        if (this.getData() != null && (!isReSetValueInUpdatePair)) {
-            this.getProperties().forEach(field -> {
-                if ((!field.getIsIdentity() || !field.getIsKey())) {
-                    UpdatePair k = new UpdatePair(field.getClassInnerName(), field.getValue());
-                    k.setDbFieldName(field.getDbName());
-                    this.updatePairs.add(k);
-                }
-            });
-            isReSetValueInUpdatePair = true;
-        }
-        return updatePairs;
+    @Override
+    public ExecuteParBag getParBag() {
+        return  this;
     }
 }
