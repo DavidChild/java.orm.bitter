@@ -67,4 +67,9 @@ public class TUser extends BaseModel implements Serializable {
     @TableField("user_age")
     private Integer userAge;
 
+
+    public  String getMethodNameX(){
+        return  "1111";
+    }
+
 }

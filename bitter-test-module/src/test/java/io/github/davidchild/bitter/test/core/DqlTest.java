@@ -32,6 +32,25 @@ public class DqlTest extends CreateBaseMockSchema {
         assertEquals(true, list.size()>0);
 
     }
+
+    @Test
+    public void testQueryGen7()  {
+        this.beforeInit();
+        Date s = DateUtils.parseDate("2022-8-10");
+        TUser user = new TUser();
+        user.setUsername("hjb");
+        user.setPhone("123");
+
+        TUser user2 = new TUser();
+        user2.setUsername("hjb");
+        user2.setPhone("123");
+
+
+        String bi = "2222";
+        List<TUser> list = db.findQuery(TUser.class).where(t->t.getPhone() == bi && t.getUsername() == user.getUsername()).thenAsc(TUser::getId).thenDesc(TUser::getPhone).find();
+        assertEquals(true, list.size() == 0);
+
+    }
     @Test
     public void testQueryGen2() {
         this.beforeInit();

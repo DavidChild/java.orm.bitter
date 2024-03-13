@@ -1,5 +1,4 @@
 package io.github.davidchild.bitter.excutequery;
-
 import io.github.davidchild.bitter.BaseModel;
 import io.github.davidchild.bitter.basequery.StatementHandeUtil;
 import io.github.davidchild.bitter.basequery.StatementHandlerResult;
@@ -19,7 +18,6 @@ public class WhereHandler {
     public static  <T extends BaseModel> RunnerParam getWhere(T data, IBagWhere  iBagWhere, List<DataValue> fieldProperties, DataValue keyInfo) {
         if(data != null) return  WhereHandler.DataWhereCondition(keyInfo);
         RunnerParam runnerParam = new RunnerParam();
-
         if(!iBagWhere.CheckedHaveCondition()) {
             runnerParam.setCommand("");
             return  runnerParam;
@@ -51,7 +49,7 @@ public class WhereHandler {
                     throw new VisitorException("can't support this where expression, please use the expression syntax already supported in bitter,exception is:" + e.getMessage());//todo that can  Navigate to Instance Reference
 
                 } finally {
-                    visitor.clear();
+                    visitor  = null;
                 }
             });
         }

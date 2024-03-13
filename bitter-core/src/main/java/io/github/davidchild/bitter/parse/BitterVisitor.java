@@ -2,25 +2,27 @@ package io.github.davidchild.bitter.parse;
 
 import co.streamx.fluent.extree.expression.*;
 import io.github.davidchild.bitter.dbtype.DataValue;
+import io.github.davidchild.bitter.exception.ArgException;
 import io.github.davidchild.bitter.tools.CoreUtils;
 import io.github.davidchild.bitter.tools.DateTimeUtils;
 import lombok.NonNull;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class BitterVisitor implements ExpressionVisitor<BitterWrapper> {
 
     private final List<ConstantExpression> PARAMS = new ArrayList<>();
+
+
+    private  final HashMap<String, Object> PARAMS_NEW = new HashMap<>();
     private final BitterWrapper SQL = new BitterWrapper();
     private final String head;
     private final String tail;
@@ -156,8 +158,14 @@ public class BitterVisitor implements ExpressionVisitor<BitterWrapper> {
     public BitterWrapper visit(InvocationExpression e) {
         final Expression target = e.getTarget();
         if (target instanceof LambdaExpression<?>) {
-            e.getArguments().stream().filter(x -> x instanceof ConstantExpression)
-                    .forEach(x -> PARAMS.add((ConstantExpression) x));
+            if (e.getArguments() != null && e.getArguments().size() > 0) {
+                for (int i = 0; i < e.getArguments().size() - 1; i++) {
+                    if ((e.getArguments().get(i)) instanceof ConstantExpression) {
+                        PARAMS.add(((ConstantExpression) e.getArguments().get(i)));
+                        PARAMS_NEW.put("P" + String.valueOf(i), ((ConstantExpression) e.getArguments().get(i)).getValue());
+                    }
+                }
+            }
         }
         if (target.getExpressionType() == ExpressionType.MethodAccess) {
             e.getArguments().stream().findFirst().ifPresent(x -> {
@@ -187,21 +195,45 @@ public class BitterVisitor implements ExpressionVisitor<BitterWrapper> {
         if (instance == null) {
             return invoke(member, e);
         }
-        if (instance instanceof ParameterExpression) {
-            String name = member.getName();
-            name = name.replaceAll("^(get)", "");
-            name = name.substring(0, 1).toLowerCase() + name.substring(1);
-            name = CoreUtils.getDbNameByInnerName(bitterFields, keyInfo, name);
-            SQL.getKey().append(head).append(name).append(tail);
-        }
         if (instance instanceof ConstantExpression) {
             param.accept(this);
             return invoke(member, instance);
         }
-        if (instance instanceof InvocationExpression) {
+       else   if (instance instanceof InvocationExpression) {
             ((InvocationExpression) instance).getTarget().accept(this);
             return invoke(member, param);
+        } else if (instance instanceof ParameterExpression) {
+            if(PARAMS_NEW.containsKey(instance.toString())){
+                String name = member.getName();
+                Field field = null;
+                Object  myInstance =  PARAMS_NEW.get(instance.toString());
+                try {
+
+                    if(name.indexOf("get")== 0) {
+                        name = name.replaceAll("^(get)", "");
+                        name = name.substring(0, 1).toLowerCase() + name.substring(1);
+                    }
+                    field = PARAMS_NEW.get(instance.toString()).getClass().getDeclaredField(name);
+                    field.setAccessible(true);
+                    Object fieldValue = field.get(myInstance);
+                    SQL.getKey().append("?");
+                    SQL.addParams(fieldValue);
+                } catch (NoSuchFieldException ex) {
+                    throw  new ArgException("the model " + myInstance.getClass().getName() + " is not exist the field: "+ name);
+                } catch (IllegalAccessException ex) {
+                    throw  new ArgException("the model " + myInstance.getClass().getName() + " is not exist the field: "+ name);
+                }
+
+            }else {
+                String name = member.getName();
+                name = name.replaceAll("^(get)", "");
+                name = name.substring(0, 1).toLowerCase() + name.substring(1);
+                name = CoreUtils.getDbNameByInnerName(bitterFields, keyInfo, name);
+                SQL.getKey().append(head).append(name).append(tail);
+            }
+
         }
+
         return SQL;
     }
 
@@ -229,6 +261,8 @@ public class BitterVisitor implements ExpressionVisitor<BitterWrapper> {
 
     public void clear() {
         SQL.clear();
+        PARAMS.clear();
+        PARAMS_NEW.clear();
     }
 
     // --------------------------------------------------------------------------------------------
