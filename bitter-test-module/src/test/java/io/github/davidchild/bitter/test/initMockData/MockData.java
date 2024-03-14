@@ -15,7 +15,6 @@ public class MockData {
         user.setAvatar("https://hangzhou.aliyun.com/bulkcopyname/"+MockRandomData.randomInt(80));
         user.setCreateTime(new Date());
         user.insert().submit();
-
         for(int i=0;i<10;i++){
 
             TUser random_user = new TUser();

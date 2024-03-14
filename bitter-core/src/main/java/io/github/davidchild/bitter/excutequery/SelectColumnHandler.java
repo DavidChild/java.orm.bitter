@@ -20,7 +20,7 @@ public class SelectColumnHandler {
         if (subColumnStatements != null && subColumnStatements.size() > 0) {
             for (int i = 0; i < subColumnStatements.size(); i++) {
                 if (subColumnStatements.get(i).getColumnName() != null && subColumnStatements.get(i).getColumnName() != "") {
-                    columns.append(String.format("%s", (i != subColumnStatements.size()) ? (subColumnStatements.get(i).getColumnName() + ",") : subColumnStatements.get(i).getColumnName()));
+                    columns.append(String.format("%s", ((i+1) != subColumnStatements.size()) ? (subColumnStatements.get(i).getColumnName() + ",") : subColumnStatements.get(i).getColumnName()));
                 }
             }
         }

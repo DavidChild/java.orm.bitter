@@ -27,10 +27,11 @@ public class ClickHouseQuery extends BaseQuery {
                     fields += filed.getDbName() + ',';
                     values += "?,";
                     StatementHandeUtil.setRunnerParamContainer(runnerParam, filed.getValue());
-                } else {
-                    fields += filed.getDbName() + ',';
-                    values += "null,";
                 }
+//                else {
+//                    fields += filed.getDbName() + ',';
+//                    values += "null,";
+//                }
             }
         }
         runnerParam.setCommand(String.format("INSERT INTO %s (%s) VALUES (%s);", buildParams.getTableName(),
@@ -56,8 +57,10 @@ public class ClickHouseQuery extends BaseQuery {
             for (DataValue f : q)
                 if (!f.getIsIdentity()) {
                     if (f.getValue() == null) {
-                        value += "null,";
-                    } else {
+                        value += "?,";
+                        StatementHandeUtil.setRunnerParamContainer(runnerParam, null);
+                    }
+                    else {
                         value += "?,";
                         StatementHandeUtil.setRunnerParamContainer(runnerParam, f.getValue());
                     }
@@ -81,7 +84,7 @@ public class ClickHouseQuery extends BaseQuery {
         runnerParam.appendOnlyParams(buildParams.getObjectParams());
         RunnerParam runner_param_where = WhereHandler.getWhere(buildParams.getData(), (IBagWhere) buildParams.getBagOp(), buildParams.getFiledProperties(), buildParams.getKeyInfo());
         runnerParam.appendOnlyParams(runner_param_where);
-        runnerParam.setCommand(String.format("%s%s;", "ALTER FROM " + buildParams.getTableName() +" DELETE ", runner_param_where.getCommand()));
+        runnerParam.setCommand(String.format("%s%s;", "ALTER TABLE " + buildParams.getTableName() +" DELETE ", runner_param_where.getCommand()));
         return runnerParam;
     }
 
@@ -90,7 +93,7 @@ public class ClickHouseQuery extends BaseQuery {
         RunnerParam runnerParam = new RunnerParam();
         runnerParam.appendOnlyParams(buildParams.getObjectParams());
         StringBuilder updateSQL = new StringBuilder(); // update语句
-        updateSQL.append(" ALTER  ").append(buildParams.getTableName()).append(" UPDATE");
+        updateSQL.append(" ALTER  TABLE ").append(buildParams.getTableName()).append(" UPDATE");
         RunnerParam runner_update_column = UpdateColumnHandler.getUpdateColumnSet(buildParams.getData(), (IBagUpdateColumn) buildParams.getBagOp(), buildParams.getFiledProperties());
         RunnerParam runner_where = WhereHandler.getWhere(buildParams.getData(), (IBagWhere) buildParams.getBagOp(), buildParams.getFiledProperties(), buildParams.getKeyInfo());
 

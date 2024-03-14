@@ -1,4 +1,4 @@
- CREATE TABLE `t_student`(
+CREATE TABLE `t_student`(
 id UInt32,
 name Nullable(String),
 sex_name Nullable(String)

@@ -164,13 +164,13 @@ public class DmlTest extends CreateBaseMockSchema {
     }
 
     @Test
-    public void bachInsertTest() throws Exception {
-       this.beforeInit();
+    public void bachInsertTest() {
+      this.beforeInit();
        boolean bl = db.bachInsert().doBachInsert((list) -> {
             for (int i = 0; i < 10; i++) {
                 TStudent studentInfo = new TStudent();
                 studentInfo.setName("hjb" + i);
-
+                studentInfo.setId(SnowFlakeUtils.nextId());
                 studentInfo.insert().addInBachInsertPool((List<Insert>) list);
             }
         }).submit() > 0;
