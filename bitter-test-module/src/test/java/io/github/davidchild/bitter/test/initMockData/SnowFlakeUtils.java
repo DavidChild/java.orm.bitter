@@ -139,7 +139,6 @@ public class SnowFlakeUtils {
         return ((timestamp - OFFSET) << OFFSET_SHIFT_BITS) | ((WORKER_ID ^ BACK_WORKER_ID_BEGIN) << WORKER_SHIFT_BITS) | sequenceBak;
     }
 
-
     /**
      * 并发数
      */

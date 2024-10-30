@@ -24,6 +24,7 @@ public class UpdataTest extends CreateBaseMockSchema {
         assertEquals(true, bl);
 
     }
+
     @Test
     public void TestTheHasKeyValue() {
         var student = db.findQuery(TStudent.class).where(p->p.getId()==1).find().fistOrDefault();
@@ -31,7 +32,6 @@ public class UpdataTest extends CreateBaseMockSchema {
         assertEquals(true, bl);
 
     }
-
 
     @Test
     public void TestUpdataModel() {
@@ -42,7 +42,6 @@ public class UpdataTest extends CreateBaseMockSchema {
         }
         var student1 =db.findQuery(TStudent.class).where(p->p.getId() == 1).find().fistOrDefault();
         assertEquals("改变姓名值了", student1.getName());
-
     }
 
 }

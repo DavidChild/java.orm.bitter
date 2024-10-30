@@ -70,10 +70,10 @@ public class PageTest  extends CreateBaseMockSchema {
     @Test
     public void testPageQueryPageAndCount() throws SQLException, InterruptedException {
         this.beforeInit();
-        String sql = "select  user.* from t_user user \n" +
+        String sql = "select  email  from t_user user \n" +
                 "left join t_dept dept on dept.dept_id = user.dept_id";
         PageQuery page = new PageQuery(sql);
-        page.where("user.username = ?", "123");
+        page.where("user.username = ?", "hjb");
         page.thenAsc("user.username");
         page.thenDesc("user.create_time");
         page.skip(1).take(10);
@@ -130,7 +130,6 @@ public class PageTest  extends CreateBaseMockSchema {
     public void testPageQuery4() {
 
         this.beforeInit();
-
         String name = "hjb";
         String sql = "select  user.* from t_user user \n" +
                 "left join t_dept dept on dept.dept_id = user.dept_id";
@@ -281,6 +280,22 @@ public class PageTest  extends CreateBaseMockSchema {
         List<String> list3 = new ArrayList<>();
         String sql = "select  user.* from t_user user \n" +
                      "left join t_dept dept on dept.dept_id = user.dept_id";
+        PageQuery pq = new PageQuery(sql);
+        pq.whereNotIn("username",  list); //ok
+        pq.skip(1).take(10);
+        DataTable dt =  pq.getData();
+        assertEquals(true, dt.size() > 1);
+    }
+
+
+    @Test
+    public void testPageQueryAsLiableColumn() {
+        this.beforeInit();
+        List<String> list = new ArrayList<>();
+        list.add("hjb");
+        List<String> list3 = new ArrayList<>();
+        String sql = "select  user.email as liableEmail,user.username as personName from t_user user \n" +
+                "left join t_dept dept on dept.dept_id = user.dept_id";
         PageQuery pq = new PageQuery(sql);
         pq.whereNotIn("username",  list); //ok
         pq.skip(1).take(10);

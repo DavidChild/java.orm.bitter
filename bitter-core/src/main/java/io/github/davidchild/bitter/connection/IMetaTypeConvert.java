@@ -29,7 +29,7 @@ public interface IMetaTypeConvert {
         ResultSetMetaData md = rs.getMetaData();
         int columnCount = md.getColumnCount();
         for (int i = 1; i <= columnCount; i++) {
-            String columnName = md.getColumnName(i);
+            String columnName = (md.getColumnLabel(i)  == null || md.getColumnName(i) =="") ? md.getColumnName(i) : md.getColumnLabel(i);
             Class<?> clazz = MetaTypeCt.getClassForMetaName(md.getColumnClassName(i));
             DataColumn column = new  DataColumn(columnName,clazz.getName());
             list.getColumnMeta().add(column);
@@ -37,7 +37,7 @@ public interface IMetaTypeConvert {
         while (rs.next()) {
             DataRow  rowData = new DataRow();
             for (int i = 1; i <= columnCount; i++) {
-                String columnName = md.getColumnName(i);
+                String columnName = (md.getColumnLabel(i)  == null || md.getColumnName(i) =="") ? md.getColumnName(i) : md.getColumnLabel(i);
                 Class<?> type = MetaTypeCt.getClassForMetaName(md.getColumnClassName(i));
                 TypeHandlerBase<?> handler = MetaTypeCt.getTypeHandler(type);
                 rowData.put(columnName.toLowerCase(), handler.getResult(rs, columnName));
@@ -53,7 +53,7 @@ public interface IMetaTypeConvert {
         int columnCount = md.getColumnCount();
 
         for (int i = 1; i <= columnCount; i++) {
-            String columnName = md.getColumnName(i);
+            String columnName = (md.getColumnLabel(i)  == null || md.getColumnName(i) =="") ? md.getColumnName(i) : md.getColumnLabel(i);
             Class<?> clazz = MetaTypeCt.getClassForMetaName(md.getColumnClassName(i));
             DataColumn column = new  DataColumn(columnName,md.getColumnClassName(i));
             list.getColumnMeta().add(column);
@@ -75,7 +75,7 @@ public interface IMetaTypeConvert {
         ResultSetMetaData md = rs.getMetaData();
         List<String> columns = new ArrayList<>();
         for (int i = 1; i <= md.getColumnCount(); i++) {
-            String columnName = md.getColumnName(i);
+            String columnName = (md.getColumnLabel(i)  == null || md.getColumnName(i) =="") ? md.getColumnName(i) : md.getColumnLabel(i);
             columns.add(columnName.toLowerCase());
         }
         List<FieldProperty> fields = CoreUtils.getAllFields(targetClass);

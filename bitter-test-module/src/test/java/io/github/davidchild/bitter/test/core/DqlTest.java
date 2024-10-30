@@ -22,15 +22,12 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 public class DqlTest extends CreateBaseMockSchema {
 
-
-
     @Test
     public void testQueryGen1()  {
         this.beforeInit();
         Date s = DateUtils.parseDate("2022-8-10");
         List<TUser> list = db.findQuery(TUser.class).thenAsc(TUser::getId).thenDesc(TUser::getPhone).find();
         assertEquals(true, list.size()>0);
-
     }
 
     @Test
@@ -44,7 +41,6 @@ public class DqlTest extends CreateBaseMockSchema {
         TUser user2 = new TUser();
         user2.setUsername("hjb");
         user2.setPhone("123");
-
 
         String bi = "2222";
         List<TUser> list = db.findQuery(TUser.class).where(t->t.getPhone() == bi && t.getUsername() == user.getUsername()).thenAsc(TUser::getId).thenDesc(TUser::getPhone).find();

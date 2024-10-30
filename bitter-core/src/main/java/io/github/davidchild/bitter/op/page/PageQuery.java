@@ -73,7 +73,6 @@ public class PageQuery extends DqlQuery implements IWhereQuery<PageQuery,BaseMod
         return (IPageAccess) this;
     }
 
-
     /// <summary
     /// return IPageAccess
     /// </summary>

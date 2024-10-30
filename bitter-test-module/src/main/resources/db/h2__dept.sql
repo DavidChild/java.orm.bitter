@@ -9,5 +9,4 @@ CREATE TABLE IF not exists `t_dept`
                            `create_time` datetime(0),
                            `update_by` varchar(64),
                            `update_time` datetime(0)
-
                            )

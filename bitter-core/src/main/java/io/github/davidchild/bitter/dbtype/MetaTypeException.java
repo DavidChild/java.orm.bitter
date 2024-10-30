@@ -22,6 +22,7 @@ public class MetaTypeException extends PersistenceException {
   private static final long serialVersionUID = 8614420898975117130L;
 
   public MetaTypeException() {
+
   }
 
   public MetaTypeException(String message) {

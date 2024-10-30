@@ -1,6 +1,6 @@
 CREATE TABLE IF not exists `t_user`
                            (
-                           `id` varchar(32)  AUTO_INCREMENT PRIMARY KEY,
+                           `id` varchar(32)   PRIMARY KEY,
                            `username` varchar(100),
                            `email` varchar(45)  DEFAULT NULL COMMENT '电子邮件',
                            `phone` varchar(45)  DEFAULT NULL COMMENT '电话',

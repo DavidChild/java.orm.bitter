@@ -89,7 +89,6 @@ public class CodeGenerator {
 
         cfg.setFileOutConfigList(focList);
         mpg.setCfg(cfg);
-
         TemplateConfig templateConfig = new TemplateConfig();
         templateConfig.setXml(null);
         mpg.setTemplate(templateConfig);
@@ -122,6 +121,5 @@ public class CodeGenerator {
         }
         throw new MybatisPlusException("pls enter the real table name" + tip + "！");
     }
-
 }
 

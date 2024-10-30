@@ -13,8 +13,10 @@ import static org.junit.Assert.assertEquals;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class IfInnerLambdaTest extends CreateBaseMockSchema {
+
     @Test
     public void ifInnerLambdaTest()  {
+
         TStudent tStudent = new TStudent();
         tStudent.setName("hjb");
         IfInnerLambda lambda1 = ()-> tStudent.getName() == "hjb";
